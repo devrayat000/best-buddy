@@ -62,5 +62,6 @@
   "name": "best-buddy",
   "version": "1.0.0",
   "private": true,
-  "main": "expo-router/entry"
+  "main": "expo-router/entry",
+  "packageManager": "yarn@4.1.0"
 }
