@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "7846652466",
+    "project_id": "best-buddy-28f9f",
+    "storage_bucket": "best-buddy-28f9f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:7846652466:android:f22d231480bf358e332a2b",
+        "android_client_info": {
+          "package_name": "com.devrayat.best_buddy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "7846652466-7kh95qbljd38ml74lh56d6dabh46b0ft.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1A9QKJQq5doQF-rk0XOY1WDOm_KvwLhA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "7846652466-7kh95qbljd38ml74lh56d6dabh46b0ft.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

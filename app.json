@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "scheme": "acme",
+    "web": {
+      "bundler": "metro"
+    },
+    "name": "best-buddy",
+    "slug": "best-buddy",
+    "plugins": [
+      "expo-font",
+      "expo-router"
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "470e0eb4-c200-4715-af23-dd469f6f57da"
+      }
+    },
+    "owner": "devrayat000"
+  },
+  "android": {
+    "package": "com.devrayat.best_buddy",
+    "googleServicesFile": "./google-services.json"
+  }
+}
