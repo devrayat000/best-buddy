@@ -17,7 +17,7 @@ import {
 } from "@gluestack-ui/themed";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
 import { useSetAtom } from "jotai/react";
 
@@ -27,6 +27,7 @@ import { sessionAtom } from "../../store/auth";
 export default function LoginScreen() {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const {
     control,
@@ -45,10 +46,11 @@ export default function LoginScreen() {
   const login = handleSubmit(async (data) => {
     setLoading(true);
     await wait(1500);
-    await setSession({
-      jwt: "some.jwt.text",
-      user: {
-        id: 2,
+    router.push({
+      pathname: "(auth)/grant-access",
+      params: {
+        jwt: "some.jwt.text",
+        id: "2",
         name: "Zul Ikram",
         username: data.username,
       },

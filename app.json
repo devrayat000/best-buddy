@@ -6,7 +6,10 @@
     },
     "name": "best-buddy",
     "slug": "best-buddy",
-    "plugins": ["expo-font", "expo-router"],
+    "plugins": [
+      "expo-font",
+      "expo-router"
+    ],
     "extra": {
       "router": {
         "origin": false
@@ -18,10 +21,13 @@
     "owner": "devrayat000",
     "android": {
       "package": "com.devrayat.virtualcr"
-    }
+    },
+    "sdkVersion": "50.0.0",
+    "entryPoint": ".vscode\\exponentIndex.js"
   },
   "android": {
     "package": "com.devrayat.virtualcr",
     "googleServicesFile": "./google-services.json"
-  }
+  },
+  "name": "best-buddy"
 }

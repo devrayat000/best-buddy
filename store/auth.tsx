@@ -1,3 +1,4 @@
+import { atom } from "jotai";
 import { atomWithStorage, createJSONStorage, loadable } from "jotai/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -27,3 +28,5 @@ export const loadableSession = loadable(sessionAtom);
 export const initialAtom = atomWithStorage<boolean>("setup", true, storage, {
   getOnInit: true,
 });
+
+export const logoutAlertAtom = atom(false);
