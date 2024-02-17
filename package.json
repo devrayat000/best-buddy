@@ -31,6 +31,7 @@
     "expo-router": "~3.4.7",
     "expo-splash-screen": "~0.26.4",
     "expo-status-bar": "~1.11.1",
+    "expo-task-manager": "~11.7.2",
     "jotai": "^2.6.4",
     "jotai-tanstack-query": "^0.8.5",
     "lucide-react-native": "^0.331.0",

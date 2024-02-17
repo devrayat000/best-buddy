@@ -95,16 +95,16 @@ const ProfileCard = () => {
         <HStack justifyContent="space-between" alignItems="center">
           <HStack space="md">
             <Avatar bg="$blue600">
-              <AvatarFallbackText>Henry Stan</AvatarFallbackText>
+              <AvatarFallbackText>#{data.username}</AvatarFallbackText>
               <AvatarImage
                 source={{
                   uri: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60",
                 }}
-                alt="User"
+                alt={data.username}
               />
             </Avatar>
             <VStack>
-              <Text>Henry Stan</Text>
+              <Text>#{data.username}</Text>
               <Text color="$textLight500" size="sm">
                 Show Profile
               </Text>

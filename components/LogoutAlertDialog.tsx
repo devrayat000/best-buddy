@@ -1,58 +1,65 @@
 import {
-  AlertDialog,
+  Modal,
   Text,
   Heading,
   Icon,
   Button,
   CloseIcon,
-  AlertDialogBackdrop,
-  AlertDialogContent,
+  ModalBackdrop,
+  ModalContent,
   ButtonText,
-  AlertDialogHeader,
-  AlertDialogCloseButton,
-  AlertDialogBody,
-  AlertDialogFooter,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
 } from "@gluestack-ui/themed";
-import { useAtom } from "jotai";
-import { logoutAlertAtom } from "../store/auth";
+import { useAtom, useSetAtom } from "jotai";
+import { logoutAlertAtom, sessionAtom } from "../store/auth";
+import { unregisterForPushNotificationsAsync } from "../lib/notification";
 
-const LogoutAlertDialog = () => {
-  const [openLogoutAlertDialog, setOpenLogoutAlertDialog] =
-    useAtom(logoutAlertAtom);
+const LogoutModal = () => {
+  const [openLogoutModal, setOpenLogoutModal] = useAtom(logoutAlertAtom);
+  const setSession = useSetAtom(sessionAtom);
 
-  const close = () => setOpenLogoutAlertDialog(false);
-  console.log(openLogoutAlertDialog);
+  const close = () => setOpenLogoutModal(false);
+  console.log(openLogoutModal);
+
+  async function logout() {
+    await unregisterForPushNotificationsAsync();
+    close();
+    await setSession(null);
+  }
 
   return (
-    <AlertDialog
-      isOpen={openLogoutAlertDialog}
+    <Modal
+      isOpen={openLogoutModal}
       onClose={close}
       useRNModal
       avoidKeyboard
       size="md"
     >
-      <AlertDialogBackdrop />
-      <AlertDialogContent>
-        <AlertDialogHeader>
+      <ModalBackdrop />
+      <ModalContent>
+        <ModalHeader>
           <Heading>Logout</Heading>
-          <AlertDialogCloseButton>
+          <ModalCloseButton>
             <Icon as={CloseIcon} />
-          </AlertDialogCloseButton>
-        </AlertDialogHeader>
-        <AlertDialogBody>
+          </ModalCloseButton>
+        </ModalHeader>
+        <ModalBody>
           <Text>Are you sure, you want to logout?</Text>
-        </AlertDialogBody>
-        <AlertDialogFooter>
+        </ModalBody>
+        <ModalFooter>
           <Button variant="outline" action="secondary" onPress={close} mr="$3">
             <ButtonText>Cancel</ButtonText>
           </Button>
-          <Button action="negative" onPress={close}>
+          <Button action="negative" onPress={logout}>
             <ButtonText>Logout</ButtonText>
           </Button>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
 
-export default LogoutAlertDialog;
+export default LogoutModal;

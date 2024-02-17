@@ -23,11 +23,12 @@ import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, Stack, useRouter } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
-import { useAtom, useSetAtom } from "jotai/react";
+import { useAtom, useAtomValue, useSetAtom } from "jotai/react";
 
-import { sessionAtom } from "../../store/auth";
+import { initialAtom, sessionAtom } from "../../store/auth";
 import { atomWithMutation, queryClientAtom } from "jotai-tanstack-query";
 import { AuthParams, AuthResponse, login } from "../../services/user";
+import { registerForPushNotificationsAsync } from "../../lib/notification";
 
 const loginAtom = atomWithMutation<AuthResponse, AuthParams>((get) => ({
   mutationKey: ["login"],
@@ -54,23 +55,29 @@ export default function LoginScreen() {
       password: "",
     },
   });
+  const isInitial = useAtomValue(initialAtom);
   const [{ mutateAsync: loginAsync }] = useAtom(loginAtom);
+  const setSession = useSetAtom(sessionAtom);
 
   const toggleShow = () => setShow((showState) => !showState);
 
   const login = handleSubmit(async (data) => {
     setLoading(true);
     const session = await loginAsync(data);
-    console.log(session);
     setLoading(false);
-    router.replace({
-      pathname: "(auth)/grant-access",
-      params: {
-        jwt: session.jwt,
-        id: session.user.id.toString(),
-        username: session.user.username,
-      },
-    });
+    if (isInitial) {
+      router.replace({
+        pathname: "(auth)/grant-access",
+        params: {
+          jwt: session.jwt,
+          id: session.user.id.toString(),
+          username: session.user.username,
+        },
+      });
+    } else {
+      await registerForPushNotificationsAsync();
+      await setSession(session);
+    }
   });
 
   return (

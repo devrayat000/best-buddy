@@ -9,6 +9,7 @@ import * as Notifications from "expo-notifications";
 import { logoutAlertAtom, sessionAtom } from "../../store/auth";
 import { generateExpoPushToken } from "../../lib/notification";
 import useTokenChanged from "../../hooks/use-token-changed";
+import { useQueryClient } from "@tanstack/react-query";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -23,7 +24,9 @@ export default function RootLayout() {
   const pathname = usePathname();
   const prevPath = useRef<string>(null);
   const setOpenLogoutAlertDialog = useSetAtom(logoutAlertAtom);
+  const client = useQueryClient();
 
+  const receiveListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
 
   useTokenChanged();
@@ -36,9 +39,22 @@ export default function RootLayout() {
   }, [pathname]);
 
   useEffect(() => {
+    receiveListener.current = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        const trigger = notification.request.trigger;
+        if (trigger.type === "push" && "channelId" in trigger) {
+          if (trigger.channelId === "notice-added") {
+            client.invalidateQueries({ queryKey: ["notices"] });
+          }
+          if (trigger.channelId === "class-test-added") {
+            client.invalidateQueries({ queryKey: ["class-tests"] });
+          }
+        }
+      }
+    );
+
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log("responded", response.notification.request.trigger);
         const trigger = response.notification.request.trigger;
         if (
           trigger.type === "push" &&
@@ -60,6 +76,7 @@ export default function RootLayout() {
 
     return () => {
       Notifications.removeNotificationSubscription(responseListener.current);
+      Notifications.removeNotificationSubscription(receiveListener.current);
     };
   }, []);
 

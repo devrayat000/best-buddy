@@ -6159,6 +6159,7 @@ __metadata:
     expo-router: "npm:~3.4.7"
     expo-splash-screen: "npm:~0.26.4"
     expo-status-bar: "npm:~1.11.1"
+    expo-task-manager: "npm:~11.7.2"
     jotai: "npm:^2.6.4"
     jotai-tanstack-query: "npm:^0.8.5"
     lucide-react-native: "npm:^0.331.0"

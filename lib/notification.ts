@@ -58,6 +58,10 @@ export async function generateExpoPushToken(
   return token;
 }
 
+export async function unregisterForPushNotificationsAsync() {
+  await Notifications.unregisterForNotificationsAsync();
+}
+
 export async function registerForPushNotificationsAsync() {
   let token: string;
 
