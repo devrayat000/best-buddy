@@ -14,18 +14,38 @@ import {
   EyeOffIcon,
   Center,
   Heading,
+  HStack,
+  Text,
+  Link as GLink,
+  LinkText,
 } from "@gluestack-ui/themed";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Stack } from "expo-router";
+import { Stack, Link, useRouter } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
-import { wait } from "../../lib/utils";
-import { useSetAtom } from "jotai/react";
+import { useAtom, useSetAtom } from "jotai/react";
 import { sessionAtom } from "../../store/auth";
+import { atomWithMutation, queryClientAtom } from "jotai-tanstack-query";
+import {
+  type AuthParams,
+  type AuthResponse,
+  register,
+} from "../../services/user";
+
+const registerAtom = atomWithMutation<AuthResponse, AuthParams>((get) => ({
+  mutationKey: ["register"],
+  mutationFn: register,
+  networkMode: "online",
+  onSuccess() {
+    const client = get(queryClientAtom);
+    return client.invalidateQueries({ queryKey: ["me"] });
+  },
+}));
 
 export default function LoginScreen() {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const {
     control,
@@ -37,23 +57,22 @@ export default function LoginScreen() {
       password: "",
     },
   });
-  const setSession = useSetAtom(sessionAtom);
+  const [{ mutateAsync: registerAsync }] = useAtom(registerAtom);
 
   const toggleShow = () => setShow((showState) => !showState);
 
-  const login = handleSubmit(async (data) => {
+  const register = handleSubmit(async (data) => {
     setLoading(true);
-    await wait(1500);
-    await setSession({
-      jwt: "some.jwt.text",
-      user: {
-        id: 2,
-        name: "Zul Ikram",
-        username: data.username,
-        // email: `${data.username}@me.buet.ac.bd`,
+    const session = await registerAsync(data);
+    setLoading(false);
+    router.replace({
+      pathname: "(auth)/grant-access",
+      params: {
+        jwt: session.jwt,
+        id: session.user.id.toString(),
+        username: session.user.username,
       },
     });
-    setLoading(false);
   });
 
   return (
@@ -114,10 +133,18 @@ export default function LoginScreen() {
                 )}
               />
             </VStack>
+            <HStack justifyContent="space-between" alignItems="center">
+              <Text>Already have an account?</Text>
+              <Link href="(auth)/login" replace asChild>
+                <GLink>
+                  <LinkText>Log In!</LinkText>
+                </GLink>
+              </Link>
+            </HStack>
             <Button
               variant="solid"
               mt="$2"
-              onPress={login}
+              onPress={register}
               isDisabled={loading}
             >
               <ButtonText>Create Account</ButtonText>

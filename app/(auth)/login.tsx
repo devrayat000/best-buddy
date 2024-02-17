@@ -14,15 +14,30 @@ import {
   EyeOffIcon,
   Center,
   Heading,
+  Text,
+  HStack,
+  Link as GLink,
+  LinkText,
 } from "@gluestack-ui/themed";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Stack, useRouter } from "expo-router";
+import { Link, Stack, useRouter } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
-import { useSetAtom } from "jotai/react";
+import { useAtom, useSetAtom } from "jotai/react";
 
-import { wait } from "../../lib/utils";
 import { sessionAtom } from "../../store/auth";
+import { atomWithMutation, queryClientAtom } from "jotai-tanstack-query";
+import { AuthParams, AuthResponse, login } from "../../services/user";
+
+const loginAtom = atomWithMutation<AuthResponse, AuthParams>((get) => ({
+  mutationKey: ["login"],
+  mutationFn: login,
+  networkMode: "online",
+  onSuccess() {
+    const client = get(queryClientAtom);
+    return client.invalidateQueries({ queryKey: ["me"] });
+  },
+}));
 
 export default function LoginScreen() {
   const [show, setShow] = useState(false);
@@ -39,23 +54,23 @@ export default function LoginScreen() {
       password: "",
     },
   });
-  const setSession = useSetAtom(sessionAtom);
+  const [{ mutateAsync: loginAsync }] = useAtom(loginAtom);
 
   const toggleShow = () => setShow((showState) => !showState);
 
   const login = handleSubmit(async (data) => {
     setLoading(true);
-    await wait(1500);
-    router.push({
+    const session = await loginAsync(data);
+    console.log(session);
+    setLoading(false);
+    router.replace({
       pathname: "(auth)/grant-access",
       params: {
-        jwt: "some.jwt.text",
-        id: "2",
-        name: "Zul Ikram",
-        username: data.username,
+        jwt: session.jwt,
+        id: session.user.id.toString(),
+        username: session.user.username,
       },
     });
-    setLoading(false);
   });
 
   return (
@@ -67,7 +82,7 @@ export default function LoginScreen() {
             Log In
           </Heading>
         </Center>
-        <FormControl p="$2" mt="$6">
+        <FormControl p="$3" mt="$6">
           <VStack space={"md"}>
             <VStack>
               <FormControlLabel>
@@ -116,6 +131,14 @@ export default function LoginScreen() {
                 )}
               />
             </VStack>
+            <HStack justifyContent="space-between" alignItems="center">
+              <Text>Do not have an account?</Text>
+              <Link href="(auth)/register" replace asChild>
+                <GLink>
+                  <LinkText>Register!</LinkText>
+                </GLink>
+              </Link>
+            </HStack>
             <Button
               variant="solid"
               mt="$2"

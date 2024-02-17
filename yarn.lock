@@ -6149,6 +6149,7 @@ __metadata:
     "@types/react": "npm:~18.2.45"
     dayjs: "npm:^1.11.10"
     expo: "npm:~50.0.6"
+    expo-background-fetch: "npm:~11.8.1"
     expo-blur: "npm:~12.9.1"
     expo-constants: "npm:~15.4.5"
     expo-device: "npm:~5.9.3"
@@ -7498,6 +7499,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-background-fetch@npm:~11.8.1":
+  version: 11.8.1
+  resolution: "expo-background-fetch@npm:11.8.1"
+  dependencies:
+    expo-task-manager: "npm:~11.7.2"
+  peerDependencies:
+    expo: "*"
+  checksum: 10/8a6e42a74a9ad7b4b29d7de744e4e396fefbaacdbb7415c72eec2ea5743de7833e2978d391e757a3cc035730979282e028d267b1c04c63589ef45836b5a09beb
+  languageName: node
+  linkType: hard
+
 "expo-blur@npm:~12.9.1":
   version: 12.9.1
   resolution: "expo-blur@npm:12.9.1"
@@ -7668,6 +7680,17 @@ __metadata:
   version: 1.11.1
   resolution: "expo-status-bar@npm:1.11.1"
   checksum: 10/f2c9d51fd5211520d0a53df69310f1b0a1b40c935ded24a267ff23becaf0dfb19517440ab3b1ff8c4adda651e99dafef681c055a1efe397df68056667dde2512
+  languageName: node
+  linkType: hard
+
+"expo-task-manager@npm:~11.7.2":
+  version: 11.7.2
+  resolution: "expo-task-manager@npm:11.7.2"
+  dependencies:
+    unimodules-app-loader: "npm:~4.5.0"
+  peerDependencies:
+    expo: "*"
+  checksum: 10/74f48cb9648b308051e94be4d3a901387f6c3804ad81fa8b5bd11f95e60255d74f90de023cc3ea7bc22c501a02580009ef544f2bea2024cbe5a72c27ff297f40
   languageName: node
   linkType: hard
 
@@ -12417,6 +12440,13 @@ __metadata:
   version: 2.1.0
   resolution: "unicode-property-aliases-ecmascript@npm:2.1.0"
   checksum: 10/243524431893649b62cc674d877bd64ef292d6071dd2fd01ab4d5ad26efbc104ffcd064f93f8a06b7e4ec54c172bf03f6417921a0d8c3a9994161fe1f88f815b
+  languageName: node
+  linkType: hard
+
+"unimodules-app-loader@npm:~4.5.0":
+  version: 4.5.0
+  resolution: "unimodules-app-loader@npm:4.5.0"
+  checksum: 10/934f0c4e779e08872590a90764e89180f8bd1719bff0029abfe9906cd4b60fc5b1316cacf1358feb4dbdf81f99415b71b1880a8e29642701995a7e4f91cdb0f3
   languageName: node
   linkType: hard
 

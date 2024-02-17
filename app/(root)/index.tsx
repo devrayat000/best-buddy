@@ -15,9 +15,11 @@ import { atomWithSuspenseInfiniteQuery } from "jotai-tanstack-query";
 import { Suspense } from "react";
 import { ActivityIndicator, TouchableNativeFeedback } from "react-native";
 import FeatherIcon from "@expo/vector-icons/Feather";
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 
 import { Notice, getNotices } from "../../services/notice";
+import { sessionAtom } from "../../store/auth";
+import { ListResponse } from "../../lib/types";
 
 export default function HomeScreen() {
   return (
@@ -49,7 +51,6 @@ const noticesAtom = atomWithSuspenseInfiniteQuery(() => ({
 
 function FetchNotices() {
   const [{ data, refetch, isRefetching }] = useAtom(noticesAtom);
-  const router = useRouter();
   const cardRadius = useToken("radii", "lg");
 
   const refresh = () => refetch({ throwOnError: true });
@@ -65,10 +66,9 @@ function FetchNotices() {
         </Center>
       ) : (
         <FlatList
-          mt="$12"
-          px="$2"
           data={flatData}
           rowGap="$3"
+          pt="$8"
           refreshing={isRefetching}
           onRefresh={refresh}
           // @ts-ignore
@@ -76,32 +76,32 @@ function FetchNotices() {
           // @ts-ignore
           renderItem={({ item: notice }: { item: Notice }) => {
             return (
-              <TouchableNativeFeedback
-                style={{ borderRadius: cardRadius }}
-                onPress={() => router.push(`(root)/notices/${notice.id}`)}
-              >
-                <Box
-                  borderRadius="$lg"
-                  my="$1.5"
-                  py="$2"
-                  px="$3"
-                  bg="$white"
-                  elevation="$1"
-                  sx={{
-                    _dark: {},
-                  }}
-                >
-                  <VStack>
-                    <HStack
-                      justifyContent="space-between"
-                      alignItems="flex-start"
-                    >
-                      <Text size="lg">{notice.attributes.title}</Text>
-                    </HStack>
-                    <Text size="sm">{notice.attributes.description}</Text>
-                  </VStack>
-                </Box>
-              </TouchableNativeFeedback>
+              <Link href={`(root)/notices/${notice.id}`} asChild>
+                <TouchableNativeFeedback style={{ borderRadius: cardRadius }}>
+                  <Box
+                    borderRadius="$lg"
+                    my="$1.5"
+                    py="$2"
+                    px="$3"
+                    mx="$2"
+                    bg="$white"
+                    elevation="$1"
+                    sx={{
+                      _dark: {},
+                    }}
+                  >
+                    <VStack>
+                      <HStack
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                      >
+                        <Text size="lg">{notice.attributes.title}</Text>
+                      </HStack>
+                      <Text size="sm">{notice.attributes.description}</Text>
+                    </VStack>
+                  </Box>
+                </TouchableNativeFeedback>
+              </Link>
             );
           }}
         />

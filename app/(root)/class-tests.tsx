@@ -65,10 +65,9 @@ function FetchClassTests() {
         </Center>
       ) : (
         <FlatList
-          mt="$12"
-          px="$2"
           data={flatData}
           rowGap="$3"
+          pt="$8"
           refreshing={isRefetching}
           onRefresh={refresh}
           // @ts-ignorer
@@ -87,6 +86,7 @@ function FetchClassTests() {
                   my="$1.5"
                   py="$2"
                   px="$3"
+                  mx="$2"
                   bg="$white"
                   elevation="$1"
                   sx={{

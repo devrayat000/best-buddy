@@ -17,6 +17,9 @@ import RefetchOnFocus from "../components/RefetchOnFocus";
 import { queryClient } from "../lib/utils";
 import HydrateAtoms from "../components/HydrateAtoms";
 import { loadableSession } from "../store/auth";
+import { createNotificationChannels } from "../lib/notification";
+import { loadable } from "jotai/utils";
+import { atom } from "jotai";
 
 onlineManager.setEventListener((setOnline) => {
   return NetInfo.addEventListener((state) => {
@@ -29,6 +32,9 @@ export const unstable_settings = {
 };
 
 SplashScreen.preventAutoHideAsync();
+// AsyncStorage.removeItem("sexxion");
+
+const notificationAtom = loadable(atom(() => createNotificationChannels()));
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -37,19 +43,30 @@ export default function RootLayout() {
     Inter_700Bold,
   });
   const colorScheme = useColorScheme();
-  const { state } = useAtomValue(loadableSession);
+  const session = useAtomValue(loadableSession);
+  const notification = useAtomValue(notificationAtom);
 
   useEffect(() => {
-    if ((fontsLoaded || fontError) && state === "hasData") {
+    if (
+      (fontsLoaded || fontError) &&
+      session.state === "hasData" &&
+      notification.state === "hasData"
+    ) {
       // Hide the splash screen after the fonts have loaded (or an error was returned) and the UI is ready.
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded, fontError]);
 
   // Prevent rendering until the font has loaded or an error was returned
-  if ((!fontsLoaded && !fontError) || state === "loading") {
+  if (
+    (!fontsLoaded && !fontError) ||
+    session.state === "loading" ||
+    notification.state === "loading"
+  ) {
     return null;
   }
+
+  console.log(session);
 
   return (
     <QueryClientProvider client={queryClient}>

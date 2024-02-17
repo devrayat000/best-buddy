@@ -1,43 +1,42 @@
 import { SafeAreaView, VStack, Button, ButtonText } from "@gluestack-ui/themed";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 
 import { initialAtom, sessionAtom } from "../../store/auth";
 import { registerForPushNotificationsAsync } from "../../lib/notification";
+import { atomWithMutation } from "jotai-tanstack-query";
+import { updateUser } from "../../services/user";
 
 type Params = {
   jwt: string;
   id: string;
-  name: string;
   username: string;
 };
 
-export default function GetStartedScreen() {
+const updateUserAtom = atomWithMutation((get) => ({
+  mutationKey: ["update_user"],
+  mutationFn: updateUser,
+}));
+
+export default function GrantAccessScreen() {
   const [, setInitial] = useAtom(initialAtom);
-  const [, setSession] = useAtom(sessionAtom);
+  const setSession = useSetAtom(sessionAtom);
   const params = useLocalSearchParams<Params>();
+  const [{ mutateAsync: updateUserAsync }] = useAtom(updateUserAtom);
 
   async function grantAccess() {
     const token = await registerForPushNotificationsAsync();
+    await setInitial(false);
+    await updateUserAsync({ id: params.id, expoToken: token });
     await setSession({
       jwt: params.jwt,
       user: {
         id: +params.id,
-        name: params.name,
-        username: params.name,
+        username: params.username,
+        email: `${params.username}@me.buet.ac.bd`,
         expoToken: token,
       },
     });
-    console.log({
-      jwt: params.jwt,
-      user: {
-        id: +params.id,
-        name: params.name,
-        username: params.name,
-        expoToken: token,
-      },
-    });
-    await setInitial(false);
   }
 
   return (

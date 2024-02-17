@@ -6,10 +6,7 @@
     },
     "name": "best-buddy",
     "slug": "best-buddy",
-    "plugins": [
-      "expo-font",
-      "expo-router"
-    ],
+    "plugins": ["expo-font", "expo-router"],
     "extra": {
       "router": {
         "origin": false

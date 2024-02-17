@@ -1,13 +1,12 @@
-import { useEffect } from "react";
-import { router } from "expo-router";
-import { useSetAtom } from "jotai";
+import { Suspense, useEffect } from "react";
+import { Link, router } from "expo-router";
+import { useAtom, useSetAtom } from "jotai";
 import {
   HStack,
   Text,
   Heading,
   Avatar,
   VStack,
-  Link,
   Icon,
   Pressable,
   Divider,
@@ -28,8 +27,10 @@ import {
   User,
 } from "lucide-react-native";
 
-import LogoutAlertDialog from "../../components/LogoutAlertDialog";
-import { logoutAlertAtom } from "../../store/auth";
+import LogoutAlertDialog from "../../../components/LogoutAlertDialog";
+import { logoutAlertAtom, sessionAtom } from "../../../store/auth";
+import { atomWithSuspenseQuery } from "jotai-tanstack-query";
+import { getMe } from "../../../services/user";
 
 const MobileProfilePage = () => {
   const setOpenLogoutAlertDialog = useSetAtom(logoutAlertAtom);
@@ -48,7 +49,9 @@ const MobileProfilePage = () => {
         <ScrollView>
           <VStack flex={1}>
             <Heading px="$5">Profile</Heading>
-            <ProfileCard />
+            <Suspense>
+              <ProfileCard />
+            </Suspense>
             <Divider mx="5%" width="90%" />
             <PersonalInfoSection />
             <Divider mx="5%" width="90%" />
@@ -71,61 +74,71 @@ const MobileProfilePage = () => {
   );
 };
 
+const meAtom = atomWithSuspenseQuery((get) => ({
+  queryKey: ["me"] as const,
+  queryFn: getMe,
+  networkMode: "offlineFirst",
+}));
+
 const ProfileCard = () => {
+  const [{ data }] = useAtom(meAtom);
+
   return (
-    <Pressable
-      px="$5"
-      py="$4"
-      $pressed-bg="$trueGray200"
-      $active-bg="$trueGray200"
-      onPress={() => console.log("pressed")}
-    >
-      <HStack justifyContent="space-between" alignItems="center">
-        <HStack space="md">
-          <Avatar bg="$blue600">
-            <AvatarFallbackText>Henry Stan</AvatarFallbackText>
-            <AvatarImage
-              source={{
-                uri: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60",
-              }}
-              alt="User"
-            />
-          </Avatar>
-          <VStack>
-            <Text>Henry Stan</Text>
-            <Link>
+    <Link href="(root)/profile/personal" asChild push>
+      <Pressable
+        px="$5"
+        py="$4"
+        $pressed-bg="$trueGray200"
+        $active-bg="$trueGray200"
+        onPress={() => console.log("pressed")}
+      >
+        <HStack justifyContent="space-between" alignItems="center">
+          <HStack space="md">
+            <Avatar bg="$blue600">
+              <AvatarFallbackText>Henry Stan</AvatarFallbackText>
+              <AvatarImage
+                source={{
+                  uri: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60",
+                }}
+                alt="User"
+              />
+            </Avatar>
+            <VStack>
+              <Text>Henry Stan</Text>
               <Text color="$textLight500" size="sm">
                 Show Profile
               </Text>
-            </Link>
-          </VStack>
+            </VStack>
+          </HStack>
+          <Icon as={ChevronRight} />
         </HStack>
-        <Icon as={ChevronRight} />
-      </HStack>
-    </Pressable>
+      </Pressable>
+    </Link>
   );
 };
 
 const PersonalInfoSection = () => {
   return (
     <VStack>
-      <Pressable
-        px="$5"
-        py="$3"
-        $pressed-bg="$trueGray200"
-        $active-bg="$trueGray200"
-        onPress={() => console.log("pressed")}
-      >
-        <HStack justifyContent="space-between">
-          <HStack space="md">
-            <Icon as={User} />
-            <Text>Personal Info</Text>
+      <Link href="(root)/profile/personal" asChild push>
+        <Pressable
+          px="$5"
+          py="$3"
+          $pressed-bg="$trueGray200"
+          $active-bg="$trueGray200"
+          onPress={() => console.log("pressed")}
+        >
+          <HStack justifyContent="space-between">
+            <HStack space="md">
+              <Icon as={User} />
+              <Text>Personal Info</Text>
+            </HStack>
+            <Pressable>
+              <Icon as={ChevronRight} />
+            </Pressable>
           </HStack>
-          <Pressable>
-            <Icon as={ChevronRight} />
-          </Pressable>
-        </HStack>
-      </Pressable>
+        </Pressable>
+      </Link>
       <Pressable
         px="$5"
         py="$3"
