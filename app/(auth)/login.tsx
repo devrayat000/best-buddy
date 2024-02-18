@@ -18,9 +18,13 @@ import {
   HStack,
   Link as GLink,
   LinkText,
+  FormControlError,
+  FormControlErrorIcon,
+  AlertCircleIcon,
+  FormControlErrorText,
+  SafeAreaView,
 } from "@gluestack-ui/themed";
 import { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, Stack, useRouter } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
 import { useAtom, useAtomValue, useSetAtom } from "jotai/react";
@@ -30,7 +34,7 @@ import { atomWithMutation, queryClientAtom } from "jotai-tanstack-query";
 import { AuthParams, AuthResponse, login } from "../../services/user";
 import { registerForPushNotificationsAsync } from "../../lib/notification";
 
-const loginAtom = atomWithMutation<AuthResponse, AuthParams>((get) => ({
+const loginAtom = atomWithMutation<AuthResponse, AuthParams, Error>((get) => ({
   mutationKey: ["login"],
   mutationFn: login,
   networkMode: "online",
@@ -56,7 +60,7 @@ export default function LoginScreen() {
     },
   });
   const isInitial = useAtomValue(initialAtom);
-  const [{ mutateAsync: loginAsync }] = useAtom(loginAtom);
+  const [{ mutateAsync: loginAsync, error: loginError }] = useAtom(loginAtom);
   const setSession = useSetAtom(sessionAtom);
 
   const toggleShow = () => setShow((showState) => !showState);
@@ -89,16 +93,21 @@ export default function LoginScreen() {
             Log In
           </Heading>
         </Center>
-        <FormControl p="$3" mt="$6">
+        <Box p="$3" mt="$6">
           <VStack space={"md"}>
-            <VStack>
+            <FormControl isInvalid={!!errors.username.message}>
               <FormControlLabel>
                 <FormControlLabelText>Student ID</FormControlLabelText>
               </FormControlLabel>
               <Controller
                 name="username"
                 control={control}
-                rules={{ required: true }}
+                rules={{
+                  required: {
+                    value: true,
+                    message: "Student ID is required!",
+                  },
+                }}
                 render={({ field: { onChange, value, onBlur } }) => (
                   <Input variant="rounded" p="$1">
                     <InputField
@@ -110,15 +119,26 @@ export default function LoginScreen() {
                   </Input>
                 )}
               />
-            </VStack>
-            <VStack>
+              <FormControlError>
+                <FormControlErrorIcon as={AlertCircleIcon} />
+                <FormControlErrorText>
+                  {errors.username.message}
+                </FormControlErrorText>
+              </FormControlError>
+            </FormControl>
+            <FormControl isInvalid={!!errors.password.message}>
               <FormControlLabel>
                 <FormControlLabelText>Password</FormControlLabelText>
               </FormControlLabel>
               <Controller
                 name="password"
                 control={control}
-                rules={{ required: true }}
+                rules={{
+                  required: {
+                    value: true,
+                    message: "Password is Required!",
+                  },
+                }}
                 render={({ field: { onChange, value, onBlur } }) => (
                   <Input variant="rounded" p="$1">
                     <InputField
@@ -137,7 +157,13 @@ export default function LoginScreen() {
                   </Input>
                 )}
               />
-            </VStack>
+              <FormControlError>
+                <FormControlErrorIcon as={AlertCircleIcon} />
+                <FormControlErrorText>
+                  {errors.password.message}
+                </FormControlErrorText>
+              </FormControlError>
+            </FormControl>
             <HStack justifyContent="space-between" alignItems="center">
               <Text>Do not have an account?</Text>
               <Link href="(auth)/register" replace asChild>
@@ -155,7 +181,7 @@ export default function LoginScreen() {
               <ButtonText>Log In</ButtonText>
             </Button>
           </VStack>
-        </FormControl>
+        </Box>
       </Box>
     </SafeAreaView>
   );

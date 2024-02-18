@@ -18,13 +18,16 @@ import {
   Text,
   Link as GLink,
   LinkText,
+  FormControlError,
+  FormControlErrorIcon,
+  AlertCircleIcon,
+  FormControlErrorText,
+  SafeAreaView,
 } from "@gluestack-ui/themed";
 import { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack, Link, useRouter } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
-import { useAtom, useSetAtom } from "jotai/react";
-import { sessionAtom } from "../../store/auth";
+import { useAtom } from "jotai/react";
 import { atomWithMutation, queryClientAtom } from "jotai-tanstack-query";
 import {
   type AuthParams,
@@ -84,16 +87,25 @@ export default function LoginScreen() {
             Create Account
           </Heading>
         </Center>
-        <FormControl p="$2" mt="$6">
+        <Box p="$2" mt="$6">
           <VStack space={"md"}>
-            <VStack>
+            <FormControl isInvalid={!!errors.username.message}>
               <FormControlLabel>
                 <FormControlLabelText>Student ID</FormControlLabelText>
               </FormControlLabel>
               <Controller
                 name="username"
                 control={control}
-                rules={{ required: true }}
+                rules={{
+                  required: {
+                    value: true,
+                    message: "Student ID is required!",
+                  },
+                  pattern: {
+                    value: /^2010\\d{3}$/,
+                    message: "Invalid Student ID!",
+                  },
+                }}
                 render={({ field: { onChange, value, onBlur } }) => (
                   <Input variant="rounded" p="$1">
                     <InputField
@@ -105,15 +117,34 @@ export default function LoginScreen() {
                   </Input>
                 )}
               />
-            </VStack>
-            <VStack>
+              <FormControlError>
+                <FormControlErrorIcon as={AlertCircleIcon} />
+                <FormControlErrorText>
+                  {errors.username.message}
+                </FormControlErrorText>
+              </FormControlError>
+            </FormControl>
+            <FormControl isInvalid={!!errors.password.message}>
               <FormControlLabel>
                 <FormControlLabelText>Password</FormControlLabelText>
               </FormControlLabel>
               <Controller
                 name="password"
                 control={control}
-                rules={{ required: true }}
+                rules={{
+                  required: {
+                    value: true,
+                    message: "Password is Required!",
+                  },
+                  minLength: {
+                    value: 8,
+                    message: "Password must have atleast 8 characters!",
+                  },
+                  maxLength: {
+                    value: 32,
+                    message: "Password cannot exceed 32 characters!",
+                  },
+                }}
                 render={({ field: { onChange, value, onBlur } }) => (
                   <Input variant="rounded" p="$1">
                     <InputField
@@ -132,7 +163,13 @@ export default function LoginScreen() {
                   </Input>
                 )}
               />
-            </VStack>
+              <FormControlError>
+                <FormControlErrorIcon as={AlertCircleIcon} />
+                <FormControlErrorText>
+                  {errors.password.message}
+                </FormControlErrorText>
+              </FormControlError>
+            </FormControl>
             <HStack justifyContent="space-between" alignItems="center">
               <Text>Already have an account?</Text>
               <Link href="(auth)/login" replace asChild>
@@ -150,7 +187,7 @@ export default function LoginScreen() {
               <ButtonText>Create Account</ButtonText>
             </Button>
           </VStack>
-        </FormControl>
+        </Box>
       </Box>
     </SafeAreaView>
   );

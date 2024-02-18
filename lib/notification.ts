@@ -2,6 +2,8 @@ import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import Constants from "expo-constants";
 import { Platform } from "react-native";
+import { router } from "expo-router";
+import dayjs from "dayjs";
 
 export async function createNotificationChannels() {
   if (Platform.OS === "android") {
@@ -86,4 +88,48 @@ export async function registerForPushNotificationsAsync() {
   }
 
   return token;
+}
+
+export const openAppOnNotificationRespond = async (response) => {
+  const trigger = response.notification.request.trigger;
+  if (
+    trigger.type === "push" &&
+    "channelId" in trigger &&
+    (trigger.channelId === "notice-added" ||
+      trigger.channelId === "class-test-added")
+  ) {
+    const content = response.notification.request.content;
+    const id = content.data.id;
+    router.navigate({
+      pathname: `(root)/${
+        trigger.channelId === "notice-added" ? "notice" : "class-test"
+      }/${id}`,
+      params: {
+        title: content.title,
+        description: content.body,
+      },
+    });
+  }
+};
+
+export async function scheduleClassTestNotification(
+  content: Notifications.NotificationContent
+) {
+  const dateTime = dayjs(content.data.datetime)
+    .subtract(1, "day")
+    .hour(12 + 9)
+    .minute(0)
+    .second(0)
+    .toDate();
+
+  await Notifications.scheduleNotificationAsync({
+    trigger: {
+      channelId: "class-test-coming",
+      date: dateTime,
+    },
+    content: {
+      ...content,
+      sound: "defaultCritical",
+    },
+  });
 }

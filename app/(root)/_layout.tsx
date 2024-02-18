@@ -40,14 +40,21 @@ export default function RootLayout() {
 
   useEffect(() => {
     receiveListener.current = Notifications.addNotificationReceivedListener(
-      (notification) => {
+      async (notification) => {
         const trigger = notification.request.trigger;
         if (trigger.type === "push" && "channelId" in trigger) {
           if (trigger.channelId === "notice-added") {
-            client.invalidateQueries({ queryKey: ["notices"] });
+            await client.invalidateQueries({ queryKey: ["notices"] });
           }
           if (trigger.channelId === "class-test-added") {
-            client.invalidateQueries({ queryKey: ["class-tests"] });
+            await client.invalidateQueries({ queryKey: ["class-tests"] });
+            await Notifications.scheduleNotificationAsync({
+              trigger: {
+                channelId: "class-test-coming",
+                date: new Date(),
+              },
+              content: notification.request.content,
+            });
           }
         }
       }
@@ -66,7 +73,6 @@ export default function RootLayout() {
           router.navigate({
             pathname: `(root)/notice/${id}`,
             params: {
-              id,
               title: content.title,
               description: content.body,
             },
