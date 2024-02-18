@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Redirect, Tabs, router, usePathname } from "expo-router";
+import { Redirect, Tabs, usePathname } from "expo-router";
 import { MaterialIcons, Fontisto, AntDesign } from "@expo/vector-icons";
 import { Platform } from "react-native";
 import { useAtomValue, useSetAtom } from "jotai/react";
@@ -7,9 +7,8 @@ import { SafeAreaView } from "@gluestack-ui/themed";
 import * as Notifications from "expo-notifications";
 
 import { logoutAlertAtom, sessionAtom } from "../../store/auth";
-import { generateExpoPushToken } from "../../lib/notification";
 import useTokenChanged from "../../hooks/use-token-changed";
-import { useQueryClient } from "@tanstack/react-query";
+import useNotificationHandler from "../../hooks/use-notification-handler";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -24,10 +23,6 @@ export default function RootLayout() {
   const pathname = usePathname();
   const prevPath = useRef<string>(null);
   const setOpenLogoutAlertDialog = useSetAtom(logoutAlertAtom);
-  const client = useQueryClient();
-
-  const receiveListener = useRef<Notifications.Subscription>();
-  const responseListener = useRef<Notifications.Subscription>();
 
   useTokenChanged();
 
@@ -38,53 +33,7 @@ export default function RootLayout() {
     prevPath.current = pathname;
   }, [pathname]);
 
-  useEffect(() => {
-    receiveListener.current = Notifications.addNotificationReceivedListener(
-      async (notification) => {
-        const trigger = notification.request.trigger;
-        if (trigger.type === "push" && "channelId" in trigger) {
-          if (trigger.channelId === "notice-added") {
-            await client.invalidateQueries({ queryKey: ["notices"] });
-          }
-          if (trigger.channelId === "class-test-added") {
-            await client.invalidateQueries({ queryKey: ["class-tests"] });
-            await Notifications.scheduleNotificationAsync({
-              trigger: {
-                channelId: "class-test-coming",
-                date: new Date(),
-              },
-              content: notification.request.content,
-            });
-          }
-        }
-      }
-    );
-
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        const trigger = response.notification.request.trigger;
-        if (
-          trigger.type === "push" &&
-          "channelId" in trigger &&
-          trigger.channelId === "notice-added"
-        ) {
-          const content = response.notification.request.content;
-          const id = content.data.id;
-          router.navigate({
-            pathname: `(root)/notice/${id}`,
-            params: {
-              title: content.title,
-              description: content.body,
-            },
-          });
-        }
-      });
-
-    return () => {
-      Notifications.removeNotificationSubscription(responseListener.current);
-      Notifications.removeNotificationSubscription(receiveListener.current);
-    };
-  }, []);
+  useNotificationHandler();
 
   if (!session) {
     return <Redirect href="(auth)/get-started" />;

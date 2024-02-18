@@ -90,13 +90,16 @@ export async function registerForPushNotificationsAsync() {
   return token;
 }
 
-export const openAppOnNotificationRespond = async (response) => {
+export const openAppOnNotificationRespond = async (
+  response: Notifications.NotificationResponse
+) => {
   const trigger = response.notification.request.trigger;
   if (
     trigger.type === "push" &&
     "channelId" in trigger &&
     (trigger.channelId === "notice-added" ||
-      trigger.channelId === "class-test-added")
+      trigger.channelId === "class-test-added" ||
+      trigger.channelId === "class-test-coming")
   ) {
     const content = response.notification.request.content;
     const id = content.data.id;
@@ -117,12 +120,13 @@ export async function scheduleClassTestNotification(
 ) {
   const dateTime = dayjs(content.data.datetime)
     .subtract(1, "day")
-    .hour(12 + 9)
     .minute(0)
     .second(0)
+    .millisecond(0)
+    .hour(-3)
     .toDate();
 
-  await Notifications.scheduleNotificationAsync({
+  return await Notifications.scheduleNotificationAsync({
     trigger: {
       channelId: "class-test-coming",
       date: dateTime,
