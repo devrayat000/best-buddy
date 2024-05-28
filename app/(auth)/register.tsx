@@ -1,34 +1,12 @@
-import {
-  Box,
-  Button,
-  Input,
-  FormControl,
-  VStack,
-  InputField,
-  InputSlot,
-  InputIcon,
-  ButtonText,
-  FormControlLabel,
-  FormControlLabelText,
-  EyeIcon,
-  EyeOffIcon,
-  Center,
-  Heading,
-  HStack,
-  Text,
-  Link as GLink,
-  LinkText,
-  FormControlError,
-  FormControlErrorIcon,
-  AlertCircleIcon,
-  FormControlErrorText,
-  SafeAreaView,
-} from "@gluestack-ui/themed";
 import { useState } from "react";
 import { Stack, Link, useRouter } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
 import { useAtom } from "jotai/react";
 import { atomWithMutation, queryClientAtom } from "jotai-tanstack-query";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, View } from "react-native";
+import { Button, HelperText, Text, TextInput } from "react-native-paper";
+
 import {
   type AuthParams,
   type AuthResponse,
@@ -80,19 +58,14 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView>
-      <Stack.Screen options={{ headerTitle: "Log In", headerShown: false }} />
-      <Box>
-        <Center>
-          <Heading bold size="3xl">
-            Create Account
-          </Heading>
-        </Center>
-        <Box p="$2" mt="$6">
-          <VStack space={"md"}>
-            <FormControl isInvalid={!!errors.username.message}>
-              <FormControlLabel>
-                <FormControlLabelText>Student ID</FormControlLabelText>
-              </FormControlLabel>
+      <Stack.Screen options={{ headerTitle: "Register", headerShown: false }} />
+      <View>
+        <View style={[styles.center]}>
+          <Text variant="headlineMedium">Create Account</Text>
+        </View>
+        <View style={{ padding: 12, marginTop: 24 }}>
+          <View style={[styles.vstack, { gap: 8 }]}>
+            <View>
               <Controller
                 name="username"
                 control={control}
@@ -101,33 +74,23 @@ export default function LoginScreen() {
                     value: true,
                     message: "Student ID is required!",
                   },
-                  pattern: {
-                    value: /^2010\\d{3}$/,
-                    message: "Invalid Student ID!",
-                  },
                 }}
                 render={({ field: { onChange, value, onBlur } }) => (
-                  <Input variant="rounded" p="$1">
-                    <InputField
-                      placeholder="2010***"
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                      value={value}
-                    />
-                  </Input>
+                  <TextInput
+                    placeholder="2010***"
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    value={value}
+                    label={"Student ID"}
+                    keyboardType="number-pad"
+                  />
                 )}
               />
-              <FormControlError>
-                <FormControlErrorIcon as={AlertCircleIcon} />
-                <FormControlErrorText>
-                  {errors.username.message}
-                </FormControlErrorText>
-              </FormControlError>
-            </FormControl>
-            <FormControl isInvalid={!!errors.password.message}>
-              <FormControlLabel>
-                <FormControlLabelText>Password</FormControlLabelText>
-              </FormControlLabel>
+              <HelperText type="error" visible={!!errors.username?.message}>
+                {errors.username?.message}
+              </HelperText>
+            </View>
+            <View>
               <Controller
                 name="password"
                 control={control}
@@ -136,59 +99,62 @@ export default function LoginScreen() {
                     value: true,
                     message: "Password is Required!",
                   },
-                  minLength: {
-                    value: 8,
-                    message: "Password must have atleast 8 characters!",
-                  },
-                  maxLength: {
-                    value: 32,
-                    message: "Password cannot exceed 32 characters!",
-                  },
                 }}
                 render={({ field: { onChange, value, onBlur } }) => (
-                  <Input variant="rounded" p="$1">
-                    <InputField
-                      type={show ? "text" : "password"}
-                      placeholder="********"
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                      value={value}
-                    />
-                    <InputSlot pr="$3" onPress={toggleShow}>
-                      <InputIcon
-                        as={show ? EyeIcon : EyeOffIcon}
-                        color="$darkBlue500"
-                      />
-                    </InputSlot>
-                  </Input>
+                  <TextInput
+                    // type={show ? "text" : "password"}
+                    placeholder="********"
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    value={value}
+                  />
                 )}
               />
-              <FormControlError>
-                <FormControlErrorIcon as={AlertCircleIcon} />
-                <FormControlErrorText>
-                  {errors.password.message}
-                </FormControlErrorText>
-              </FormControlError>
-            </FormControl>
-            <HStack justifyContent="space-between" alignItems="center">
+              <HelperText type="error" visible={!!errors.password?.message}>
+                {errors.password?.message}
+              </HelperText>
+            </View>
+            <View style={styles.hstack}>
               <Text>Already have an account?</Text>
-              <Link href="(auth)/login" replace asChild>
-                <GLink>
-                  <LinkText>Log In!</LinkText>
-                </GLink>
+              <Link href="(auth)/login" replace>
+                Log In!
               </Link>
-            </HStack>
-            <Button
-              variant="solid"
-              mt="$2"
-              onPress={register}
-              isDisabled={loading}
-            >
-              <ButtonText>Create Account</ButtonText>
+            </View>
+            <Button onPress={register} disabled={loading}>
+              Create Account
             </Button>
-          </VStack>
-        </Box>
-      </Box>
+          </View>
+        </View>
+      </View>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  center: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  vstack: {
+    flex: 1,
+    alignItems: "stretch",
+  },
+  hstack: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  header: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+  },
+});

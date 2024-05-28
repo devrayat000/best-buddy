@@ -1,4 +1,4 @@
-rootProject.name = 'best-buddy'
+rootProject.name = 'Study Buddy'
 
 dependencyResolutionManagement {
   versionCatalogs {

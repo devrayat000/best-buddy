@@ -1,28 +1,17 @@
-import {
-  Text,
-  Box,
-  SafeAreaView,
-  Center,
-  HStack,
-  VStack,
-  Fab,
-  FabIcon,
-  FlatList,
-  useToken,
-} from "@gluestack-ui/themed";
 import { useAtom } from "jotai";
 import { atomWithSuspenseInfiniteQuery } from "jotai-tanstack-query";
 import { Suspense } from "react";
-import { ActivityIndicator, TouchableNativeFeedback } from "react-native";
+import { ActivityIndicator, TouchableNativeFeedback, View } from "react-native";
 import FeatherIcon from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 
 import { ClassTest, getClassTests } from "../../services/class-test";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ClassTestsScreen() {
   return (
-    <SafeAreaView flex={1}>
-      <Box flex={1}>
+    <SafeAreaView style={{ flex: 1 }}>
+      {/* <Box flex={1}>
         <Suspense
           fallback={
             <Center>
@@ -32,7 +21,7 @@ export default function ClassTestsScreen() {
         >
           <FetchClassTests />
         </Suspense>
-      </Box>
+      </Box> */}
     </SafeAreaView>
   );
 }
@@ -50,14 +39,14 @@ const classTestsAtom = atomWithSuspenseInfiniteQuery(() => ({
 function FetchClassTests() {
   const [{ data, refetch, isRefetching }] = useAtom(classTestsAtom);
   const router = useRouter();
-  const cardRadius = useToken("radii", "lg");
+  // const cardRadius = useToken("radii", "lg");
 
   const refresh = () => refetch({ throwOnError: true });
   const flatData = data.pages.flatMap((arr) => arr.data);
 
   return (
-    <Box flex={1}>
-      {!flatData.length ? (
+    <View style={{ flex: 1 }}>
+      {/* {!flatData.length ? (
         <Center mt="$20">
           <Text size="lg" fontWeight="$medium">
             Nothing in the database 🤷🏻‍♂️
@@ -110,7 +99,7 @@ function FetchClassTests() {
       )}
       <Fab size="lg" position="absolute" bottom="$20" onPress={refresh}>
         <FabIcon as={(props) => <FeatherIcon name="refresh-cw" {...props} />} />
-      </Fab>
-    </Box>
+      </Fab> */}
+    </View>
   );
 }

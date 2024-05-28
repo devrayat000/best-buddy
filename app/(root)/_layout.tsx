@@ -3,25 +3,29 @@ import { Redirect, Tabs, usePathname } from "expo-router";
 import { MaterialIcons, Fontisto, AntDesign } from "@expo/vector-icons";
 import { Platform } from "react-native";
 import { useAtomValue, useSetAtom } from "jotai/react";
-import { SafeAreaView } from "@gluestack-ui/themed";
-import * as Notifications from "expo-notifications";
+// import * as Notifications from "expo-notifications";
 
 import { logoutAlertAtom, sessionAtom } from "../../store/auth";
 import useTokenChanged from "../../hooks/use-token-changed";
-import useNotificationHandler from "../../hooks/use-notification-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
+// import useNotificationHandler from "../../hooks/use-notification-handler";
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
+// Notifications.setNotificationHandler({
+//   handleNotification: async () => ({
+//     shouldShowAlert: true,
+//     shouldPlaySound: true,
+//     shouldSetBadge: true,
+//   }),
+// });
+
+export const unstable_settings = {
+  initialRouteName: "notices",
+};
 
 export default function RootLayout() {
   const session = useAtomValue(sessionAtom);
   const pathname = usePathname();
-  const prevPath = useRef<string>(null);
+  const prevPath = useRef<string>();
   const setOpenLogoutAlertDialog = useSetAtom(logoutAlertAtom);
 
   useTokenChanged();
@@ -33,16 +37,16 @@ export default function RootLayout() {
     prevPath.current = pathname;
   }, [pathname]);
 
-  useNotificationHandler();
+  // useNotificationHandler();
 
-  if (!session) {
+  if (true) {
     return <Redirect href="(auth)/get-started" />;
   }
 
   return (
-    <SafeAreaView flex={1}>
+    <SafeAreaView style={{ flex: 1 }}>
       <Tabs
-        initialRouteName="index"
+        initialRouteName="notices"
         screenOptions={{
           tabBarStyle: {
             marginHorizontal: 20,
@@ -56,9 +60,9 @@ export default function RootLayout() {
         }}
       >
         <Tabs.Screen
-          name="index"
+          name="notices"
           options={{
-            href: "/",
+            // href: "/notices",
             tabBarIcon: (props) => (
               <MaterialIcons
                 name="notifications"
@@ -75,7 +79,7 @@ export default function RootLayout() {
         <Tabs.Screen
           name="class-tests"
           options={{
-            href: "/class-tests",
+            // href: "/class-tests",
             tabBarIcon: (props) => (
               <Fontisto
                 name="test-tube"
@@ -91,7 +95,7 @@ export default function RootLayout() {
         <Tabs.Screen
           name="profile"
           options={{
-            href: "/profile",
+            // href: "/profile",
             tabBarIcon: (props) => (
               <AntDesign name="user" color={props.color} size={props.size} />
             ),

@@ -2,22 +2,6 @@ import { Suspense, useEffect } from "react";
 import { Link, router } from "expo-router";
 import { useAtom, useSetAtom } from "jotai";
 import {
-  HStack,
-  Text,
-  Heading,
-  Avatar,
-  VStack,
-  Icon,
-  Pressable,
-  Divider,
-  Button,
-  ButtonText,
-  ScrollView,
-  AvatarFallbackText,
-  AvatarImage,
-  SafeAreaView,
-} from "@gluestack-ui/themed";
-import {
   Blinds,
   ChevronRight,
   Headphones,
@@ -31,6 +15,9 @@ import LogoutAlertDialog from "../../../components/LogoutAlertDialog";
 import { logoutAlertAtom, sessionAtom } from "../../../store/auth";
 import { atomWithSuspenseQuery } from "jotai-tanstack-query";
 import { getMe } from "../../../services/user";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView, View } from "react-native";
+import { TouchableRipple } from "react-native-paper";
 
 const MobileProfilePage = () => {
   const setOpenLogoutAlertDialog = useSetAtom(logoutAlertAtom);
@@ -45,9 +32,9 @@ const MobileProfilePage = () => {
 
   return (
     <>
-      <SafeAreaView marginTop="$8">
+      <SafeAreaView>
         <ScrollView>
-          <VStack flex={1}>
+          {/* <VStack flex={1}>
             <Heading px="$5">Profile</Heading>
             <Suspense>
               <ProfileCard />
@@ -66,7 +53,7 @@ const MobileProfilePage = () => {
             >
               <ButtonText>Logout</ButtonText>
             </Button>
-          </VStack>
+          </VStack> */}
         </ScrollView>
       </SafeAreaView>
       <LogoutAlertDialog />
@@ -84,8 +71,8 @@ const ProfileCard = () => {
   const [{ data }] = useAtom(meAtom);
 
   return (
-    <Link href="(root)/profile/personal" asChild push>
-      <Pressable
+    <Link href="(root)/profile/personal" push>
+      {/* <TouchableRipple
         px="$5"
         py="$4"
         $pressed-bg="$trueGray200"
@@ -112,22 +99,16 @@ const ProfileCard = () => {
           </HStack>
           <Icon as={ChevronRight} />
         </HStack>
-      </Pressable>
+      </TouchableRipple> */}
     </Link>
   );
 };
 
 const PersonalInfoSection = () => {
   return (
-    <VStack>
-      <Link href="(root)/profile/personal" asChild push>
-        <Pressable
-          px="$5"
-          py="$3"
-          $pressed-bg="$trueGray200"
-          $active-bg="$trueGray200"
-          onPress={() => console.log("pressed")}
-        >
+    <View>
+      {/* <Link href="(root)/profile/personal" push>
+        <TouchableRipple onPress={() => console.log("pressed")}>
           <HStack justifyContent="space-between">
             <HStack space="md">
               <Icon as={User} />
@@ -137,7 +118,7 @@ const PersonalInfoSection = () => {
               <Icon as={ChevronRight} />
             </Pressable>
           </HStack>
-        </Pressable>
+        </TouchableRipple>
       </Link>
       <Pressable
         px="$5"
@@ -155,15 +136,15 @@ const PersonalInfoSection = () => {
             <Icon as={ChevronRight} />
           </Pressable>
         </HStack>
-      </Pressable>
-    </VStack>
+      </Pressable> */}
+    </View>
   );
 };
 
 const SupportSection = () => {
   return (
-    <VStack mt="$1.5">
-      <Heading px="$5">Support</Heading>
+    <View>
+      {/* <Heading px="$5">Support</Heading>
       <VStack mt="$2">
         <Pressable
           px="$5"
@@ -199,8 +180,8 @@ const SupportSection = () => {
             </Pressable>
           </HStack>
         </Pressable>
-      </VStack>
-    </VStack>
+      </VStack> */}
+    </View>
   );
 };
 

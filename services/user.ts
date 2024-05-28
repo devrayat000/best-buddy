@@ -53,13 +53,14 @@ export const register: MutationFunction<AuthResponse, AuthParams> = async (
 export type AuthUpdateParams = {
   id: string | number;
   expoToken?: string;
+  accessToken: string;
 };
 
 export const updateUser: MutationFunction<User, AuthUpdateParams> = async ({
   id,
   expoToken,
+  accessToken,
 }) => {
-  const accessToken = await constants.accessToken;
   const res = await fetch(`${constants.apiUrl}/api/users/${id}`, {
     method: "PUT",
     headers: {

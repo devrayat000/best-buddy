@@ -1,38 +1,23 @@
-import {
-  Box,
-  Button,
-  Input,
-  FormControl,
-  VStack,
-  InputField,
-  InputSlot,
-  InputIcon,
-  ButtonText,
-  FormControlLabel,
-  FormControlLabelText,
-  EyeIcon,
-  EyeOffIcon,
-  Center,
-  Heading,
-  Text,
-  HStack,
-  Link as GLink,
-  LinkText,
-  FormControlError,
-  FormControlErrorIcon,
-  AlertCircleIcon,
-  FormControlErrorText,
-  SafeAreaView,
-} from "@gluestack-ui/themed";
 import { useState } from "react";
 import { Link, Stack, useRouter } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
 import { useAtom, useAtomValue, useSetAtom } from "jotai/react";
-
-import { initialAtom, sessionAtom } from "../../store/auth";
+import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import { atomWithMutation, queryClientAtom } from "jotai-tanstack-query";
-import { AuthParams, AuthResponse, login } from "../../services/user";
-import { registerForPushNotificationsAsync } from "../../lib/notification";
+import { Button, HelperText, Text, TextInput } from "react-native-paper";
+
+import { initialAtom, sessionAtom } from "@/store/auth";
+import { AuthParams, AuthResponse, login } from "@/services/user";
+import { registerForPushNotificationsAsync } from "@/lib/notification";
+import LoginAnimation from "@/components/auth/LoginAnimation";
 
 const loginAtom = atomWithMutation<AuthResponse, AuthParams, Error>((get) => ({
   mutationKey: ["login"],
@@ -85,104 +70,126 @@ export default function LoginScreen() {
   });
 
   return (
-    <SafeAreaView>
-      <Stack.Screen options={{ headerTitle: "Log In", headerShown: false }} />
-      <Box>
-        <Center>
-          <Heading bold size="3xl">
-            Log In
-          </Heading>
-        </Center>
-        <Box p="$3" mt="$6">
-          <VStack space={"md"}>
-            <FormControl isInvalid={!!errors.username.message}>
-              <FormControlLabel>
-                <FormControlLabelText>Student ID</FormControlLabelText>
-              </FormControlLabel>
-              <Controller
-                name="username"
-                control={control}
-                rules={{
-                  required: {
-                    value: true,
-                    message: "Student ID is required!",
-                  },
-                }}
-                render={({ field: { onChange, value, onBlur } }) => (
-                  <Input variant="rounded" p="$1">
-                    <InputField
-                      placeholder="2010***"
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                      value={value}
-                    />
-                  </Input>
-                )}
-              />
-              <FormControlError>
-                <FormControlErrorIcon as={AlertCircleIcon} />
-                <FormControlErrorText>
-                  {errors.username.message}
-                </FormControlErrorText>
-              </FormControlError>
-            </FormControl>
-            <FormControl isInvalid={!!errors.password.message}>
-              <FormControlLabel>
-                <FormControlLabelText>Password</FormControlLabelText>
-              </FormControlLabel>
-              <Controller
-                name="password"
-                control={control}
-                rules={{
-                  required: {
-                    value: true,
-                    message: "Password is Required!",
-                  },
-                }}
-                render={({ field: { onChange, value, onBlur } }) => (
-                  <Input variant="rounded" p="$1">
-                    <InputField
-                      type={show ? "text" : "password"}
-                      placeholder="********"
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                      value={value}
-                    />
-                    <InputSlot pr="$3" onPress={toggleShow}>
-                      <InputIcon
-                        as={show ? EyeIcon : EyeOffIcon}
-                        color="$darkBlue500"
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.select({ ios: "padding", android: "padding" })}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <SafeAreaView style={styles.container}>
+          <Stack.Screen
+            options={{ headerTitle: "Log In", headerShown: false }}
+          />
+          <View style={styles.container}>
+            <View style={styles.center}>
+              <Text variant="headlineMedium">Log In</Text>
+            </View>
+            <LoginAnimation />
+            <View style={{ paddingHorizontal: 12 }}>
+              <View style={[styles.vstack, { gap: 8 }]}>
+                <View>
+                  <Controller
+                    name="username"
+                    control={control}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: "Student ID is required!",
+                      },
+                    }}
+                    render={({ field: { onChange, value, onBlur } }) => (
+                      <TextInput
+                        placeholder="2010***"
+                        label={"Student ID"}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        keyboardType="number-pad"
+                        mode="outlined"
+                        outlineStyle={styles.input}
+                        onSubmitEditing={Keyboard.dismiss}
                       />
-                    </InputSlot>
-                  </Input>
-                )}
-              />
-              <FormControlError>
-                <FormControlErrorIcon as={AlertCircleIcon} />
-                <FormControlErrorText>
-                  {errors.password.message}
-                </FormControlErrorText>
-              </FormControlError>
-            </FormControl>
-            <HStack justifyContent="space-between" alignItems="center">
-              <Text>Do not have an account?</Text>
-              <Link href="(auth)/register" replace asChild>
-                <GLink>
-                  <LinkText>Register!</LinkText>
-                </GLink>
-              </Link>
-            </HStack>
-            <Button
-              variant="solid"
-              mt="$2"
-              onPress={login}
-              isDisabled={loading}
-            >
-              <ButtonText>Log In</ButtonText>
-            </Button>
-          </VStack>
-        </Box>
-      </Box>
-    </SafeAreaView>
+                    )}
+                  />
+                  <HelperText type="error" visible={!!errors.username?.message}>
+                    {errors.username?.message}
+                  </HelperText>
+                </View>
+                <View>
+                  <Controller
+                    name="password"
+                    control={control}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: "Password is Required!",
+                      },
+                    }}
+                    render={({ field: { onChange, value, onBlur } }) => (
+                      <TextInput
+                        placeholder="********"
+                        label={"Password"}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        mode="outlined"
+                        outlineStyle={styles.input}
+                        onSubmitEditing={Keyboard.dismiss}
+                        secureTextEntry={!show}
+                        right={
+                          <TextInput.Icon
+                            icon={show ? "eye-off" : "eye"}
+                            onPress={toggleShow}
+                          />
+                        }
+                      />
+                    )}
+                  />
+                  <HelperText type="error" visible={!!errors.password?.message}>
+                    {errors.password?.message}
+                  </HelperText>
+                </View>
+                <View style={styles.hstack}>
+                  <Text>Do not have an account?</Text>
+                  <Link href="(auth)/register" replace>
+                    Register!
+                  </Link>
+                </View>
+                <Button mode="contained" onPress={login} disabled={loading}>
+                  Log In
+                </Button>
+              </View>
+            </View>
+          </View>
+        </SafeAreaView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  center: {
+    // flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  vstack: {
+    // flex: 1,
+    flexDirection: "column",
+    alignItems: "stretch",
+  },
+  hstack: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  header: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  input: {
+    borderRadius: 24,
+  },
+});

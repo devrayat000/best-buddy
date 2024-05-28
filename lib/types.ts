@@ -1,5 +1,5 @@
 export type ListResponse<Data = {}> = {
-  data: Data[];
+  data: ResponseData<Data>[];
   meta: {
     pagination: {
       page: number;

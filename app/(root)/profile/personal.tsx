@@ -1,17 +1,11 @@
-import {
-  Heading,
-  SafeAreaView,
-  ScrollView,
-  VStack,
-} from "@gluestack-ui/themed";
+import { ScrollView, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function PersonalInfoPage() {
   return (
-    <SafeAreaView marginTop="$8">
+    <SafeAreaView>
       <ScrollView>
-        <VStack flex={1}>
-          <Heading px="$5">Personal Info</Heading>
-        </VStack>
+        <View>{/* <Heading px="$5">Personal Info</Heading> */}</View>
       </ScrollView>
     </SafeAreaView>
   );

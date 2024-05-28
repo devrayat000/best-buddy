@@ -1,11 +1,14 @@
-import { SafeAreaView, VStack, Button, ButtonText } from "@gluestack-ui/themed";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useAtom, useSetAtom } from "jotai";
+import { atomWithMutation } from "jotai-tanstack-query";
 
 import { initialAtom, sessionAtom } from "../../store/auth";
 import { registerForPushNotificationsAsync } from "../../lib/notification";
-import { atomWithMutation } from "jotai-tanstack-query";
-import { updateUser } from "../../services/user";
+import { AuthUpdateParams, updateUser } from "../../services/user";
+import { User } from "@/lib/types";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, View } from "react-native";
+import { Button } from "react-native-paper";
 
 type Params = {
   jwt: string;
@@ -13,9 +16,24 @@ type Params = {
   username: string;
 };
 
-const updateUserAtom = atomWithMutation((get) => ({
+const updateUserAtom = atomWithMutation<
+  User,
+  Omit<AuthUpdateParams, "accessToken">,
+  unknown,
+  unknown
+>((get) => ({
   mutationKey: ["update_user"],
-  mutationFn: updateUser,
+  mutationFn: async (variables) => {
+    const accessToken = (await get(sessionAtom))?.jwt;
+    if (!accessToken) {
+      throw new Error("No access token found");
+    }
+
+    return await updateUser({
+      accessToken,
+      ...variables,
+    });
+  },
 }));
 
 export default function GrantAccessScreen() {
@@ -27,12 +45,12 @@ export default function GrantAccessScreen() {
   async function grantAccess() {
     const token = await registerForPushNotificationsAsync();
     await setInitial(false);
-    await updateUserAsync({ id: params.id, expoToken: token });
+    await updateUserAsync({ id: params.id!, expoToken: token });
     await setSession({
-      jwt: params.jwt,
+      jwt: params.jwt!,
       user: {
-        id: +params.id,
-        username: params.username,
+        id: +params.id!,
+        username: params.username!,
         email: `${params.username}@me.buet.ac.bd`,
         expoToken: token,
       },
@@ -40,13 +58,40 @@ export default function GrantAccessScreen() {
   }
 
   return (
-    <SafeAreaView flex={1}>
+    <SafeAreaView style={styles.container}>
       <Stack.Screen options={{ headerShown: false }} />
-      <VStack flex={1} justifyContent="flex-end">
-        <Button borderRadius="$full" w="$full" onPress={grantAccess}>
-          <ButtonText>Get Started</ButtonText>
-        </Button>
-      </VStack>
+      <View style={[styles.vstack, { justifyContent: "flex-end" }]}>
+        <Button onPress={grantAccess}>Get Started</Button>
+      </View>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  center: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  vstack: {
+    flex: 1,
+    alignItems: "stretch",
+  },
+  hstack: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  header: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+  },
+});
