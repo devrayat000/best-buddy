@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, Stack, useRouter } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
-import { useAtom, useAtomValue, useSetAtom } from "jotai/react";
+import { useAtomValue, useSetAtom } from "jotai/react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Keyboard,
@@ -11,27 +11,15 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { atomWithMutation, queryClientAtom } from "jotai-tanstack-query";
 import { Button, HelperText, Text, TextInput } from "react-native-paper";
 
 import { initialAtom, sessionAtom } from "@/store/auth";
-import { AuthParams, AuthResponse, login } from "@/services/user";
-import { registerForPushNotificationsAsync } from "@/lib/notification";
 import LoginAnimation from "@/components/auth/LoginAnimation";
-
-const loginAtom = atomWithMutation<AuthResponse, AuthParams, Error>((get) => ({
-  mutationKey: ["login"],
-  mutationFn: login,
-  networkMode: "online",
-  onSuccess() {
-    const client = get(queryClientAtom);
-    return client.invalidateQueries({ queryKey: ["me"] });
-  },
-}));
+import { useMutation } from "@apollo/client";
+import { AUTHENTICATE_USER_WITH_PASSWORD } from "@/documents/auth";
 
 export default function LoginScreen() {
   const [show, setShow] = useState(false);
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const {
@@ -45,28 +33,48 @@ export default function LoginScreen() {
     },
   });
   const isInitial = useAtomValue(initialAtom);
-  const [{ mutateAsync: loginAsync, error: loginError }] = useAtom(loginAtom);
+  // const [{ mutateAsync: loginAsync, error: loginError }] = useAtom(loginAtom);
   const setSession = useSetAtom(sessionAtom);
+  const [loginAsync, { loading }] = useMutation(
+    AUTHENTICATE_USER_WITH_PASSWORD,
+    {}
+  );
 
   const toggleShow = () => setShow((showState) => !showState);
 
   const login = handleSubmit(async (data) => {
-    setLoading(true);
-    const session = await loginAsync(data);
-    setLoading(false);
-    if (isInitial) {
-      router.replace({
-        pathname: "(auth)/grant-access",
-        params: {
-          jwt: session.jwt,
-          id: session.user.id.toString(),
-          username: session.user.username,
-        },
-      });
-    } else {
-      await registerForPushNotificationsAsync();
-      await setSession(session);
-    }
+    await loginAsync({
+      variables: {
+        email: `${data.username}@me.buet.ac.bd`,
+        password: data.password,
+      },
+      async onCompleted(data, clientOptions) {
+        if (
+          data.authenticateUserWithPassword?.__typename !==
+          "UserAuthenticationWithPasswordSuccess"
+        )
+          return;
+
+        const { item, sessionToken } = data.authenticateUserWithPassword;
+
+        if (isInitial) {
+          router.replace({
+            pathname: "(auth)/grant-access",
+            params: {
+              jwt: sessionToken,
+              id: item.id.toString(),
+              email: item.email,
+            },
+          });
+        } else {
+          // await registerForPushNotificationsAsync();
+          await setSession({
+            jwt: sessionToken,
+            user: item,
+          });
+        }
+      },
+    });
   });
 
   return (

@@ -7,14 +7,33 @@ type Session = AuthResponse;
 
 const storage = createJSONStorage<any>(() => AsyncStorage);
 
-export const sessionAtom = atomWithStorage<Session | null>(
-  "sexxion",
+export const tokenAtom = atomWithStorage<string | null>("token", null, storage);
+
+export const userAtom = atomWithStorage<AuthResponse["user"] | null>(
+  "user",
   null,
   storage
-  // {
-  //   getOnInit: true,
-  // }
 );
+
+export const sessionAtom = atom(
+  async (get) => {
+    const [token, user] = await Promise.all([get(tokenAtom), get(userAtom)]);
+    return !token || !user ? null : { jwt: token, user: user };
+  },
+  async (_, set, { jwt, user }: Session) => {
+    set(tokenAtom, jwt);
+    set(userAtom, user);
+  }
+);
+
+// export const sessionAtom = atomWithStorage<Session | null>(
+//   "sexxion",
+//   null,
+//   storage
+//   // {
+//   //   getOnInit: true,
+//   // }
+// );
 
 export const loadableSession = loadable(sessionAtom);
 

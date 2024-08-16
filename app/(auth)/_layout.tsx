@@ -5,9 +5,9 @@ import { Redirect, Slot } from "expo-router";
 export default function AuthLayout() {
   const session = useAtomValue(sessionAtom);
 
-  // if (!!session) {
-  //   return <Redirect href="(root)/" />;
-  // }
+  if (!!session) {
+    return <Redirect href="(root)/" />;
+  }
 
   return <Slot />;
 }

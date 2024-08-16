@@ -1,51 +1,38 @@
 import { useAtom, useSetAtom } from "jotai";
-import { logoutAlertAtom, sessionAtom } from "../store/auth";
+import { logoutAlertAtom, tokenAtom } from "../store/auth";
 import { unregisterForPushNotificationsAsync } from "../lib/notification";
+import { Dialog, Portal, Button, Text } from "react-native-paper";
 
 const LogoutModal = () => {
   const [openLogoutModal, setOpenLogoutModal] = useAtom(logoutAlertAtom);
-  const setSession = useSetAtom(sessionAtom);
+  const setToken = useSetAtom(tokenAtom);
 
   const close = () => setOpenLogoutModal(false);
-  console.log(openLogoutModal);
-
   async function logout() {
     await unregisterForPushNotificationsAsync();
     close();
-    await setSession(null);
+    await setToken(null);
   }
-  return null;
 
-  // return (
-  //   <Modal
-  //     isOpen={openLogoutModal}
-  //     onClose={close}
-  //     useRNModal
-  //     avoidKeyboard
-  //     size="md"
-  //   >
-  //     <ModalBackdrop />
-  //     <ModalContent>
-  //       <ModalHeader>
-  //         <Heading>Logout</Heading>
-  //         <ModalCloseButton>
-  //           <Icon as={CloseIcon} />
-  //         </ModalCloseButton>
-  //       </ModalHeader>
-  //       <ModalBody>
-  //         <Text>Are you sure, you want to logout?</Text>
-  //       </ModalBody>
-  //       <ModalFooter>
-  //         <Button variant="outline" action="secondary" onPress={close} mr="$3">
-  //           <ButtonText>Cancel</ButtonText>
-  //         </Button>
-  //         <Button action="negative" onPress={logout}>
-  //           <ButtonText>Logout</ButtonText>
-  //         </Button>
-  //       </ModalFooter>
-  //     </ModalContent>
-  //   </Modal>
-  // );
+  return (
+    <Portal>
+      <Dialog visible={openLogoutModal} onDismiss={close} dismissable>
+        {/* <ModalBackdrop /> */}
+        <Dialog.Title>Logout</Dialog.Title>
+        <Dialog.Content>
+          <Text>Are you sure, you want to logout?</Text>
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button mode="outlined" onPress={close}>
+            Cancel
+          </Button>
+          <Button mode="contained-tonal" onPress={logout}>
+            Logout
+          </Button>
+        </Dialog.Actions>
+      </Dialog>
+    </Portal>
+  );
 };
 
 export default LogoutModal;

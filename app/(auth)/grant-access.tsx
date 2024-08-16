@@ -1,14 +1,13 @@
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useAtom, useSetAtom } from "jotai";
-import { atomWithMutation } from "jotai-tanstack-query";
 
-import { initialAtom, sessionAtom } from "../../store/auth";
+import { initialAtom, userAtom } from "../../store/auth";
 import { registerForPushNotificationsAsync } from "../../lib/notification";
-import { AuthUpdateParams, updateUser } from "../../services/user";
-import { User } from "@/lib/types";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
+import { useMutation } from "@apollo/client";
+import { UPDATE_USER } from "@/documents/auth";
 
 type Params = {
   jwt: string;
@@ -16,43 +15,34 @@ type Params = {
   username: string;
 };
 
-const updateUserAtom = atomWithMutation<
-  User,
-  Omit<AuthUpdateParams, "accessToken">,
-  unknown,
-  unknown
->((get) => ({
-  mutationKey: ["update_user"],
-  mutationFn: async (variables) => {
-    const accessToken = (await get(sessionAtom))?.jwt;
-    if (!accessToken) {
-      throw new Error("No access token found");
-    }
-
-    return await updateUser({
-      accessToken,
-      ...variables,
-    });
-  },
-}));
-
 export default function GrantAccessScreen() {
+  const router = useRouter();
   const [, setInitial] = useAtom(initialAtom);
-  const setSession = useSetAtom(sessionAtom);
+  const setUser = useSetAtom(userAtom);
   const params = useLocalSearchParams<Params>();
-  const [{ mutateAsync: updateUserAsync }] = useAtom(updateUserAtom);
+  const [updateUser, { loading }] = useMutation(UPDATE_USER);
 
   async function grantAccess() {
-    const token = await registerForPushNotificationsAsync();
+    const expoToken = await registerForPushNotificationsAsync();
     await setInitial(false);
-    await updateUserAsync({ id: params.id!, expoToken: token });
-    await setSession({
-      jwt: params.jwt!,
-      user: {
-        id: +params.id!,
-        username: params.username!,
-        email: `${params.username}@me.buet.ac.bd`,
-        expoToken: token,
+    await updateUser({
+      variables: {
+        where: { id: params.id! },
+        data: { expoToken },
+      },
+      context: {
+        headers: {
+          Authorization: `Bearer ${params.jwt}`,
+        },
+      },
+      async onCompleted({ updateUser }) {
+        await setInitial(false);
+        await setUser(async (prev) => {
+          const user = await prev;
+          if (!user) return null;
+          return { ...user, expoToken: updateUser?.expoToken ?? undefined };
+        });
+        router.replace("/");
       },
     });
   }

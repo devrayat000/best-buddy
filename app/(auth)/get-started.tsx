@@ -29,27 +29,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  center: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
   vstack: {
     flex: 1,
     alignItems: "stretch",
-  },
-  hstack: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  header: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
+    padding: 16,
   },
 });

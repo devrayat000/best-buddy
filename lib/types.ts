@@ -16,8 +16,7 @@ export type ResponseData<Data = {}> = {
 };
 
 export type User = {
-  id: number;
-  username: string;
+  id: string;
   email: string;
   expoToken?: string;
 };

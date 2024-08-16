@@ -19,7 +19,7 @@ export type AuthParams = {
 export const login: MutationFunction<AuthResponse, AuthParams> = async (
   variables
 ) => {
-  const res = await fetch(`${constants.apiUrl}/api/auth/local`, {
+  const res = await fetch(`http://10.0.2.2:1337/api/auth/local`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -30,6 +30,8 @@ export const login: MutationFunction<AuthResponse, AuthParams> = async (
     }),
   });
   const data = await res.json();
+  console.log(data);
+
   return data;
 };
 

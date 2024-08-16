@@ -53,8 +53,9 @@ export async function generateExpoPushToken(
 ) {
   const token = (
     await Notifications.getExpoPushTokenAsync({
-      projectId: Constants.expoConfig.extra.eas.projectId,
-      devicePushToken,
+      projectId: Constants.expoConfig?.extra?.eas.projectId,
+      devicePushToken:
+        devicePushToken || (await Notifications.getDevicePushTokenAsync()),
     })
   ).data;
   return token;
