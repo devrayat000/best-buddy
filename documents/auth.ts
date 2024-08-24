@@ -31,10 +31,18 @@ export const CREATE_USER = gql(`
 `);
 
 export const UPDATE_USER = gql(`
-    mutation UpdateUser($where: UserWhereUniqueInput!, $data: UserUpdateInput!) {
-        updateUser(where: $where, data: $data) {
+    mutation UpdateProfile($data: UserUpdateInput!) {
+        updateProfile(data: $data) {
             id
-            expoToken
+            name
+        }
+    }
+`);
+
+export const UPLOAD_EXPO_TOKEN = gql(`
+    mutation UploadExpoToken($token: ID!) {
+        uploadExpoToken(data: {token: $token}) {
+            token: id
         }
     }
 `);
@@ -47,7 +55,6 @@ export const GET_CURRENT_USER = gql(`
                 name
                 email
                 role
-                expoToken
                 createdAt
             }
         }

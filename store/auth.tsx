@@ -1,4 +1,4 @@
-import { atom } from "jotai";
+import { atom, SetStateAction } from "jotai";
 import { atomWithStorage, createJSONStorage, loadable } from "jotai/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthResponse } from "../services/user";
@@ -20,9 +20,17 @@ export const sessionAtom = atom(
     const [token, user] = await Promise.all([get(tokenAtom), get(userAtom)]);
     return !token || !user ? null : { jwt: token, user: user };
   },
-  async (_, set, { jwt, user }: Session) => {
-    set(tokenAtom, jwt);
-    set(userAtom, user);
+  async (
+    get,
+    set,
+    setter: SetStateAction<Promise<Session | null> | null | Session>
+  ) => {
+    const [token, user] = await Promise.all([get(tokenAtom), get(userAtom)]);
+    const prev = !token || !user ? null : { jwt: token, user: user };
+    const newVal = await (typeof setter === "function" ? setter(prev) : setter);
+    console.log("newVal", newVal);
+    set(tokenAtom, newVal?.jwt ?? null);
+    set(userAtom, newVal?.user ?? null);
   }
 );
 

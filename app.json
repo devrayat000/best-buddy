@@ -39,11 +39,18 @@
         "expo-build-properties",
         {
           "android": {
-            "extraProguardRules": "-keep class com.shopify.reactnative.skia.** { *; }"
+            "extraProguardRules": "-keep class com.shopify.reactnative.skia.** { *; }",
+            "enableProguardInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true,
+            "extraMavenRepos": [
+              "../../node_modules/@notifee/react-native/android/libs"
+            ]
           }
         }
       ],
-      "expo-asset"
+      "expo-asset",
+      "@notifee/react-native",
+      "expo-notifications"
     ],
     "experiments": {
       "typedRoutes": true

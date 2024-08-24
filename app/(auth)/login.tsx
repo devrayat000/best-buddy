@@ -57,9 +57,9 @@ export default function LoginScreen() {
 
         const { item, sessionToken } = data.authenticateUserWithPassword;
 
-        if (isInitial) {
+        if (true) {
           router.replace({
-            pathname: "(auth)/grant-access",
+            pathname: "/(auth)/grant-access",
             params: {
               jwt: sessionToken,
               id: item.id.toString(),
@@ -67,7 +67,6 @@ export default function LoginScreen() {
             },
           });
         } else {
-          // await registerForPushNotificationsAsync();
           await setSession({
             jwt: sessionToken,
             user: item,
@@ -158,7 +157,7 @@ export default function LoginScreen() {
                 </View>
                 <View style={styles.hstack}>
                   <Text>Do not have an account?</Text>
-                  <Link href="(auth)/register" replace>
+                  <Link href="/(auth)/register" replace>
                     Register!
                   </Link>
                 </View>

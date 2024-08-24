@@ -1,46 +1,59 @@
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useAtom, useSetAtom } from "jotai";
 
-import { initialAtom, userAtom } from "../../store/auth";
+import {
+  initialAtom,
+  sessionAtom,
+  tokenAtom,
+  userAtom,
+} from "../../store/auth";
 import { registerForPushNotificationsAsync } from "../../lib/notification";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
 import { useMutation } from "@apollo/client";
-import { UPDATE_USER } from "@/documents/auth";
+import { UPLOAD_EXPO_TOKEN } from "@/documents/auth";
 
 type Params = {
   jwt: string;
   id: string;
-  username: string;
+  email: string;
 };
 
 export default function GrantAccessScreen() {
   const router = useRouter();
-  const [, setInitial] = useAtom(initialAtom);
-  const setUser = useSetAtom(userAtom);
+  const setInitial = useSetAtom(initialAtom);
+  const setSession = useSetAtom(sessionAtom);
   const params = useLocalSearchParams<Params>();
-  const [updateUser, { loading }] = useMutation(UPDATE_USER);
+  const [uploadExpoToken, { loading }] = useMutation(UPLOAD_EXPO_TOKEN);
 
   async function grantAccess() {
     const expoToken = await registerForPushNotificationsAsync();
+    if (!expoToken) return;
+
     await setInitial(false);
-    await updateUser({
+    await uploadExpoToken({
       variables: {
-        where: { id: params.id! },
-        data: { expoToken },
+        token: expoToken,
       },
       context: {
         headers: {
           Authorization: `Bearer ${params.jwt}`,
         },
       },
-      async onCompleted({ updateUser }) {
+      async onCompleted({ uploadExpoToken }) {
         await setInitial(false);
-        await setUser(async (prev) => {
-          const user = await prev;
-          if (!user) return null;
-          return { ...user, expoToken: updateUser?.expoToken ?? undefined };
+        await setSession(async (prev) => {
+          const prevUsers = (await prev)?.user;
+          return {
+            jwt: params.jwt,
+            user: {
+              ...prevUsers,
+              id: params.id,
+              email: params.email,
+              expoToken: uploadExpoToken?.token ?? undefined,
+            },
+          };
         });
         router.replace("/");
       },

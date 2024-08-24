@@ -17,7 +17,7 @@ export default function GetStartedScreen() {
     <SafeAreaView style={styles.container}>
       <Stack.Screen options={{ headerShown: false }} />
       <View style={[styles.vstack, { justifyContent: "flex-end" }]}>
-        <Link href="(auth)/login" replace asChild>
+        <Link href="/(auth)/login" replace asChild>
           <Button mode="contained">Get Started</Button>
         </Link>
       </View>

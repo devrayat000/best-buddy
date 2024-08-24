@@ -8,3 +8,6 @@ const constants = {
 };
 
 export default constants;
+
+export const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
+export const BACKGROUND_DELULU_TASK = "BACKGROUND-DELULU-TASK";

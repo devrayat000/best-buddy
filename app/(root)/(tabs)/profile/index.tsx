@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { Link } from "expo-router";
 import { useAtom, useSetAtom } from "jotai";
 
@@ -6,16 +6,22 @@ import LogoutAlertDialog from "../../../../components/LogoutAlertDialog";
 import { logoutAlertAtom } from "../../../../store/auth";
 import { getMe } from "../../../../services/user";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import {
   TouchableRipple,
   Headline,
   Divider,
   Button,
   useTheme,
+  Avatar,
+  Text,
+  IconButton,
 } from "react-native-paper";
 import { useSuspenseQuery } from "@apollo/client";
 import { GET_CURRENT_USER } from "@/documents/auth";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import notifee from "@notifee/react-native";
+import { createNotificationChannels } from "@/lib/notification";
 
 const MobileProfilePage = () => {
   const theme = useTheme();
@@ -35,9 +41,9 @@ const MobileProfilePage = () => {
         <ScrollView>
           <View>
             <Headline>Profile</Headline>
-            {/* <Suspense>
+            <Suspense>
               <ProfileCard />
-            </Suspense> */}
+            </Suspense>
             <Divider />
             <PersonalInfoSection />
             <Divider />
@@ -65,35 +71,19 @@ const ProfileCard = () => {
   } = useSuspenseQuery(GET_CURRENT_USER);
 
   return (
-    <Link href="(root)/profile/personal" push>
-      {/* <TouchableRipple
-        px="$5"
-        py="$4"
-        $pressed-bg="$trueGray200"
-        $active-bg="$trueGray200"
-        onPress={() => console.log("pressed")}
-      >
-        <HStack justifyContent="space-between" alignItems="center">
-          <HStack space="md">
-            <Avatar bg="$blue600">
-              <AvatarFallbackText>#{data.username}</AvatarFallbackText>
-              <AvatarImage
-                source={{
-                  uri: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60",
-                }}
-                alt={data.username}
-              />
-            </Avatar>
-            <VStack>
-              <Text>#{data.username}</Text>
-              <Text color="$textLight500" size="sm">
-                Show Profile
-              </Text>
-            </VStack>
-          </HStack>
-          <Icon as={ChevronRight} />
-        </HStack>
-      </TouchableRipple> */}
+    <Link href="/(root)/profile/personal" push asChild>
+      <TouchableRipple>
+        <View style={[styles.hstack, styles.showProfile]}>
+          <View style={[styles.hstack, styles.profileInfoContainer]}>
+            <Avatar.Text label="TR" size={52} />
+            <View>
+              <Text variant="labelLarge">{profile?.name}</Text>
+              <Text variant="bodySmall">Show Profile</Text>
+            </View>
+          </View>
+          <MaterialIcons name="chevron-right" size={28} />
+        </View>
+      </TouchableRipple>
     </Link>
   );
 };
@@ -101,36 +91,44 @@ const ProfileCard = () => {
 const PersonalInfoSection = () => {
   return (
     <View>
-      {/* <Link href="(root)/profile/personal" push>
-        <TouchableRipple onPress={() => console.log("pressed")}>
-          <HStack justifyContent="space-between">
-            <HStack space="md">
-              <Icon as={User} />
+      <Link href="/(root)/profile/personal" push asChild>
+        <TouchableRipple
+          style={styles.infoSectionItem}
+          onPress={() => console.log("pressed")}
+        >
+          <View style={[styles.hstack]}>
+            <View style={[styles.hstack]}>
+              <AntDesign name="user" size={28} />
               <Text>Personal Info</Text>
-            </HStack>
-            <Pressable>
-              <Icon as={ChevronRight} />
-            </Pressable>
-          </HStack>
+            </View>
+            <MaterialIcons name="chevron-right" size={24} />
+          </View>
         </TouchableRipple>
       </Link>
-      <Pressable
-        px="$5"
-        py="$3"
-        $pressed-bg="$trueGray200"
-        $active-bg="$trueGray200"
-        onPress={() => console.log("pressed")}
+      <TouchableRipple
+        style={styles.infoSectionItem}
+        onPress={async () => {
+          await createNotificationChannels();
+          await notifee.displayNotification({
+            title: "Hello",
+            body: "This is a notification",
+            android: {
+              channelId: "notice-added",
+              pressAction: { id: "default" },
+              sound: "default",
+            },
+          });
+          console.log("pressed");
+        }}
       >
-        <HStack justifyContent="space-between">
-          <HStack space="md">
-            <Icon as={Settings} />
+        <View style={[styles.hstack]}>
+          <View style={[styles.hstack]}>
+            <AntDesign name="setting" size={28} />
             <Text>Account</Text>
-          </HStack>
-          <Pressable>
-            <Icon as={ChevronRight} />
-          </Pressable>
-        </HStack>
-      </Pressable> */}
+          </View>
+          <MaterialIcons name="chevron-right" size={24} />
+        </View>
+      </TouchableRipple>
     </View>
   );
 };
@@ -178,5 +176,28 @@ const SupportSection = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  vstack: {
+    flexDirection: "column",
+    alignItems: "stretch",
+  },
+  hstack: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  showProfile: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  profileInfoContainer: {
+    gap: 8,
+  },
+  infoSectionItem: {
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+  },
+});
 
 export default MobileProfilePage;

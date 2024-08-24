@@ -1,46 +1,30 @@
+import { Suspense } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
-import { type ErrorBoundaryProps, Link } from "expo-router";
-import { Text, TouchableRipple, useTheme, Button } from "react-native-paper";
+import { Link, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Card, Text, TouchableRipple, useTheme } from "react-native-paper";
 import { NetworkStatus, useQuery } from "@apollo/client";
+import { DocumentRenderer } from "@keystone-6/document-renderer";
+
+import { CLASS_TESTS } from "@/documents/content";
+import { layoutStyles } from "@/components/styles";
+import Loading from "@/components/Loading";
+import { OrderDirection } from "@/__generated__/graphql";
+import { renderer } from "@/components/document-renderer";
 import { formatDistanceToNow } from "date-fns";
 
-import Loading from "@/components/Loading";
-import { layoutStyles } from "@/components/styles";
-import { NOTICES } from "@/documents/content";
-import { OrderDirection } from "@/__generated__/graphql";
-
-export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
-  const theme = useTheme();
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text style={{ textAlign: "center" }}>{error.message}</Text>
-      <Button onPress={retry} mode="text" textColor={theme.colors.error}>
-        Try Again?
-      </Button>
-    </View>
-  );
-}
-
-export default function HomeScreen() {
+export default function ClassTestsScreen() {
   return (
     <SafeAreaView style={layoutStyles.grow}>
-      <FetchNotices />
+      <FetchClassTests />
     </SafeAreaView>
   );
 }
 
-function FetchNotices() {
-  const { data, loading, refetch, fetchMore, networkStatus, error } = useQuery(
-    NOTICES,
+function FetchClassTests() {
+  const { data, loading, refetch, networkStatus, fetchMore } = useQuery(
+    CLASS_TESTS,
     {
-      // queryKey: "notices",
       variables: {
         orderBy: { createdAt: OrderDirection.Desc },
         offset: 0,
@@ -48,33 +32,21 @@ function FetchNotices() {
       },
     }
   );
-
   const theme = useTheme();
 
   if (loading) {
     return <Loading />;
   }
 
-  if (error) {
-    throw error;
-  }
-
   return (
-    <View style={layoutStyles.grow}>
+    <View style={{ flex: 1 }}>
       <FlatList
-        data={data?.notices}
-        ListEmptyComponent={
-          <View style={[layoutStyles.center, styles.notFound]}>
-            <Text variant="labelLarge" style={styles.notFoundLabel}>
-              Nothing in the database 🤷🏻‍♂️
-            </Text>
-          </View>
-        }
+        data={data?.classTests}
         refreshing={networkStatus === NetworkStatus.refetch}
         onRefresh={refetch}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
-        renderItem={({ item: notice }) => {
+        renderItem={({ item: classTest }) => {
           return (
             <View
               style={[
@@ -84,23 +56,23 @@ function FetchNotices() {
             >
               <Link
                 href={{
-                  pathname: "/(root)/(modals)/notices/[id]",
-                  params: { id: notice.id },
+                  pathname: "/(root)/(modals)/class-tests/[id]",
+                  params: { id: classTest.id },
                 }}
                 asChild
               >
                 <TouchableRipple style={styles.card}>
                   <View>
-                    <Text variant="titleMedium">{notice.title}</Text>
+                    <Text variant="titleMedium">{classTest.title}</Text>
                     <Text variant="bodyMedium" numberOfLines={2}>
-                      {notice.content}
+                      {classTest.content}
                     </Text>
                     <View style={[layoutStyles.hstack, { marginTop: 4 }]}>
                       <Text variant="bodySmall" accessibilityLabel="Created at">
-                        {formatDistanceToNow(new Date(notice.createdAt))}
+                        {formatDistanceToNow(new Date(classTest.createdAt))}
                       </Text>
                       <Text variant="bodySmall" accessibilityLabel="Created by">
-                        {notice.createdBy?.role}
+                        {classTest.createdBy?.role}
                       </Text>
                     </View>
                   </View>
@@ -112,23 +84,34 @@ function FetchNotices() {
         onEndReached={() => {
           fetchMore({
             variables: {
-              offset: data?.notices?.length || 0,
+              offset: data?.classTests?.length || 0,
             },
             updateQuery(
               previousData,
               { fetchMoreResult, variables: { offset } }
             ) {
-              const updatedData = previousData.notices?.slice(0) ?? [];
-              for (let i = 0; i < (fetchMoreResult.notices?.length ?? 0); ++i) {
-                const newData = fetchMoreResult.notices?.[i];
+              const updatedData = previousData.classTests?.slice(0) ?? [];
+              for (
+                let i = 0;
+                i < (fetchMoreResult.classTests?.length ?? 0);
+                ++i
+              ) {
+                const newData = fetchMoreResult.classTests?.[i];
                 if (newData) updatedData[offset + i] = newData;
               }
               return { ...previousData, notices: updatedData };
             },
           });
         }}
+        ListEmptyComponent={
+          <View style={[layoutStyles.center, styles.notFound]}>
+            <Text variant="labelLarge" style={styles.notFoundLabel}>
+              Nothing in the database 🤷🏻‍♂️
+            </Text>
+          </View>
+        }
         ListFooterComponent={
-          (data?.notices?.length ?? 0) < (data?.noticesCount ?? 0)
+          (data?.classTests?.length ?? 0) < (data?.classTestsCount ?? 0)
             ? Loading
             : undefined
         }

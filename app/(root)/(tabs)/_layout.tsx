@@ -1,35 +1,37 @@
 import { useEffect, useRef } from "react";
-import { Redirect, Tabs, usePathname } from "expo-router";
+import { Tabs, usePathname } from "expo-router";
 import { MaterialIcons, Fontisto, AntDesign } from "@expo/vector-icons";
 import { Platform } from "react-native";
-import { useAtomValue, useSetAtom } from "jotai/react";
-// import * as Notifications from "expo-notifications";
+import { useSetAtom } from "jotai/react";
+import * as Notification from "expo-notifications";
+import * as TaskManager from "expo-task-manager";
+import notifee, { EventType } from "@notifee/react-native";
 
-import { logoutAlertAtom, sessionAtom } from "../../../store/auth";
+import { logoutAlertAtom } from "../../../store/auth";
 import useTokenChanged from "../../../hooks/use-token-changed";
-import { BottomNavigation } from "react-native-paper";
-import TabBar from "@/components/TabBar";
-// import useNotificationHandler from "../../../hooks/use-notification-handler";
-
-// Notifications.setNotificationHandler({
-//   handleNotification: async () => ({
-//     shouldShowAlert: true,
-//     shouldPlaySound: true,
-//     shouldSetBadge: true,
-//   }),
-// });
+import {
+  createNotificationChannels,
+  NotificationResponse,
+} from "@/lib/notification";
+import useNotificationHandler, {
+  onNewNotice,
+} from "@/hooks/use-notification-handler";
+import PaperTabs from "@/components/PaperTabs";
 
 export const unstable_settings = {
   initialRouteName: "notices",
 };
 
 export default function RootLayout() {
-  const session = useAtomValue(sessionAtom);
   const pathname = usePathname();
   const prevPath = useRef<string>();
   const setOpenLogoutAlertDialog = useSetAtom(logoutAlertAtom);
 
-  // useTokenChanged();
+  useEffect(() => {
+    createNotificationChannels();
+  }, []);
+
+  useTokenChanged();
 
   useEffect(() => {
     if (prevPath.current === "/profile") {
@@ -38,20 +40,16 @@ export default function RootLayout() {
     prevPath.current = pathname;
   }, [pathname]);
 
-  // useNotificationHandler();
-
-  if (!session) {
-    return <Redirect href="(auth)/get-started" />;
-  }
+  useNotificationHandler();
 
   return (
-    <Tabs
+    <PaperTabs
       initialRouteName="notices"
       screenOptions={{
         tabBarStyle: {
           marginHorizontal: "auto",
           marginBottom: 16,
-          borderRadius: Platform.select({ ios: 20, android: 40 }),
+          borderRadius: Platform.select({ ios: 20, android: 32 }),
           height: 60,
           elevation: 2,
           width: "50%",
@@ -59,18 +57,13 @@ export default function RootLayout() {
         },
         headerShown: false,
       }}
-      tabBar={(props) => <TabBar {...props} />}
     >
-      <Tabs.Screen
+      <PaperTabs.Screen
         name="notices"
         options={{
           // href: "/notices",
           tabBarIcon: (props) => (
-            <MaterialIcons
-              name="notifications"
-              color={props.color}
-              size={props.size}
-            />
+            <MaterialIcons name="notifications" color={props.color} size={24} />
           ),
           // tabBarStyle: tabStyles.tabBar,
           headerTitle: "Notices",
@@ -78,12 +71,12 @@ export default function RootLayout() {
           // headerShown: false,
         }}
       />
-      <Tabs.Screen
+      <PaperTabs.Screen
         name="class-tests"
         options={{
           // href: "/class-tests",
           tabBarIcon: (props) => (
-            <Fontisto name="test-tube" color={props.color} size={props.size} />
+            <Fontisto name="test-tube" color={props.color} size={24} />
           ),
           // tabBarStyle: tabStyles.tabBar,
           headerTitle: "Class Tests",
@@ -95,13 +88,13 @@ export default function RootLayout() {
         options={{
           // href: "/profile",
           tabBarIcon: (props) => (
-            <AntDesign name="user" color={props.color} size={props.size} />
+            <AntDesign name="user" color={props.color} size={24} />
           ),
           // tabBarStyle: tabStyles.tabBar,
           headerTitle: "Profile",
           tabBarLabel: "Profile",
         }}
       />
-    </Tabs>
+    </PaperTabs>
   );
 }
