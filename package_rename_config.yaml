@@ -1,0 +1,11 @@
+package_rename_config:
+  android:
+    app_name: Multiversity
+    package_name: com.rayat.dev.multiversity
+    # override_old_package: # (Optional) (String) Use this to delete the old folder structure of MainActivity or to use the existing code with the new package name
+    # lang: # (Optional) (String) The android development language {kotlin(default) or java}
+
+  ios:
+    app_name: Multiversity
+    # bundle_name: com.rayat.dev.multiversity
+    # package_name: 

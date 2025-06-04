@@ -1,0 +1,275 @@
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+
+import '../../data/graphql/class_tests_queries.graphql.dart';
+import '../../../../core/graphql/schema.graphql.dart';
+
+class ClassTestsPage extends StatelessWidget {
+  const ClassTestsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const ClassTestsView();
+  }
+}
+
+class ClassTestsView extends StatefulWidget {
+  const ClassTestsView({super.key});
+
+  @override
+  State<ClassTestsView> createState() => _ClassTestsViewState();
+}
+
+class _ClassTestsViewState extends State<ClassTestsView> {
+  static const _pageSize = 20;
+
+  final PagingController<int, Query$ClassTests$classTests> _pagingController =
+      PagingController(firstPageKey: 0);
+
+  late GraphQLClient _client;
+
+  @override
+  void initState() {
+    super.initState();
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _client = GraphQLProvider.of(context).value;
+  }
+
+  Future<void> _fetchPage(int pageKey) async {
+    try {
+      final result = await _client.query(
+        Options$Query$ClassTests(
+          variables: Variables$Query$ClassTests(
+            offset: pageKey,
+            limit: _pageSize,
+            orderBy: [
+              Input$ClassTestOrderByInput(createdAt: Enum$OrderDirection.desc)
+            ],
+          ),
+        ),
+      );
+
+      if (result.hasException) {
+        log('❌ Pagination Query Exception: ${result.exception}');
+        _pagingController.error = result.exception;
+        return;
+      }
+
+      final classTests = result.parsedData?.classTests ?? [];
+      final totalCount = result.parsedData?.classTestsCount ?? 0;
+
+      log('📝 Fetched page $pageKey: ${classTests.length} items (total: $totalCount)');
+
+      final isLastPage = pageKey + classTests.length >= totalCount;
+      if (isLastPage) {
+        _pagingController.appendLastPage(classTests);
+      } else {
+        final nextPageKey = pageKey + classTests.length;
+        _pagingController.appendPage(classTests, nextPageKey);
+      }
+    } catch (error) {
+      log('❌ Pagination Error: $error');
+      _pagingController.error = error;
+    }
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Class Tests'),
+      ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          _pagingController.refresh();
+        },
+        child: PagedListView<int, Query$ClassTests$classTests>(
+          pagingController: _pagingController,
+          padding: const EdgeInsets.all(8.0),
+          builderDelegate:
+              PagedChildBuilderDelegate<Query$ClassTests$classTests>(
+            firstPageProgressIndicatorBuilder: (context) => const Center(
+              child: CircularProgressIndicator(),
+            ),
+            newPageProgressIndicatorBuilder: (context) => const Center(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: CircularProgressIndicator(),
+              ),
+            ),
+            noItemsFoundIndicatorBuilder: (context) =>
+                _buildEmptyWidget(context),
+            firstPageErrorIndicatorBuilder: (context) => _buildErrorWidget(
+              context,
+              _pagingController.error.toString(),
+              () => _pagingController.refresh(),
+            ),
+            newPageErrorIndicatorBuilder: (context) => Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Error loading more class tests',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 8),
+                    ElevatedButton(
+                      onPressed: () =>
+                          _pagingController.retryLastFailedRequest(),
+                      child: const Text('Retry'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            itemBuilder: (context, classTest, index) {
+              return ListTile(
+                onTap: () {
+                  context.goNamed(
+                    'class-test-detail',
+                    pathParameters: {'id': classTest.id},
+                  );
+                },
+                // contentPadding: const EdgeInsets.all(16),
+                title: Text(
+                  classTest.title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (classTest.content.isNotEmpty)
+                      Text(
+                        classTest.content,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.access_time,
+                          size: 16,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          DateFormat.yMMMd()
+                              .add_jm()
+                              .format(classTest.datetime),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                        const Spacer(),
+                        if (classTest.createdBy?.name != null) ...[
+                          Icon(Icons.person,
+                              size: 16,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant),
+                          const SizedBox(width: 4),
+                          Text(
+                            classTest.createdBy!.name,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorWidget(
+      BuildContext context, String error, VoidCallback? refetch) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.error_outline,
+            size: 64,
+            color: Colors.grey,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Error loading class tests',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            error,
+            style: Theme.of(context).textTheme.bodySmall,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: refetch,
+            child: const Text('Retry'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyWidget(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.quiz_outlined,
+            size: 64,
+            color: Colors.grey,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'No class tests available',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Check back later for new class tests.',
+            style: TextStyle(color: Colors.grey),
+          ),
+        ],
+      ),
+    );
+  }
+}

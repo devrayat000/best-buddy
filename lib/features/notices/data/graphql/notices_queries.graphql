@@ -1,0 +1,28 @@
+query Notices($limit: Int, $offset: Int!, $orderBy: [NoticeOrderByInput!]!) {
+  notices(take: $limit, skip: $offset, orderBy: $orderBy) {
+    id
+    title
+    content: contentSummary
+    createdAt
+    createdBy {
+      name
+      role
+    }
+  }
+  noticesCount
+}
+
+query Notice($id: ID!) {
+  notice(where: { id: $id }) {
+    id
+    title
+    content {
+      document(hydrateRelationships: false)
+    }
+    createdBy {
+      name
+      role
+    }
+    createdAt
+  }
+}

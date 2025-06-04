@@ -1,0 +1,11 @@
+query AuthenticatedItem {
+  profile: authenticatedItem {
+    ... on User {
+      id
+      name
+      email
+      role
+      createdAt
+    }
+  }
+}
