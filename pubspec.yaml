@@ -36,6 +36,7 @@ dependencies:
   infinite_scroll_pagination: ^4.1.0
   url_launcher: ^6.2.5
   package_info_plus: ^8.0.0
+  connectivity_plus: ^6.1.4
   
   # GraphQL
   # graphql: ^5.1.3

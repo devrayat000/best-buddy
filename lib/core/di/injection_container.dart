@@ -6,11 +6,8 @@ import 'package:logger/logger.dart';
 
 import '../auth/auth_cubit.dart';
 import '../graphql/graphql_client.dart';
-import '../router/app_router.dart';
 import '../settings/settings_cubit.dart';
 import '../storage/storage_service.dart';
-import '../theme/theme_cubit.dart';
-import '../theme/theme_cubit.dart';
 
 final GetIt sl = GetIt.instance;
 
@@ -18,15 +15,14 @@ Future<void> setupServiceLocator() async {
   // External
   sl.registerLazySingleton(() => Logger());
   sl.registerLazySingleton(() => Dio());
+
   // Core
   sl.registerLazySingleton<StorageService>(() => HiveStorageService());
   await sl<StorageService>().init();
-  sl.registerLazySingleton(() => AppRouter());
+
   // Auth
   sl.registerLazySingleton(() => AuthCubit());
   await sl<AuthCubit>().init(); // Initialize auth state
-  // Theme
-  sl.registerLazySingleton(() => ThemeCubit());
 
   // Settings
   sl.registerLazySingleton(() => SettingsCubit());
@@ -35,7 +31,7 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<ValueNotifier<GraphQLClient>>(
       () => createGraphQLClient(sl<StorageService>()));
 
-  // Register the GraphQLClient itself for dependencies that need it directly
-  sl.registerLazySingleton<GraphQLClient>(
-      () => sl<ValueNotifier<GraphQLClient>>().value);
+  // // Register the GraphQLClient itself for dependencies that need it directly
+  // sl.registerLazySingleton<GraphQLClient>(
+  //     () => sl<ValueNotifier<GraphQLClient>>().value);
 }

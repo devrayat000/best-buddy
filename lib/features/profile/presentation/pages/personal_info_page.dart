@@ -157,7 +157,7 @@ class PersonalInfoPage extends StatelessWidget {
 
           const SizedBox(height: 8),
 
-          InfoCard(
+          const InfoCard(
             icon: Icons.verified_user_outlined,
             title: 'Account Status',
             value: 'Active',
