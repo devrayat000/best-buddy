@@ -3,6 +3,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/widgets/loading_view.dart';
+import '../../../../core/config/backend_config.dart';
 
 class AboutDialogPage extends StatelessWidget {
   const AboutDialogPage({super.key});
@@ -96,7 +97,15 @@ class AboutDialogPage extends StatelessWidget {
                 onPressed: () {
                   context.pushReplacementNamed('licenses');
                 },
-                child: const Text('Show Licenses'),
+                child: const Text('Licenses'),
+              ),
+              TextButton(
+                onPressed: _launchPrivacyPolicy,
+                child: const Text('Privacy'),
+              ),
+              TextButton(
+                onPressed: _launchTermsOfService,
+                child: const Text('Terms'),
               ),
               TextButton(
                 onPressed: () => context.pop(),
@@ -118,14 +127,14 @@ class AboutDialogPage extends StatelessWidget {
   }
 
   Future<void> _launchPrivacyPolicy() async {
-    final uri = Uri.parse('https://bestbuddy.app/privacy');
+    final uri = Uri.parse(BackendConfig.privacyPolicyUrl);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }
 
   Future<void> _launchTermsOfService() async {
-    final uri = Uri.parse('https://bestbuddy.app/terms');
+    final uri = Uri.parse(BackendConfig.termsOfServiceUrl);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }

@@ -2,17 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:graphql/client.dart';
+import '../config/backend_config.dart';
 import '../storage/storage_service.dart';
 import 'connectivity_link.dart';
-
-// Use appropriate endpoint based on platform
-String get _endpoint {
-  const envUrl = String.fromEnvironment('API_URL');
-  if (envUrl.isNotEmpty) return envUrl;
-
-  // For development, use localhost for desktop/web, and appropriate IP for mobile
-  return 'http://localhost:3000/api/graphql';
-}
 
 class LogLink extends Link {
   @override
@@ -37,7 +29,7 @@ class LogLink extends Link {
 ValueNotifier<GraphQLClient> createGraphQLClient(
   StorageService storageService,
 ) {
-  final httpLink = HttpLink(_endpoint);
+  final httpLink = HttpLink(BackendConfig.graphqlEndpoint);
 
   final authLink = AuthLink(
     getToken: () async {
