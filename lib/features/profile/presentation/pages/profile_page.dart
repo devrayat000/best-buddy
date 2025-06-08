@@ -5,6 +5,7 @@ import '../../../auth/data/graphql/auth_queries.graphql.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/profile_stats_card.dart';
 import '../widgets/profile_menu_section.dart';
+import '../../../../core/widgets/error_view.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -18,9 +19,12 @@ class ProfilePage extends StatelessWidget {
           if (result.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-
           if (result.hasException) {
-            return _buildErrorState(context, result.exception.toString());
+            return ErrorView(
+              message: result.exception.toString(),
+              title: 'Error loading profile',
+              onRetry: () => refetch?.call(),
+            );
           }
 
           final user = result.parsedData?.profile;
@@ -29,7 +33,11 @@ class ProfilePage extends StatelessWidget {
             return _buildProfileContent(context, user);
           }
 
-          return _buildErrorState(context, 'Unexpected user type');
+          return ErrorView(
+            message: 'Unexpected user type',
+            title: 'Error loading profile',
+            onRetry: () => refetch?.call(),
+          );
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -82,53 +90,11 @@ class ProfilePage extends StatelessWidget {
         // Menu Section
         const SliverToBoxAdapter(
           child: ProfileAppSection(),
-        ),
-
-        // Bottom spacing for FAB
+        ), // Bottom spacing for FAB
         const SliverToBoxAdapter(
           child: SizedBox(height: 100),
         ),
       ],
-    );
-  }
-
-  Widget _buildErrorState(BuildContext context, String error) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Theme.of(context).colorScheme.error,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Error loading profile',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              error,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            FilledButton.icon(
-              onPressed: () {
-                // Trigger a refresh or navigate away
-                context.go('/notices');
-              },
-              icon: const Icon(Icons.refresh),
-              label: const Text('Go to Notices'),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

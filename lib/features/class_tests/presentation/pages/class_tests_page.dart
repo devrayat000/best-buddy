@@ -8,6 +8,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../../data/graphql/class_tests_queries.graphql.dart';
 import '../../../../core/graphql/schema.graphql.dart';
+import '../../../../core/widgets/error_view.dart';
 
 class ClassTestsPage extends StatelessWidget {
   const ClassTestsPage({super.key});
@@ -117,30 +118,14 @@ class _ClassTestsViewState extends State<ClassTestsView> {
             ),
             noItemsFoundIndicatorBuilder: (context) =>
                 _buildEmptyWidget(context),
-            firstPageErrorIndicatorBuilder: (context) => _buildErrorWidget(
-              context,
-              _pagingController.error.toString(),
-              () => _pagingController.refresh(),
+            firstPageErrorIndicatorBuilder: (context) => ErrorView(
+              message: _pagingController.error.toString(),
+              title: 'Error loading class tests',
+              onRetry: () => _pagingController.refresh(),
             ),
-            newPageErrorIndicatorBuilder: (context) => Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Error loading more class tests',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    ElevatedButton(
-                      onPressed: () =>
-                          _pagingController.retryLastFailedRequest(),
-                      child: const Text('Retry'),
-                    ),
-                  ],
-                ),
-              ),
+            newPageErrorIndicatorBuilder: (context) => ErrorView.inline(
+              message: 'Error loading more class tests',
+              onRetry: () => _pagingController.retryLastFailedRequest(),
             ),
             itemBuilder: (context, classTest, index) {
               return ListTile(
@@ -212,38 +197,6 @@ class _ClassTestsViewState extends State<ClassTestsView> {
             },
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildErrorWidget(
-      BuildContext context, String error, VoidCallback? refetch) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Colors.grey,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Error loading class tests',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            error,
-            style: Theme.of(context).textTheme.bodySmall,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: refetch,
-            child: const Text('Retry'),
-          ),
-        ],
       ),
     );
   }

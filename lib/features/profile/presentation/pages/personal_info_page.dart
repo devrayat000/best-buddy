@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../auth/data/graphql/auth_queries.graphql.dart';
 import '../widgets/info_card.dart';
+import '../../../../core/widgets/error_view.dart';
 
 class PersonalInfoPage extends StatelessWidget {
   const PersonalInfoPage({super.key});
@@ -19,9 +20,12 @@ class PersonalInfoPage extends StatelessWidget {
           if (result.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-
           if (result.hasException) {
-            return _buildErrorState(context, result.exception.toString());
+            return ErrorView(
+              message: result.exception.toString(),
+              title: 'Error loading profile',
+              onRetry: () => refetch?.call(),
+            );
           }
 
           final user = result.parsedData?.profile;
@@ -30,7 +34,11 @@ class PersonalInfoPage extends StatelessWidget {
             return _buildPersonalInfoContent(context, user);
           }
 
-          return _buildErrorState(context, 'No profile data available');
+          return ErrorView(
+            message: 'No profile data available',
+            title: 'Error loading profile',
+            onRetry: () => refetch?.call(),
+          );
         },
       ),
     );
@@ -208,40 +216,8 @@ class PersonalInfoPage extends StatelessWidget {
               ],
             ),
           ),
-
           const SizedBox(height: 32),
         ],
-      ),
-    );
-  }
-
-  Widget _buildErrorState(BuildContext context, String error) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Theme.of(context).colorScheme.error,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Error loading profile',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              error,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
       ),
     );
   }

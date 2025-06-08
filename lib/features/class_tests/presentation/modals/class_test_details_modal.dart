@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../data/graphql/class_tests_queries.graphql.dart';
 import '../../../../core/widgets/rich_text_utils.dart';
+import '../../../../core/widgets/error_view.dart';
 
 class ClassTestDetailsModal extends StatelessWidget {
   final String classTestId;
@@ -28,16 +29,35 @@ class ClassTestDetailsModal extends StatelessWidget {
           ),
           builder: (result, {fetchMore, refetch}) {
             if (result.hasException) {
-              return _buildError(context, result.exception.toString());
+              return Column(
+                children: [
+                  _buildHeader(context, 'Error'),
+                  Expanded(
+                    child: ErrorView(
+                      message: result.exception.toString(),
+                      title: 'Failed to load class test',
+                      onRetry: () => refetch?.call(),
+                    ),
+                  ),
+                ],
+              );
             }
 
             if (result.isLoading) {
               return _buildLoading(context);
             }
-
             final classTest = result.parsedData?.classTest;
             if (classTest == null) {
-              return _buildError(context, 'Class test not found');
+              return Column(
+                children: [
+                  _buildHeader(context, 'Error'),
+                  Expanded(
+                    child: ErrorView.notFound(
+                      resourceName: 'Class test',
+                    ),
+                  ),
+                ],
+              );
             }
 
             return _buildContent(context, classTest);
@@ -54,46 +74,6 @@ class ClassTestDetailsModal extends StatelessWidget {
         const Expanded(
           child: Center(
             child: CircularProgressIndicator(),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildError(BuildContext context, String message) {
-    return Column(
-      children: [
-        _buildHeader(context, 'Error'),
-        Expanded(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 64,
-                    color: Theme.of(context).colorScheme.error,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Failed to load class test',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    message,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
           ),
         ),
       ],
