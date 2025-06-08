@@ -41,7 +41,7 @@ Future<void> _initializeApp() async {
   };
 
   // Run the app
-  runApp(StudyBuddyApp());
+  runApp(const StudyBuddyApp());
 }
 
 Future<void> _initializeHive() async {
