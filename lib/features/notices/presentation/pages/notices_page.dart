@@ -102,14 +102,14 @@ class _NoticesPageState extends State<NoticesPage> {
             newPageProgressIndicatorBuilder: (context) => LoadingView.inline(),
             noItemsFoundIndicatorBuilder: (context) =>
                 _buildEmptyWidget(context),
-            firstPageErrorIndicatorBuilder: (context) => ErrorView(
-              message: _pagingController.error.toString(),
-              title: 'Error loading notices',
+            firstPageErrorIndicatorBuilder: (context) => ErrorView.smart(
+              error: _pagingController.error,
               onRetry: () => _pagingController.refresh(),
             ),
-            newPageErrorIndicatorBuilder: (context) => ErrorView.inline(
-              message: 'Error loading more notices',
+            newPageErrorIndicatorBuilder: (context) => ErrorView.smart(
+              error: _pagingController.error,
               onRetry: () => _pagingController.retryLastFailedRequest(),
+              fullScreen: false,
             ),
             itemBuilder: (context, notice, index) {
               return ListTile(

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:graphql/client.dart';
 import '../storage/storage_service.dart';
+import 'connectivity_link.dart';
 
 // Use appropriate endpoint based on platform
 String get _endpoint {
@@ -48,10 +49,14 @@ ValueNotifier<GraphQLClient> createGraphQLClient(
     },
   );
 
+  // Add connectivity-aware link to handle network errors
+  final connectivityLink = ConnectivityLink();
+
   // Optionally add a logging link for debugging
   final logLink = LogLink();
 
-  final link = Link.from([authLink, logLink, httpLink]);
+  // Chain the links: auth -> connectivity -> logging -> http
+  final link = Link.from([authLink, connectivityLink, logLink, httpLink]);
   final client = GraphQLClient(
     link: link,
     cache: GraphQLCache(store: InMemoryStore()),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/error_utils.dart';
 
 /// A generic error view widget that can be used throughout the app
 /// for consistent error presentation.
@@ -91,6 +92,53 @@ class ErrorView extends StatelessWidget {
       fullScreen: false,
       iconSize: 48,
       padding: const EdgeInsets.all(16),
+    );
+  }
+
+  /// Smart factory constructor that automatically detects error type
+  /// and provides appropriate UI and messaging
+  factory ErrorView.smart({
+    required dynamic error,
+    VoidCallback? onRetry,
+    bool fullScreen = true,
+  }) {
+    if (ErrorUtils.isNetworkError(error)) {
+      return ErrorView(
+        message: ErrorUtils.getUserFriendlyMessage(error),
+        title: 'Connection Problem',
+        onRetry: onRetry,
+        icon: Icons.wifi_off,
+        fullScreen: fullScreen,
+      );
+    }
+
+    if (ErrorUtils.isAuthError(error)) {
+      return ErrorView(
+        message: ErrorUtils.getUserFriendlyMessage(error),
+        title: 'Authentication Required',
+        onRetry: onRetry,
+        icon: Icons.lock_outline,
+        fullScreen: fullScreen,
+      );
+    }
+
+    if (ErrorUtils.isServerError(error)) {
+      return ErrorView(
+        message: ErrorUtils.getUserFriendlyMessage(error),
+        title: 'Server Error',
+        onRetry: onRetry,
+        icon: Icons.dns_outlined,
+        fullScreen: fullScreen,
+      );
+    }
+
+    // Default error
+    return ErrorView(
+      message: ErrorUtils.getUserFriendlyMessage(error),
+      title: 'Something Went Wrong',
+      onRetry: onRetry,
+      icon: Icons.error_outline,
+      fullScreen: fullScreen,
     );
   }
 
