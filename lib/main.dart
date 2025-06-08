@@ -8,8 +8,11 @@ import 'package:path_provider/path_provider.dart';
 
 import 'core/auth/auth_cubit.dart';
 import 'core/di/injection_container.dart';
+import 'core/licenses/license_registry.dart';
 import 'core/router/app_router.dart';
+import 'core/settings/settings_cubit.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/theme_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +28,9 @@ void main() async {
   // Initialize dependencies
   await setupServiceLocator();
 
+  // Register custom licenses
+  registerCustomLicenses();
+
   runApp(const StudyBuddyApp());
 }
 
@@ -38,18 +44,32 @@ class StudyBuddyApp extends StatelessWidget {
   const StudyBuddyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AuthCubit>(
-      create: (_) => GetIt.instance.get<AuthCubit>(),
-      child: GraphQLProvider(
-        client: GetIt.instance.get<ValueNotifier<GraphQLClient>>(),
-        child: MaterialApp.router(
-          title: 'Study Buddy',
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          themeMode: ThemeMode.system,
-          routerConfig: GetIt.instance.get<AppRouter>().router,
-          debugShowCheckedModeBanner: false,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthCubit>(
+          create: (_) => GetIt.instance.get<AuthCubit>(),
         ),
+        BlocProvider<ThemeCubit>(
+          create: (_) => GetIt.instance.get<ThemeCubit>(),
+        ),
+        BlocProvider<SettingsCubit>(
+          create: (_) => GetIt.instance.get<SettingsCubit>(),
+        ),
+      ],
+      child: BlocBuilder<ThemeCubit, ThemeState>(
+        builder: (context, themeState) {
+          return GraphQLProvider(
+            client: GetIt.instance.get<ValueNotifier<GraphQLClient>>(),
+            child: MaterialApp.router(
+              title: 'Study Buddy',
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              themeMode: themeState.themeMode,
+              routerConfig: GetIt.instance.get<AppRouter>().router,
+              debugShowCheckedModeBanner: false,
+            ),
+          );
+        },
       ),
     );
   }

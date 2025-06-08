@@ -7,7 +7,10 @@ import 'package:logger/logger.dart';
 import '../auth/auth_cubit.dart';
 import '../graphql/graphql_client.dart';
 import '../router/app_router.dart';
+import '../settings/settings_cubit.dart';
 import '../storage/storage_service.dart';
+import '../theme/theme_cubit.dart';
+import '../theme/theme_cubit.dart';
 
 final GetIt sl = GetIt.instance;
 
@@ -22,6 +25,11 @@ Future<void> setupServiceLocator() async {
   // Auth
   sl.registerLazySingleton(() => AuthCubit());
   await sl<AuthCubit>().init(); // Initialize auth state
+  // Theme
+  sl.registerLazySingleton(() => ThemeCubit());
+
+  // Settings
+  sl.registerLazySingleton(() => SettingsCubit());
 
   // GraphQL
   sl.registerLazySingleton<ValueNotifier<GraphQLClient>>(

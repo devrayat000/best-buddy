@@ -14,6 +14,14 @@ import '../../features/notices/presentation/pages/notices_page.dart';
 import '../../features/class_tests/presentation/pages/class_tests_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/profile/presentation/pages/personal_info_page.dart';
+import '../../features/profile/presentation/pages/settings_page.dart';
+import '../../features/profile/presentation/pages/help_page.dart';
+import '../../features/profile/presentation/pages/licenses_page.dart';
+import '../../features/profile/presentation/dialogs/about_dialog_page.dart';
+import '../../features/profile/presentation/dialogs/theme_dialog_page.dart';
+import '../../features/profile/presentation/dialogs/language_dialog_page.dart';
+import '../../features/profile/presentation/dialogs/logout_dialog_page.dart';
+import '../../features/profile/presentation/dialogs/help_dialog_page.dart';
 import '../../features/notices/presentation/modals/notice_details_modal.dart';
 import '../../features/class_tests/presentation/modals/class_test_details_modal.dart';
 import '../widgets/main_shell.dart';
@@ -181,6 +189,62 @@ class AppRouter {
                   path: '/personal',
                   name: 'personal-info',
                   builder: (context, state) => const PersonalInfoPage(),
+                ),
+                GoRoute(
+                  path: '/settings',
+                  name: 'settings',
+                  builder: (context, state) => const SettingsPage(),
+                ),
+                GoRoute(
+                  path: '/help',
+                  name: 'help',
+                  builder: (context, state) => const HelpPage(),
+                ),
+                GoRoute(
+                  path: '/licenses',
+                  name: 'licenses',
+                  builder: (context, state) => const LicensesPage(),
+                ),
+                // Dialog routes
+                GoRoute(
+                  path: '/about',
+                  name: 'about-dialog',
+                  pageBuilder: (context, state) => DialogPage(
+                    key: state.pageKey,
+                    builder: (_) => const AboutDialogPage(),
+                  ),
+                ),
+                GoRoute(
+                  path: '/theme',
+                  name: 'theme-dialog',
+                  pageBuilder: (context, state) => DialogPage(
+                    key: state.pageKey,
+                    builder: (_) => const ThemeDialogPage(),
+                  ),
+                ),
+                GoRoute(
+                  path: '/language',
+                  name: 'language-dialog',
+                  pageBuilder: (context, state) => DialogPage(
+                    key: state.pageKey,
+                    builder: (_) => const LanguageDialogPage(),
+                  ),
+                ),
+                GoRoute(
+                  path: '/logout',
+                  name: 'logout-dialog',
+                  pageBuilder: (context, state) => DialogPage(
+                    key: state.pageKey,
+                    builder: (_) => const LogoutDialogPage(),
+                  ),
+                ),
+                GoRoute(
+                  path: '/help-dialog',
+                  name: 'help-dialog',
+                  pageBuilder: (context, state) => DialogPage(
+                    key: state.pageKey,
+                    builder: (_) => const HelpDialogPage(),
+                  ),
                 ),
               ],
             ),
