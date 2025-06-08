@@ -9,6 +9,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../data/graphql/notices_queries.graphql.dart';
 import '../../../../core/graphql/schema.graphql.dart';
 import '../../../../core/widgets/error_view.dart';
+import '../../../../core/widgets/loading_view.dart';
 
 class NoticesPage extends StatefulWidget {
   const NoticesPage({super.key});
@@ -97,15 +98,8 @@ class _NoticesPageState extends State<NoticesPage> {
           pagingController: _pagingController,
           padding: const EdgeInsets.all(8.0),
           builderDelegate: PagedChildBuilderDelegate<Query$Notices$notices>(
-            firstPageProgressIndicatorBuilder: (context) => const Center(
-              child: CircularProgressIndicator(),
-            ),
-            newPageProgressIndicatorBuilder: (context) => const Center(
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: CircularProgressIndicator(),
-              ),
-            ),
+            firstPageProgressIndicatorBuilder: (context) => LoadingView.page(),
+            newPageProgressIndicatorBuilder: (context) => LoadingView.inline(),
             noItemsFoundIndicatorBuilder: (context) =>
                 _buildEmptyWidget(context),
             firstPageErrorIndicatorBuilder: (context) => ErrorView(

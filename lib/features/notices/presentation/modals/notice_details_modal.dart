@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../../data/graphql/notices_queries.graphql.dart';
 import '../../../../core/widgets/rich_text_utils.dart';
 import '../../../../core/widgets/error_view.dart';
+import '../../../../core/widgets/loading_view.dart';
 
 class NoticeDetailsModal extends StatelessWidget {
   final String noticeId;
@@ -74,10 +75,8 @@ class NoticeDetailsModal extends StatelessWidget {
     return Column(
       children: [
         _buildHeader(context, 'Loading...'),
-        const Expanded(
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
+        Expanded(
+          child: LoadingView.modal(),
         ),
       ],
     );

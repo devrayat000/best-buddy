@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/widgets/loading_view.dart';
 
 class AuthButton extends StatelessWidget {
   final String text;
@@ -27,12 +28,15 @@ class AuthButton extends StatelessWidget {
           elevation: 0,
         ),
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 height: 20,
                 width: 20,
-                child: CircularProgressIndicator(
+                child: LoadingView(
+                  fullScreen: false,
+                  size: 20,
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  color: Colors.white,
+                  padding: EdgeInsets.zero,
                 ),
               )
             : Text(

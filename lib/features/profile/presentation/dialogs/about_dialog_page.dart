@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/widgets/loading_view.dart';
 
 class AboutDialogPage extends StatelessWidget {
   const AboutDialogPage({super.key});
@@ -12,7 +13,7 @@ class AboutDialogPage extends StatelessWidget {
         future: PackageInfo.fromPlatform(),
         builder: (context, asyncSnapshot) {
           if (asyncSnapshot.connectionState != ConnectionState.done) {
-            return const Center(child: CircularProgressIndicator());
+            return LoadingView.modal();
           }
 
           final packageInfo = asyncSnapshot.data;

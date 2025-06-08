@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/auth/auth_cubit.dart';
+import '../../../../core/widgets/loading_view.dart';
 
 class GrantAccessPage extends StatelessWidget {
   final String jwt;
@@ -81,11 +82,14 @@ class GrantAccessView extends StatelessWidget {
                           ? null
                           : () => _grantAccess(context),
                       child: state is AuthLoading
-                          ? const SizedBox(
+                          ? SizedBox(
                               height: 20,
                               width: 20,
-                              child: CircularProgressIndicator(
+                              child: LoadingView(
+                                fullScreen: false,
+                                size: 20,
                                 strokeWidth: 2,
+                                padding: EdgeInsets.zero,
                               ),
                             )
                           : const Text('Get Started'),

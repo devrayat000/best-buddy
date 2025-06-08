@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/auth/auth_cubit.dart';
 import '../../../auth/data/graphql/auth_mutations.graphql.dart';
+import '../../../../core/widgets/loading_view.dart';
 
 class LogoutDialogPage extends StatelessWidget {
   const LogoutDialogPage({super.key});
@@ -37,12 +38,15 @@ class LogoutDialogPage extends StatelessWidget {
                 backgroundColor: Theme.of(context).colorScheme.error,
               ),
               child: result?.isLoading == true
-                  ? const SizedBox(
+                  ? SizedBox(
                       height: 20,
                       width: 20,
-                      child: CircularProgressIndicator(
+                      child: LoadingView(
+                        fullScreen: false,
+                        size: 20,
                         strokeWidth: 2,
                         color: Colors.white,
+                        padding: EdgeInsets.zero,
                       ),
                     )
                   : const Text('Logout'),

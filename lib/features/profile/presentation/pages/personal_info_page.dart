@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import '../../../auth/data/graphql/auth_queries.graphql.dart';
 import '../widgets/info_card.dart';
 import '../../../../core/widgets/error_view.dart';
+import '../../../../core/widgets/loading_view.dart';
 
 class PersonalInfoPage extends StatelessWidget {
   const PersonalInfoPage({super.key});
@@ -18,7 +19,7 @@ class PersonalInfoPage extends StatelessWidget {
         options: Options$Query$AuthenticatedItem(),
         builder: (result, {refetch, fetchMore}) {
           if (result.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return LoadingView.page();
           }
           if (result.hasException) {
             return ErrorView(

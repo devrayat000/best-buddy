@@ -6,6 +6,7 @@ import '../widgets/profile_header.dart';
 import '../widgets/profile_stats_card.dart';
 import '../widgets/profile_menu_section.dart';
 import '../../../../core/widgets/error_view.dart';
+import '../../../../core/widgets/loading_view.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -17,7 +18,7 @@ class ProfilePage extends StatelessWidget {
         options: Options$Query$AuthenticatedItem(),
         builder: (result, {fetchMore, refetch}) {
           if (result.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return LoadingView.page();
           }
           if (result.hasException) {
             return ErrorView(

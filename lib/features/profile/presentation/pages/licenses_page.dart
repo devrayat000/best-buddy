@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import '../../../../core/widgets/loading_view.dart';
 
 class LicensesPage extends StatelessWidget {
   const LicensesPage({super.key});
@@ -10,7 +11,7 @@ class LicensesPage extends StatelessWidget {
         future: PackageInfo.fromPlatform(),
         builder: (context, asyncSnapshot) {
           if (asyncSnapshot.connectionState != ConnectionState.done) {
-            return const Center(child: CircularProgressIndicator());
+            return LoadingView.page();
           }
 
           final packageInfo = asyncSnapshot.data;

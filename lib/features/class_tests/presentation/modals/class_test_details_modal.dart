@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../data/graphql/class_tests_queries.graphql.dart';
 import '../../../../core/widgets/rich_text_utils.dart';
 import '../../../../core/widgets/error_view.dart';
+import '../../../../core/widgets/loading_view.dart';
 
 class ClassTestDetailsModal extends StatelessWidget {
   final String classTestId;
@@ -71,10 +72,8 @@ class ClassTestDetailsModal extends StatelessWidget {
     return Column(
       children: [
         _buildHeader(context, 'Loading...'),
-        const Expanded(
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
+        Expanded(
+          child: LoadingView.modal(),
         ),
       ],
     );
