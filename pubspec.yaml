@@ -37,6 +37,7 @@ dependencies:
   url_launcher: ^6.2.5
   package_info_plus: ^8.0.0
   connectivity_plus: ^6.1.4
+  local_auth: ^2.3.0
   
   # GraphQL
   # graphql: ^5.1.3

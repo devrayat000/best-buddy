@@ -1,3 +1,4 @@
+import 'package:best_buddy_flutter/core/auth/session_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:graphql/client.dart';
@@ -19,14 +20,22 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<ConnectivityService>(() => ConnectivityService());
   await sl<ConnectivityService>().initialize();
 
+  // GraphQL
+  sl.registerLazySingleton<ValueNotifier<GraphQLClient>>(
+      () => createGraphQLClient(sl<StorageService>()));
+
+  sl.registerLazySingleton(() => SessionService(
+        sl<ValueNotifier<GraphQLClient>>().value,
+        sl<StorageService>(),
+      ));
+
   // Auth
-  sl.registerLazySingleton(() => AuthCubit());
+  sl.registerLazySingleton(() => AuthCubit(
+        sl<SessionService>(),
+        sl<StorageService>(),
+      ));
   await sl<AuthCubit>().init(); // Initialize auth state
 
   // Settings
   sl.registerLazySingleton(() => SettingsCubit());
-
-  // GraphQL
-  sl.registerLazySingleton<ValueNotifier<GraphQLClient>>(
-      () => createGraphQLClient(sl<StorageService>()));
 }

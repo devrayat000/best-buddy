@@ -5,10 +5,13 @@ import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../../../core/auth/auth_cubit.dart';
+import '../../../../core/auth/biometric_service.dart';
 import '../../data/graphql/auth_mutations.graphql.dart';
 import '../forms/login_form.dart';
 import '../widgets/auth_form_field.dart';
 import '../widgets/auth_button.dart';
+import '../widgets/biometric_login_widget.dart';
+import '../dialogs/biometric_setup_dialog.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -32,6 +35,22 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  Future<void> _checkBiometricSetup() async {
+    // Small delay to allow navigation to complete
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    if (!mounted) return;
+
+    final shouldPrompt = await BiometricService.shouldPromptForBiometricSetup();
+    if (shouldPrompt && mounted) {
+      showDialog<bool>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const BiometricSetupDialog(),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -46,6 +65,14 @@ class _LoginPageState extends State<LoginPage> {
                 SnackBar(
                   content: Text(state.message),
                   backgroundColor: Colors.red,
+                ),
+              );
+            } else if (state is AuthSessionExpired) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content:
+                      Text('Your session has expired. Please log in again.'),
+                  backgroundColor: Colors.orange,
                 ),
               );
             }
@@ -119,6 +146,9 @@ class _LoginPageState extends State<LoginPage> {
                                     name: user.name,
                                     role: user.role?.name,
                                   );
+
+                              // Check if we should prompt for biometric setup
+                              _checkBiometricSetup();
                             }
                             // Handle failure case
                             else if (authResult
@@ -165,6 +195,9 @@ class _LoginPageState extends State<LoginPage> {
                       },
                     ),
                     const SizedBox(height: 16),
+
+                    // Biometric Login Option
+                    const BiometricLoginWidget(),
 
                     // Register Link
                     TextButton(

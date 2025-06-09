@@ -12,6 +12,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'core/router/app_router.dart';
 import 'core/theme/theme_cubit.dart';
+import 'core/services/app_lifecycle_service.dart';
 
 void main() {
   runZonedGuarded(
@@ -27,10 +28,12 @@ Future<void> _initializeApp() async {
 
   // Initialize Hive storage first
   await _initializeHive();
-
   // Initialize and register ThemeCubit immediately after Hive
   GetIt.instance.registerLazySingleton<ThemeCubit>(() => ThemeCubit());
   GetIt.instance.registerLazySingleton<AppRouter>(() => AppRouter());
+
+  // Initialize app lifecycle service
+  AppLifecycleService.instance.initialize();
 
   // Set error handler
   FlutterError.onError = (FlutterErrorDetails details) {
