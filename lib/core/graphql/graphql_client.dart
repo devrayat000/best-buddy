@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:graphql/client.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import '../config/backend_config.dart';
 import '../storage/storage_service.dart';
 import 'connectivity_link.dart';
@@ -34,9 +35,9 @@ ValueNotifier<GraphQLClient> createGraphQLClient(
   final authLink = AuthLink(
     getToken: () async {
       final token = await storageService.getToken();
-      // if (token != null) {
-      log('Using token: $token');
-      // }
+      if (token != null) {
+        log('Using token: $token');
+      }
       return token != null ? 'Bearer $token' : null;
     },
   );
@@ -51,7 +52,9 @@ ValueNotifier<GraphQLClient> createGraphQLClient(
   final link = Link.from([authLink, connectivityLink, logLink, httpLink]);
   final client = GraphQLClient(
     link: link,
-    cache: GraphQLCache(store: InMemoryStore()),
+    cache: GraphQLCache(
+      store: HiveStore(),
+    ),
   );
 
   return ValueNotifier(client);

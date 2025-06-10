@@ -51,21 +51,21 @@ class _NoticesPageState extends State<NoticesPage> {
               Input$NoticeOrderByInput(createdAt: Enum$OrderDirection.desc)
             ],
           ),
+          fetchPolicy:
+              FetchPolicy.cacheFirst, // Use cache-first for offline support
         ),
       );
 
       if (result.hasException) {
-        log('❌ Pagination Query Exception: ${result.exception}');
+        log('❌ GraphQL Error: ${result.exception}');
         _pagingController.error = result.exception;
         return;
       }
 
       final notices = result.parsedData?.notices ?? [];
-      final totalCount = result.parsedData?.noticesCount ?? 0;
+      log('📝 Fetched page $pageKey: ${notices.length} items');
 
-      log('📝 Fetched page $pageKey: ${notices.length} items (total: $totalCount)');
-
-      final isLastPage = pageKey + notices.length >= totalCount;
+      final isLastPage = notices.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(notices);
       } else {

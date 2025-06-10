@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../../../core/auth/auth_cubit.dart';
 import '../../../auth/data/graphql/auth_mutations.graphql.dart';
 import '../../../../core/widgets/loading_view.dart';
@@ -38,7 +39,7 @@ class LogoutDialogPage extends StatelessWidget {
                 backgroundColor: Theme.of(context).colorScheme.error,
               ),
               child: result?.isLoading == true
-                  ? SizedBox(
+                  ? const SizedBox(
                       height: 20,
                       width: 20,
                       child: LoadingView(

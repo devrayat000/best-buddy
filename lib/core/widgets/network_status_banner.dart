@@ -124,7 +124,7 @@ class _NetworkStatusBannerState extends State<NetworkStatusBanner>
           animation: _slideAnimation,
           builder: (context, child) {
             return Transform.translate(
-              offset: Offset(0, _slideAnimation.value * 50),
+              offset: Offset(0, _slideAnimation.value * 32),
               child:
                   _shouldShowBanner ? _buildBanner() : const SizedBox.shrink(),
             );
@@ -138,15 +138,14 @@ class _NetworkStatusBannerState extends State<NetworkStatusBanner>
   Widget _buildBanner() {
     final theme = Theme.of(context);
     final isConnected = _isConnected;
-
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
       decoration: BoxDecoration(
         color: isConnected ? Colors.green.shade600 : Colors.red.shade600,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withAlpha(26),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -159,30 +158,40 @@ class _NetworkStatusBannerState extends State<NetworkStatusBanner>
             Icon(
               isConnected ? Icons.wifi : Icons.wifi_off,
               color: Colors.white,
-              size: 20,
+              size: 18,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 8),
             Expanded(
               child: Text(
                 isConnected
                     ? 'Connected to internet'
                     : 'No internet connection',
-                style: theme.textTheme.bodyMedium?.copyWith(
+                style: theme.textTheme.bodySmall?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w500,
                 ),
               ),
             ),
             if (!isConnected && widget.showOnlyWhenDisconnected)
-              TextButton(
-                onPressed: () async {
-                  await _connectivityService.checkConnectivity();
-                },
-                child: const Text(
-                  'Retry',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
+              SizedBox(
+                height: 28,
+                child: TextButton(
+                  onPressed: () async {
+                    await _connectivityService.checkConnectivity();
+                  },
+                  style: TextButton.styleFrom(
+                    minimumSize: Size.zero,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: const Text(
+                    'Retry',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ),

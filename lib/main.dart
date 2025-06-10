@@ -9,6 +9,7 @@ import 'package:get_it/get_it.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'core/router/app_router.dart';
 import 'core/theme/theme_cubit.dart';
@@ -49,9 +50,9 @@ Future<void> _initializeApp() async {
 
 Future<void> _initializeHive() async {
   try {
-    // Initialize Hive
+    // Initialize Hive for GraphQL cache store
     await Hive.initFlutter();
-    await initHiveAdapters();
+    await initHiveForFlutter();
 
     // Initialize Hydrated Storage
     HydratedBloc.storage = await HydratedStorage.build(
@@ -64,12 +65,6 @@ Future<void> _initializeHive() async {
     log('Failed to initialize Hive storage: $e');
     // Continue with app startup even if storage fails
   }
-}
-
-Future<void> initHiveAdapters() async {
-  // Register Hive adapters here once they are generated
-  // Hive.registerAdapter(UserModelAdapter());
-  // Hive.registerAdapter(SessionModelAdapter());
 }
 
 class StudyBuddyApp extends StatelessWidget {

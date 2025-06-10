@@ -34,8 +34,6 @@ Future<void> setupServiceLocator() async {
         sl<SessionService>(),
         sl<StorageService>(),
       ));
-  await sl<AuthCubit>().init(); // Initialize auth state
-
-  // Settings
+  await sl<AuthCubit>().init(); // Initialize auth state  // Settings
   sl.registerLazySingleton(() => SettingsCubit());
 }

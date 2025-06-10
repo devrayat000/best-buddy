@@ -233,10 +233,8 @@ class RichTextRenderer extends StatelessWidget {
             width: 4.0,
           ),
         ),
-        color: Theme.of(context)
-            .colorScheme
-            .surfaceContainerHighest
-            .withOpacity(0.3),
+        color:
+            Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha(77),
       ),
       child: _buildInlineContent(
         context,
@@ -264,7 +262,7 @@ class RichTextRenderer extends StatelessWidget {
         color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(8.0),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+          color: Theme.of(context).colorScheme.outline.withAlpha(51),
         ),
       ),
       child: Text(
@@ -281,7 +279,7 @@ class RichTextRenderer extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 20.0),
       height: 1.0,
-      color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+      color: Theme.of(context).colorScheme.outline.withAlpha(51),
     );
   }
 

@@ -28,7 +28,7 @@ class AuthButton extends StatelessWidget {
           elevation: 0,
         ),
         child: isLoading
-            ? SizedBox(
+            ? const SizedBox(
                 height: 20,
                 width: 20,
                 child: LoadingView(

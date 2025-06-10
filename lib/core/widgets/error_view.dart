@@ -40,33 +40,6 @@ class ErrorView extends StatelessWidget {
     this.padding,
   });
 
-  /// Factory constructor for loading errors with retry functionality
-  factory ErrorView.loading({
-    required String message,
-    required VoidCallback onRetry,
-    String? title,
-  }) {
-    return ErrorView(
-      message: message,
-      title: title ?? 'Loading Error',
-      onRetry: onRetry,
-    );
-  }
-
-  /// Factory constructor for network errors
-  factory ErrorView.network({
-    String? message,
-    VoidCallback? onRetry,
-  }) {
-    return ErrorView(
-      message:
-          message ?? 'Please check your internet connection and try again.',
-      title: 'Network Error',
-      onRetry: onRetry,
-      icon: Icons.wifi_off,
-    );
-  }
-
   /// Factory constructor for not found errors
   factory ErrorView.notFound({
     required String resourceName,

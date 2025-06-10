@@ -82,7 +82,7 @@ class GrantAccessView extends StatelessWidget {
                           ? null
                           : () => _grantAccess(context),
                       child: state is AuthLoading
-                          ? SizedBox(
+                          ? const SizedBox(
                               height: 20,
                               width: 20,
                               child: LoadingView(
