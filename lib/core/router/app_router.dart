@@ -107,9 +107,7 @@ class AppRouter {
           path: '/splash',
           name: 'splash',
           builder: (context, state) => const SplashScreen(),
-        ),
-
-        // Main app shell with cubit providers
+        ), // Main app shell with cubit providers
         ShellRoute(
           builder: (context, state, child) {
             return MultiBlocProvider(

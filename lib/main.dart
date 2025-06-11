@@ -10,6 +10,7 @@ import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
 
 import 'core/router/app_router.dart';
 import 'core/theme/theme_cubit.dart';
@@ -26,6 +27,9 @@ void main() {
 
 Future<void> _initializeApp() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize timezone data
+  tz.initializeTimeZones();
 
   // Initialize Hive storage first
   await _initializeHive();

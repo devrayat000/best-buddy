@@ -1,8 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'dart:async';
+import 'dart:developer';
+import 'package:get_it/get_it.dart';
 
 import '../storage/storage_service.dart';
+import '../services/firebase_messaging_service.dart';
 import 'session_service.dart';
 import 'biometric_service.dart';
 
@@ -138,8 +141,23 @@ class AuthCubit extends HydratedCubit<AuthState> {
       role: role,
     ));
 
+    // Register for push notifications and upload FCM token
+    await _registerForPushNotifications();
+
     // Start session validation timer after successful login
     _startSessionValidationTimer();
+  }
+
+  /// Register for push notifications and upload FCM token to server
+  Future<void> _registerForPushNotifications() async {
+    try {
+      final messagingService = GetIt.instance<FirebaseMessagingService>();
+      await messagingService.uploadTokenToServer();
+      log('📱 FCM token uploaded after login');
+    } catch (e) {
+      log('❌ Error uploading FCM token after login: $e');
+      // Don't fail login if FCM token upload fails
+    }
   }
 
   Future<void> logout() async {

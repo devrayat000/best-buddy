@@ -1,0 +1,9 @@
+mutation UploadFcmToken($data: FcmTokenUploadInput!) {
+  uploadFcmToken(data: $data) {
+    id
+    token
+    deviceType
+    createdAt
+    updatedAt
+  }
+}

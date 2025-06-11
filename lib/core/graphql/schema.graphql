@@ -6,12 +6,30 @@ type User {
   name: String!
   email: String!
   password: PasswordState
-  notices(where: NoticeWhereInput! = {}, orderBy: [NoticeOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: NoticeWhereUniqueInput): [Notice!]
+  notices(
+    where: NoticeWhereInput! = {}
+    orderBy: [NoticeOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+    cursor: NoticeWhereUniqueInput
+  ): [Notice!]
   noticesCount(where: NoticeWhereInput! = {}): Int
-  classTests(where: ClassTestWhereInput! = {}, orderBy: [ClassTestOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ClassTestWhereUniqueInput): [ClassTest!]
+  classTests(
+    where: ClassTestWhereInput! = {}
+    orderBy: [ClassTestOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+    cursor: ClassTestWhereUniqueInput
+  ): [ClassTest!]
   classTestsCount(where: ClassTestWhereInput! = {}): Int
-  tokens(where: ExpoTokenWhereInput! = {}, orderBy: [ExpoTokenOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExpoTokenWhereUniqueInput): [ExpoToken!]
-  tokensCount(where: ExpoTokenWhereInput! = {}): Int
+  tokens(
+    where: FcmTokenWhereInput! = {}
+    orderBy: [FcmTokenOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+    cursor: FcmTokenWhereUniqueInput
+  ): [FcmToken!]
+  tokensCount(where: FcmTokenWhereInput! = {}): Int
   role: UserRoleType
   createdAt: DateTime
   updatedAt: DateTime
@@ -27,7 +45,8 @@ enum UserRoleType {
   user
 }
 
-scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
+scalar DateTime
+  @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 input UserWhereUniqueInput {
   id: ID
@@ -43,7 +62,7 @@ input UserWhereInput {
   email: StringFilter
   notices: NoticeManyRelationFilter
   classTests: ClassTestManyRelationFilter
-  tokens: ExpoTokenManyRelationFilter
+  tokens: FcmTokenManyRelationFilter
   role: UserRoleTypeNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -100,10 +119,10 @@ input ClassTestManyRelationFilter {
   none: ClassTestWhereInput
 }
 
-input ExpoTokenManyRelationFilter {
-  every: ExpoTokenWhereInput
-  some: ExpoTokenWhereInput
-  none: ExpoTokenWhereInput
+input FcmTokenManyRelationFilter {
+  every: FcmTokenWhereInput
+  some: FcmTokenWhereInput
+  none: FcmTokenWhereInput
 }
 
 input UserRoleTypeNullableFilter {
@@ -142,7 +161,7 @@ input UserUpdateInput {
   password: String!
   notices: NoticeRelateToManyForUpdateInput
   classTests: ClassTestRelateToManyForUpdateInput
-  tokens: ExpoTokenRelateToManyForUpdateInput
+  tokens: FcmTokenRelateToManyForUpdateInput
   role: UserRoleType
   createdAt: DateTime
   updatedAt: DateTime
@@ -162,10 +181,10 @@ input ClassTestRelateToManyForUpdateInput {
   connect: [ClassTestWhereUniqueInput!]
 }
 
-input ExpoTokenRelateToManyForUpdateInput {
-  disconnect: [ExpoTokenWhereUniqueInput!]
-  set: [ExpoTokenWhereUniqueInput!]
-  connect: [ExpoTokenWhereUniqueInput!]
+input FcmTokenRelateToManyForUpdateInput {
+  disconnect: [FcmTokenWhereUniqueInput!]
+  set: [FcmTokenWhereUniqueInput!]
+  connect: [FcmTokenWhereUniqueInput!]
 }
 
 input UserUpdateArgs {
@@ -179,7 +198,7 @@ input UserCreateInput {
   password: String!
   notices: NoticeRelateToManyForCreateInput
   classTests: ClassTestRelateToManyForCreateInput
-  tokens: ExpoTokenRelateToManyForCreateInput
+  tokens: FcmTokenRelateToManyForCreateInput
   role: UserRoleType
   createdAt: DateTime
   updatedAt: DateTime
@@ -195,33 +214,52 @@ input ClassTestRelateToManyForCreateInput {
   connect: [ClassTestWhereUniqueInput!]
 }
 
-input ExpoTokenRelateToManyForCreateInput {
-  connect: [ExpoTokenWhereUniqueInput!]
+input FcmTokenRelateToManyForCreateInput {
+  connect: [FcmTokenWhereUniqueInput!]
 }
 
-type ExpoToken {
+type FcmToken {
   id: ID!
+  token: String
+  deviceType: FcmTokenDeviceTypeType
   createdAt: DateTime
   updatedAt: DateTime
   user: User
 }
 
-input ExpoTokenWhereUniqueInput {
-  id: ID
+enum FcmTokenDeviceTypeType {
+  ios
+  android
 }
 
-input ExpoTokenWhereInput {
-  AND: [ExpoTokenWhereInput!]
-  OR: [ExpoTokenWhereInput!]
-  NOT: [ExpoTokenWhereInput!]
+input FcmTokenWhereUniqueInput {
+  id: ID
+  token: String
+}
+
+input FcmTokenWhereInput {
+  AND: [FcmTokenWhereInput!]
+  OR: [FcmTokenWhereInput!]
+  NOT: [FcmTokenWhereInput!]
   id: IDFilter
+  token: StringFilter
+  deviceType: FcmTokenDeviceTypeTypeNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   user: UserWhereInput
 }
 
-input ExpoTokenOrderByInput {
+input FcmTokenDeviceTypeTypeNullableFilter {
+  equals: FcmTokenDeviceTypeType
+  in: [FcmTokenDeviceTypeType!]
+  notIn: [FcmTokenDeviceTypeType!]
+  not: FcmTokenDeviceTypeTypeNullableFilter
+}
+
+input FcmTokenOrderByInput {
   id: OrderDirection
+  token: OrderDirection
+  deviceType: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -370,7 +408,10 @@ input ClassTestCreateInput {
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
-scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
+scalar JSON
+  @specifiedBy(
+    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
+  )
 
 type Mutation {
   createUser(data: UserCreateInput!): User
@@ -379,8 +420,8 @@ type Mutation {
   updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
-  deleteExpoToken(where: ExpoTokenWhereUniqueInput!): ExpoToken
-  deleteExpoTokens(where: [ExpoTokenWhereUniqueInput!]!): [ExpoToken]
+  deleteFcmToken(where: FcmTokenWhereUniqueInput!): FcmToken
+  deleteFcmTokens(where: [FcmTokenWhereUniqueInput!]!): [FcmToken]
   createNotice(data: NoticeCreateInput!): Notice
   createNotices(data: [NoticeCreateInput!]!): [Notice]
   updateNotice(where: NoticeWhereUniqueInput!, data: NoticeUpdateInput!): Notice
@@ -389,25 +430,40 @@ type Mutation {
   deleteNotices(where: [NoticeWhereUniqueInput!]!): [Notice]
   createClassTest(data: ClassTestCreateInput!): ClassTest
   createClassTests(data: [ClassTestCreateInput!]!): [ClassTest]
-  updateClassTest(where: ClassTestWhereUniqueInput!, data: ClassTestUpdateInput!): ClassTest
+  updateClassTest(
+    where: ClassTestWhereUniqueInput!
+    data: ClassTestUpdateInput!
+  ): ClassTest
   updateClassTests(data: [ClassTestUpdateArgs!]!): [ClassTest]
   deleteClassTest(where: ClassTestWhereUniqueInput!): ClassTest
   deleteClassTests(where: [ClassTestWhereUniqueInput!]!): [ClassTest]
   endSession: Boolean!
-  authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
-  createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
+  authenticateUserWithPassword(
+    email: String!
+    password: String!
+  ): UserAuthenticationWithPasswordResult
+  createInitialUser(
+    data: CreateInitialUserInput!
+  ): UserAuthenticationWithPasswordSuccess!
   refreshSession: String!
   updateProfile(data: UserUpdateInput!): User
-  uploadExpoToken(data: ExpoTokenUploadInput!): ExpoToken
+  uploadFcmToken(data: FcmTokenUploadInput!): FcmToken
 }
 
-input ExpoTokenUploadInput {
-  token: ID!
-  createdAt: DateTime
-  updatedAt: DateTime
+input FcmTokenUploadInput {
+  token: String!
+  deviceType: DeviceType = android
+  userId: String
 }
 
-union UserAuthenticationWithPasswordResult = UserAuthenticationWithPasswordSuccess | UserAuthenticationWithPasswordFailure
+enum DeviceType {
+  ios
+  android
+}
+
+union UserAuthenticationWithPasswordResult =
+    UserAuthenticationWithPasswordSuccess
+  | UserAuthenticationWithPasswordFailure
 
 type UserAuthenticationWithPasswordSuccess {
   sessionToken: String!
@@ -426,16 +482,40 @@ input CreateInitialUserInput {
 
 type Query {
   user(where: UserWhereUniqueInput!): User
-  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
+  users(
+    where: UserWhereInput! = {}
+    orderBy: [UserOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+    cursor: UserWhereUniqueInput
+  ): [User!]
   usersCount(where: UserWhereInput! = {}): Int
-  expoToken(where: ExpoTokenWhereUniqueInput!): ExpoToken
-  expoTokens(where: ExpoTokenWhereInput! = {}, orderBy: [ExpoTokenOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExpoTokenWhereUniqueInput): [ExpoToken!]
-  expoTokensCount(where: ExpoTokenWhereInput! = {}): Int
+  fcmToken(where: FcmTokenWhereUniqueInput!): FcmToken
+  fcmTokens(
+    where: FcmTokenWhereInput! = {}
+    orderBy: [FcmTokenOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+    cursor: FcmTokenWhereUniqueInput
+  ): [FcmToken!]
+  fcmTokensCount(where: FcmTokenWhereInput! = {}): Int
   notice(where: NoticeWhereUniqueInput!): Notice
-  notices(where: NoticeWhereInput! = {}, orderBy: [NoticeOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: NoticeWhereUniqueInput): [Notice!]
+  notices(
+    where: NoticeWhereInput! = {}
+    orderBy: [NoticeOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+    cursor: NoticeWhereUniqueInput
+  ): [Notice!]
   noticesCount(where: NoticeWhereInput! = {}): Int
   classTest(where: ClassTestWhereUniqueInput!): ClassTest
-  classTests(where: ClassTestWhereInput! = {}, orderBy: [ClassTestOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ClassTestWhereUniqueInput): [ClassTest!]
+  classTests(
+    where: ClassTestWhereInput! = {}
+    orderBy: [ClassTestOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+    cursor: ClassTestWhereUniqueInput
+  ): [ClassTest!]
   classTestsCount(where: ClassTestWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem

@@ -152,7 +152,7 @@ class Input$UserWhereInput {
     Input$StringFilter? email,
     Input$NoticeManyRelationFilter? notices,
     Input$ClassTestManyRelationFilter? classTests,
-    Input$ExpoTokenManyRelationFilter? tokens,
+    Input$FcmTokenManyRelationFilter? tokens,
     Input$UserRoleTypeNullableFilter? role,
     Input$DateTimeNullableFilter? createdAt,
     Input$DateTimeNullableFilter? updatedAt,
@@ -233,7 +233,7 @@ class Input$UserWhereInput {
       final l$tokens = data['tokens'];
       result$data['tokens'] = l$tokens == null
           ? null
-          : Input$ExpoTokenManyRelationFilter.fromJson(
+          : Input$FcmTokenManyRelationFilter.fromJson(
               (l$tokens as Map<String, dynamic>));
     }
     if (data.containsKey('role')) {
@@ -283,8 +283,8 @@ class Input$UserWhereInput {
   Input$ClassTestManyRelationFilter? get classTests =>
       (_$data['classTests'] as Input$ClassTestManyRelationFilter?);
 
-  Input$ExpoTokenManyRelationFilter? get tokens =>
-      (_$data['tokens'] as Input$ExpoTokenManyRelationFilter?);
+  Input$FcmTokenManyRelationFilter? get tokens =>
+      (_$data['tokens'] as Input$FcmTokenManyRelationFilter?);
 
   Input$UserRoleTypeNullableFilter? get role =>
       (_$data['role'] as Input$UserRoleTypeNullableFilter?);
@@ -558,7 +558,7 @@ abstract class CopyWith$Input$UserWhereInput<TRes> {
     Input$StringFilter? email,
     Input$NoticeManyRelationFilter? notices,
     Input$ClassTestManyRelationFilter? classTests,
-    Input$ExpoTokenManyRelationFilter? tokens,
+    Input$FcmTokenManyRelationFilter? tokens,
     Input$UserRoleTypeNullableFilter? role,
     Input$DateTimeNullableFilter? createdAt,
     Input$DateTimeNullableFilter? updatedAt,
@@ -580,7 +580,7 @@ abstract class CopyWith$Input$UserWhereInput<TRes> {
   CopyWith$Input$StringFilter<TRes> get email;
   CopyWith$Input$NoticeManyRelationFilter<TRes> get notices;
   CopyWith$Input$ClassTestManyRelationFilter<TRes> get classTests;
-  CopyWith$Input$ExpoTokenManyRelationFilter<TRes> get tokens;
+  CopyWith$Input$FcmTokenManyRelationFilter<TRes> get tokens;
   CopyWith$Input$UserRoleTypeNullableFilter<TRes> get role;
   CopyWith$Input$DateTimeNullableFilter<TRes> get createdAt;
   CopyWith$Input$DateTimeNullableFilter<TRes> get updatedAt;
@@ -626,7 +626,7 @@ class _CopyWithImpl$Input$UserWhereInput<TRes>
         if (classTests != _undefined)
           'classTests': (classTests as Input$ClassTestManyRelationFilter?),
         if (tokens != _undefined)
-          'tokens': (tokens as Input$ExpoTokenManyRelationFilter?),
+          'tokens': (tokens as Input$FcmTokenManyRelationFilter?),
         if (role != _undefined)
           'role': (role as Input$UserRoleTypeNullableFilter?),
         if (createdAt != _undefined)
@@ -705,11 +705,11 @@ class _CopyWithImpl$Input$UserWhereInput<TRes>
             local$classTests, (e) => call(classTests: e));
   }
 
-  CopyWith$Input$ExpoTokenManyRelationFilter<TRes> get tokens {
+  CopyWith$Input$FcmTokenManyRelationFilter<TRes> get tokens {
     final local$tokens = _instance.tokens;
     return local$tokens == null
-        ? CopyWith$Input$ExpoTokenManyRelationFilter.stub(_then(_instance))
-        : CopyWith$Input$ExpoTokenManyRelationFilter(
+        ? CopyWith$Input$FcmTokenManyRelationFilter.stub(_then(_instance))
+        : CopyWith$Input$FcmTokenManyRelationFilter(
             local$tokens, (e) => call(tokens: e));
   }
 
@@ -753,7 +753,7 @@ class _CopyWithStubImpl$Input$UserWhereInput<TRes>
     Input$StringFilter? email,
     Input$NoticeManyRelationFilter? notices,
     Input$ClassTestManyRelationFilter? classTests,
-    Input$ExpoTokenManyRelationFilter? tokens,
+    Input$FcmTokenManyRelationFilter? tokens,
     Input$UserRoleTypeNullableFilter? role,
     Input$DateTimeNullableFilter? createdAt,
     Input$DateTimeNullableFilter? updatedAt,
@@ -780,8 +780,8 @@ class _CopyWithStubImpl$Input$UserWhereInput<TRes>
   CopyWith$Input$ClassTestManyRelationFilter<TRes> get classTests =>
       CopyWith$Input$ClassTestManyRelationFilter.stub(_res);
 
-  CopyWith$Input$ExpoTokenManyRelationFilter<TRes> get tokens =>
-      CopyWith$Input$ExpoTokenManyRelationFilter.stub(_res);
+  CopyWith$Input$FcmTokenManyRelationFilter<TRes> get tokens =>
+      CopyWith$Input$FcmTokenManyRelationFilter.stub(_res);
 
   CopyWith$Input$UserRoleTypeNullableFilter<TRes> get role =>
       CopyWith$Input$UserRoleTypeNullableFilter.stub(_res);
@@ -2403,57 +2403,54 @@ class _CopyWithStubImpl$Input$ClassTestManyRelationFilter<TRes>
       CopyWith$Input$ClassTestWhereInput.stub(_res);
 }
 
-class Input$ExpoTokenManyRelationFilter {
-  factory Input$ExpoTokenManyRelationFilter({
-    Input$ExpoTokenWhereInput? every,
-    Input$ExpoTokenWhereInput? some,
-    Input$ExpoTokenWhereInput? none,
+class Input$FcmTokenManyRelationFilter {
+  factory Input$FcmTokenManyRelationFilter({
+    Input$FcmTokenWhereInput? every,
+    Input$FcmTokenWhereInput? some,
+    Input$FcmTokenWhereInput? none,
   }) =>
-      Input$ExpoTokenManyRelationFilter._({
+      Input$FcmTokenManyRelationFilter._({
         if (every != null) r'every': every,
         if (some != null) r'some': some,
         if (none != null) r'none': none,
       });
 
-  Input$ExpoTokenManyRelationFilter._(this._$data);
+  Input$FcmTokenManyRelationFilter._(this._$data);
 
-  factory Input$ExpoTokenManyRelationFilter.fromJson(
-      Map<String, dynamic> data) {
+  factory Input$FcmTokenManyRelationFilter.fromJson(Map<String, dynamic> data) {
     final result$data = <String, dynamic>{};
     if (data.containsKey('every')) {
       final l$every = data['every'];
       result$data['every'] = l$every == null
           ? null
-          : Input$ExpoTokenWhereInput.fromJson(
+          : Input$FcmTokenWhereInput.fromJson(
               (l$every as Map<String, dynamic>));
     }
     if (data.containsKey('some')) {
       final l$some = data['some'];
       result$data['some'] = l$some == null
           ? null
-          : Input$ExpoTokenWhereInput.fromJson(
-              (l$some as Map<String, dynamic>));
+          : Input$FcmTokenWhereInput.fromJson((l$some as Map<String, dynamic>));
     }
     if (data.containsKey('none')) {
       final l$none = data['none'];
       result$data['none'] = l$none == null
           ? null
-          : Input$ExpoTokenWhereInput.fromJson(
-              (l$none as Map<String, dynamic>));
+          : Input$FcmTokenWhereInput.fromJson((l$none as Map<String, dynamic>));
     }
-    return Input$ExpoTokenManyRelationFilter._(result$data);
+    return Input$FcmTokenManyRelationFilter._(result$data);
   }
 
   Map<String, dynamic> _$data;
 
-  Input$ExpoTokenWhereInput? get every =>
-      (_$data['every'] as Input$ExpoTokenWhereInput?);
+  Input$FcmTokenWhereInput? get every =>
+      (_$data['every'] as Input$FcmTokenWhereInput?);
 
-  Input$ExpoTokenWhereInput? get some =>
-      (_$data['some'] as Input$ExpoTokenWhereInput?);
+  Input$FcmTokenWhereInput? get some =>
+      (_$data['some'] as Input$FcmTokenWhereInput?);
 
-  Input$ExpoTokenWhereInput? get none =>
-      (_$data['none'] as Input$ExpoTokenWhereInput?);
+  Input$FcmTokenWhereInput? get none =>
+      (_$data['none'] as Input$FcmTokenWhereInput?);
 
   Map<String, dynamic> toJson() {
     final result$data = <String, dynamic>{};
@@ -2472,8 +2469,8 @@ class Input$ExpoTokenManyRelationFilter {
     return result$data;
   }
 
-  CopyWith$Input$ExpoTokenManyRelationFilter<Input$ExpoTokenManyRelationFilter>
-      get copyWith => CopyWith$Input$ExpoTokenManyRelationFilter(
+  CopyWith$Input$FcmTokenManyRelationFilter<Input$FcmTokenManyRelationFilter>
+      get copyWith => CopyWith$Input$FcmTokenManyRelationFilter(
             this,
             (i) => i,
           );
@@ -2483,7 +2480,7 @@ class Input$ExpoTokenManyRelationFilter {
     if (identical(this, other)) {
       return true;
     }
-    if (other is! Input$ExpoTokenManyRelationFilter ||
+    if (other is! Input$FcmTokenManyRelationFilter ||
         runtimeType != other.runtimeType) {
       return false;
     }
@@ -2527,35 +2524,35 @@ class Input$ExpoTokenManyRelationFilter {
   }
 }
 
-abstract class CopyWith$Input$ExpoTokenManyRelationFilter<TRes> {
-  factory CopyWith$Input$ExpoTokenManyRelationFilter(
-    Input$ExpoTokenManyRelationFilter instance,
-    TRes Function(Input$ExpoTokenManyRelationFilter) then,
-  ) = _CopyWithImpl$Input$ExpoTokenManyRelationFilter;
+abstract class CopyWith$Input$FcmTokenManyRelationFilter<TRes> {
+  factory CopyWith$Input$FcmTokenManyRelationFilter(
+    Input$FcmTokenManyRelationFilter instance,
+    TRes Function(Input$FcmTokenManyRelationFilter) then,
+  ) = _CopyWithImpl$Input$FcmTokenManyRelationFilter;
 
-  factory CopyWith$Input$ExpoTokenManyRelationFilter.stub(TRes res) =
-      _CopyWithStubImpl$Input$ExpoTokenManyRelationFilter;
+  factory CopyWith$Input$FcmTokenManyRelationFilter.stub(TRes res) =
+      _CopyWithStubImpl$Input$FcmTokenManyRelationFilter;
 
   TRes call({
-    Input$ExpoTokenWhereInput? every,
-    Input$ExpoTokenWhereInput? some,
-    Input$ExpoTokenWhereInput? none,
+    Input$FcmTokenWhereInput? every,
+    Input$FcmTokenWhereInput? some,
+    Input$FcmTokenWhereInput? none,
   });
-  CopyWith$Input$ExpoTokenWhereInput<TRes> get every;
-  CopyWith$Input$ExpoTokenWhereInput<TRes> get some;
-  CopyWith$Input$ExpoTokenWhereInput<TRes> get none;
+  CopyWith$Input$FcmTokenWhereInput<TRes> get every;
+  CopyWith$Input$FcmTokenWhereInput<TRes> get some;
+  CopyWith$Input$FcmTokenWhereInput<TRes> get none;
 }
 
-class _CopyWithImpl$Input$ExpoTokenManyRelationFilter<TRes>
-    implements CopyWith$Input$ExpoTokenManyRelationFilter<TRes> {
-  _CopyWithImpl$Input$ExpoTokenManyRelationFilter(
+class _CopyWithImpl$Input$FcmTokenManyRelationFilter<TRes>
+    implements CopyWith$Input$FcmTokenManyRelationFilter<TRes> {
+  _CopyWithImpl$Input$FcmTokenManyRelationFilter(
     this._instance,
     this._then,
   );
 
-  final Input$ExpoTokenManyRelationFilter _instance;
+  final Input$FcmTokenManyRelationFilter _instance;
 
-  final TRes Function(Input$ExpoTokenManyRelationFilter) _then;
+  final TRes Function(Input$FcmTokenManyRelationFilter) _then;
 
   static const _undefined = <dynamic, dynamic>{};
 
@@ -2564,57 +2561,56 @@ class _CopyWithImpl$Input$ExpoTokenManyRelationFilter<TRes>
     Object? some = _undefined,
     Object? none = _undefined,
   }) =>
-      _then(Input$ExpoTokenManyRelationFilter._({
+      _then(Input$FcmTokenManyRelationFilter._({
         ..._instance._$data,
-        if (every != _undefined) 'every': (every as Input$ExpoTokenWhereInput?),
-        if (some != _undefined) 'some': (some as Input$ExpoTokenWhereInput?),
-        if (none != _undefined) 'none': (none as Input$ExpoTokenWhereInput?),
+        if (every != _undefined) 'every': (every as Input$FcmTokenWhereInput?),
+        if (some != _undefined) 'some': (some as Input$FcmTokenWhereInput?),
+        if (none != _undefined) 'none': (none as Input$FcmTokenWhereInput?),
       }));
 
-  CopyWith$Input$ExpoTokenWhereInput<TRes> get every {
+  CopyWith$Input$FcmTokenWhereInput<TRes> get every {
     final local$every = _instance.every;
     return local$every == null
-        ? CopyWith$Input$ExpoTokenWhereInput.stub(_then(_instance))
-        : CopyWith$Input$ExpoTokenWhereInput(
-            local$every, (e) => call(every: e));
+        ? CopyWith$Input$FcmTokenWhereInput.stub(_then(_instance))
+        : CopyWith$Input$FcmTokenWhereInput(local$every, (e) => call(every: e));
   }
 
-  CopyWith$Input$ExpoTokenWhereInput<TRes> get some {
+  CopyWith$Input$FcmTokenWhereInput<TRes> get some {
     final local$some = _instance.some;
     return local$some == null
-        ? CopyWith$Input$ExpoTokenWhereInput.stub(_then(_instance))
-        : CopyWith$Input$ExpoTokenWhereInput(local$some, (e) => call(some: e));
+        ? CopyWith$Input$FcmTokenWhereInput.stub(_then(_instance))
+        : CopyWith$Input$FcmTokenWhereInput(local$some, (e) => call(some: e));
   }
 
-  CopyWith$Input$ExpoTokenWhereInput<TRes> get none {
+  CopyWith$Input$FcmTokenWhereInput<TRes> get none {
     final local$none = _instance.none;
     return local$none == null
-        ? CopyWith$Input$ExpoTokenWhereInput.stub(_then(_instance))
-        : CopyWith$Input$ExpoTokenWhereInput(local$none, (e) => call(none: e));
+        ? CopyWith$Input$FcmTokenWhereInput.stub(_then(_instance))
+        : CopyWith$Input$FcmTokenWhereInput(local$none, (e) => call(none: e));
   }
 }
 
-class _CopyWithStubImpl$Input$ExpoTokenManyRelationFilter<TRes>
-    implements CopyWith$Input$ExpoTokenManyRelationFilter<TRes> {
-  _CopyWithStubImpl$Input$ExpoTokenManyRelationFilter(this._res);
+class _CopyWithStubImpl$Input$FcmTokenManyRelationFilter<TRes>
+    implements CopyWith$Input$FcmTokenManyRelationFilter<TRes> {
+  _CopyWithStubImpl$Input$FcmTokenManyRelationFilter(this._res);
 
   TRes _res;
 
   call({
-    Input$ExpoTokenWhereInput? every,
-    Input$ExpoTokenWhereInput? some,
-    Input$ExpoTokenWhereInput? none,
+    Input$FcmTokenWhereInput? every,
+    Input$FcmTokenWhereInput? some,
+    Input$FcmTokenWhereInput? none,
   }) =>
       _res;
 
-  CopyWith$Input$ExpoTokenWhereInput<TRes> get every =>
-      CopyWith$Input$ExpoTokenWhereInput.stub(_res);
+  CopyWith$Input$FcmTokenWhereInput<TRes> get every =>
+      CopyWith$Input$FcmTokenWhereInput.stub(_res);
 
-  CopyWith$Input$ExpoTokenWhereInput<TRes> get some =>
-      CopyWith$Input$ExpoTokenWhereInput.stub(_res);
+  CopyWith$Input$FcmTokenWhereInput<TRes> get some =>
+      CopyWith$Input$FcmTokenWhereInput.stub(_res);
 
-  CopyWith$Input$ExpoTokenWhereInput<TRes> get none =>
-      CopyWith$Input$ExpoTokenWhereInput.stub(_res);
+  CopyWith$Input$FcmTokenWhereInput<TRes> get none =>
+      CopyWith$Input$FcmTokenWhereInput.stub(_res);
 }
 
 class Input$UserRoleTypeNullableFilter {
@@ -3491,7 +3487,7 @@ class Input$UserUpdateInput {
     required String password,
     Input$NoticeRelateToManyForUpdateInput? notices,
     Input$ClassTestRelateToManyForUpdateInput? classTests,
-    Input$ExpoTokenRelateToManyForUpdateInput? tokens,
+    Input$FcmTokenRelateToManyForUpdateInput? tokens,
     Enum$UserRoleType? role,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -3530,7 +3526,7 @@ class Input$UserUpdateInput {
       final l$tokens = data['tokens'];
       result$data['tokens'] = l$tokens == null
           ? null
-          : Input$ExpoTokenRelateToManyForUpdateInput.fromJson(
+          : Input$FcmTokenRelateToManyForUpdateInput.fromJson(
               (l$tokens as Map<String, dynamic>));
     }
     if (data.containsKey('role')) {
@@ -3562,8 +3558,8 @@ class Input$UserUpdateInput {
   Input$ClassTestRelateToManyForUpdateInput? get classTests =>
       (_$data['classTests'] as Input$ClassTestRelateToManyForUpdateInput?);
 
-  Input$ExpoTokenRelateToManyForUpdateInput? get tokens =>
-      (_$data['tokens'] as Input$ExpoTokenRelateToManyForUpdateInput?);
+  Input$FcmTokenRelateToManyForUpdateInput? get tokens =>
+      (_$data['tokens'] as Input$FcmTokenRelateToManyForUpdateInput?);
 
   Enum$UserRoleType? get role => (_$data['role'] as Enum$UserRoleType?);
 
@@ -3710,14 +3706,14 @@ abstract class CopyWith$Input$UserUpdateInput<TRes> {
     String? password,
     Input$NoticeRelateToManyForUpdateInput? notices,
     Input$ClassTestRelateToManyForUpdateInput? classTests,
-    Input$ExpoTokenRelateToManyForUpdateInput? tokens,
+    Input$FcmTokenRelateToManyForUpdateInput? tokens,
     Enum$UserRoleType? role,
     DateTime? createdAt,
     DateTime? updatedAt,
   });
   CopyWith$Input$NoticeRelateToManyForUpdateInput<TRes> get notices;
   CopyWith$Input$ClassTestRelateToManyForUpdateInput<TRes> get classTests;
-  CopyWith$Input$ExpoTokenRelateToManyForUpdateInput<TRes> get tokens;
+  CopyWith$Input$FcmTokenRelateToManyForUpdateInput<TRes> get tokens;
 }
 
 class _CopyWithImpl$Input$UserUpdateInput<TRes>
@@ -3752,7 +3748,7 @@ class _CopyWithImpl$Input$UserUpdateInput<TRes>
           'classTests':
               (classTests as Input$ClassTestRelateToManyForUpdateInput?),
         if (tokens != _undefined)
-          'tokens': (tokens as Input$ExpoTokenRelateToManyForUpdateInput?),
+          'tokens': (tokens as Input$FcmTokenRelateToManyForUpdateInput?),
         if (role != _undefined) 'role': (role as Enum$UserRoleType?),
         if (createdAt != _undefined) 'createdAt': (createdAt as DateTime?),
         if (updatedAt != _undefined) 'updatedAt': (updatedAt as DateTime?),
@@ -3775,12 +3771,12 @@ class _CopyWithImpl$Input$UserUpdateInput<TRes>
             local$classTests, (e) => call(classTests: e));
   }
 
-  CopyWith$Input$ExpoTokenRelateToManyForUpdateInput<TRes> get tokens {
+  CopyWith$Input$FcmTokenRelateToManyForUpdateInput<TRes> get tokens {
     final local$tokens = _instance.tokens;
     return local$tokens == null
-        ? CopyWith$Input$ExpoTokenRelateToManyForUpdateInput.stub(
+        ? CopyWith$Input$FcmTokenRelateToManyForUpdateInput.stub(
             _then(_instance))
-        : CopyWith$Input$ExpoTokenRelateToManyForUpdateInput(
+        : CopyWith$Input$FcmTokenRelateToManyForUpdateInput(
             local$tokens, (e) => call(tokens: e));
   }
 }
@@ -3795,7 +3791,7 @@ class _CopyWithStubImpl$Input$UserUpdateInput<TRes>
     String? password,
     Input$NoticeRelateToManyForUpdateInput? notices,
     Input$ClassTestRelateToManyForUpdateInput? classTests,
-    Input$ExpoTokenRelateToManyForUpdateInput? tokens,
+    Input$FcmTokenRelateToManyForUpdateInput? tokens,
     Enum$UserRoleType? role,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -3808,8 +3804,8 @@ class _CopyWithStubImpl$Input$UserUpdateInput<TRes>
   CopyWith$Input$ClassTestRelateToManyForUpdateInput<TRes> get classTests =>
       CopyWith$Input$ClassTestRelateToManyForUpdateInput.stub(_res);
 
-  CopyWith$Input$ExpoTokenRelateToManyForUpdateInput<TRes> get tokens =>
-      CopyWith$Input$ExpoTokenRelateToManyForUpdateInput.stub(_res);
+  CopyWith$Input$FcmTokenRelateToManyForUpdateInput<TRes> get tokens =>
+      CopyWith$Input$FcmTokenRelateToManyForUpdateInput.stub(_res);
 }
 
 class Input$NoticeRelateToManyForUpdateInput {
@@ -4531,57 +4527,57 @@ class _CopyWithStubImpl$Input$ClassTestRelateToManyForUpdateInput<TRes>
   connect(_fn) => _res;
 }
 
-class Input$ExpoTokenRelateToManyForUpdateInput {
-  factory Input$ExpoTokenRelateToManyForUpdateInput({
-    List<Input$ExpoTokenWhereUniqueInput>? disconnect,
-    List<Input$ExpoTokenWhereUniqueInput>? $set,
-    List<Input$ExpoTokenWhereUniqueInput>? connect,
+class Input$FcmTokenRelateToManyForUpdateInput {
+  factory Input$FcmTokenRelateToManyForUpdateInput({
+    List<Input$FcmTokenWhereUniqueInput>? disconnect,
+    List<Input$FcmTokenWhereUniqueInput>? $set,
+    List<Input$FcmTokenWhereUniqueInput>? connect,
   }) =>
-      Input$ExpoTokenRelateToManyForUpdateInput._({
+      Input$FcmTokenRelateToManyForUpdateInput._({
         if (disconnect != null) r'disconnect': disconnect,
         if ($set != null) r'set': $set,
         if (connect != null) r'connect': connect,
       });
 
-  Input$ExpoTokenRelateToManyForUpdateInput._(this._$data);
+  Input$FcmTokenRelateToManyForUpdateInput._(this._$data);
 
-  factory Input$ExpoTokenRelateToManyForUpdateInput.fromJson(
+  factory Input$FcmTokenRelateToManyForUpdateInput.fromJson(
       Map<String, dynamic> data) {
     final result$data = <String, dynamic>{};
     if (data.containsKey('disconnect')) {
       final l$disconnect = data['disconnect'];
       result$data['disconnect'] = (l$disconnect as List<dynamic>?)
-          ?.map((e) => Input$ExpoTokenWhereUniqueInput.fromJson(
+          ?.map((e) => Input$FcmTokenWhereUniqueInput.fromJson(
               (e as Map<String, dynamic>)))
           .toList();
     }
     if (data.containsKey('set')) {
       final l$$set = data['set'];
       result$data['set'] = (l$$set as List<dynamic>?)
-          ?.map((e) => Input$ExpoTokenWhereUniqueInput.fromJson(
+          ?.map((e) => Input$FcmTokenWhereUniqueInput.fromJson(
               (e as Map<String, dynamic>)))
           .toList();
     }
     if (data.containsKey('connect')) {
       final l$connect = data['connect'];
       result$data['connect'] = (l$connect as List<dynamic>?)
-          ?.map((e) => Input$ExpoTokenWhereUniqueInput.fromJson(
+          ?.map((e) => Input$FcmTokenWhereUniqueInput.fromJson(
               (e as Map<String, dynamic>)))
           .toList();
     }
-    return Input$ExpoTokenRelateToManyForUpdateInput._(result$data);
+    return Input$FcmTokenRelateToManyForUpdateInput._(result$data);
   }
 
   Map<String, dynamic> _$data;
 
-  List<Input$ExpoTokenWhereUniqueInput>? get disconnect =>
-      (_$data['disconnect'] as List<Input$ExpoTokenWhereUniqueInput>?);
+  List<Input$FcmTokenWhereUniqueInput>? get disconnect =>
+      (_$data['disconnect'] as List<Input$FcmTokenWhereUniqueInput>?);
 
-  List<Input$ExpoTokenWhereUniqueInput>? get $set =>
-      (_$data['set'] as List<Input$ExpoTokenWhereUniqueInput>?);
+  List<Input$FcmTokenWhereUniqueInput>? get $set =>
+      (_$data['set'] as List<Input$FcmTokenWhereUniqueInput>?);
 
-  List<Input$ExpoTokenWhereUniqueInput>? get connect =>
-      (_$data['connect'] as List<Input$ExpoTokenWhereUniqueInput>?);
+  List<Input$FcmTokenWhereUniqueInput>? get connect =>
+      (_$data['connect'] as List<Input$FcmTokenWhereUniqueInput>?);
 
   Map<String, dynamic> toJson() {
     final result$data = <String, dynamic>{};
@@ -4600,9 +4596,9 @@ class Input$ExpoTokenRelateToManyForUpdateInput {
     return result$data;
   }
 
-  CopyWith$Input$ExpoTokenRelateToManyForUpdateInput<
-          Input$ExpoTokenRelateToManyForUpdateInput>
-      get copyWith => CopyWith$Input$ExpoTokenRelateToManyForUpdateInput(
+  CopyWith$Input$FcmTokenRelateToManyForUpdateInput<
+          Input$FcmTokenRelateToManyForUpdateInput>
+      get copyWith => CopyWith$Input$FcmTokenRelateToManyForUpdateInput(
             this,
             (i) => i,
           );
@@ -4612,7 +4608,7 @@ class Input$ExpoTokenRelateToManyForUpdateInput {
     if (identical(this, other)) {
       return true;
     }
-    if (other is! Input$ExpoTokenRelateToManyForUpdateInput ||
+    if (other is! Input$FcmTokenRelateToManyForUpdateInput ||
         runtimeType != other.runtimeType) {
       return false;
     }
@@ -4702,50 +4698,50 @@ class Input$ExpoTokenRelateToManyForUpdateInput {
   }
 }
 
-abstract class CopyWith$Input$ExpoTokenRelateToManyForUpdateInput<TRes> {
-  factory CopyWith$Input$ExpoTokenRelateToManyForUpdateInput(
-    Input$ExpoTokenRelateToManyForUpdateInput instance,
-    TRes Function(Input$ExpoTokenRelateToManyForUpdateInput) then,
-  ) = _CopyWithImpl$Input$ExpoTokenRelateToManyForUpdateInput;
+abstract class CopyWith$Input$FcmTokenRelateToManyForUpdateInput<TRes> {
+  factory CopyWith$Input$FcmTokenRelateToManyForUpdateInput(
+    Input$FcmTokenRelateToManyForUpdateInput instance,
+    TRes Function(Input$FcmTokenRelateToManyForUpdateInput) then,
+  ) = _CopyWithImpl$Input$FcmTokenRelateToManyForUpdateInput;
 
-  factory CopyWith$Input$ExpoTokenRelateToManyForUpdateInput.stub(TRes res) =
-      _CopyWithStubImpl$Input$ExpoTokenRelateToManyForUpdateInput;
+  factory CopyWith$Input$FcmTokenRelateToManyForUpdateInput.stub(TRes res) =
+      _CopyWithStubImpl$Input$FcmTokenRelateToManyForUpdateInput;
 
   TRes call({
-    List<Input$ExpoTokenWhereUniqueInput>? disconnect,
-    List<Input$ExpoTokenWhereUniqueInput>? $set,
-    List<Input$ExpoTokenWhereUniqueInput>? connect,
+    List<Input$FcmTokenWhereUniqueInput>? disconnect,
+    List<Input$FcmTokenWhereUniqueInput>? $set,
+    List<Input$FcmTokenWhereUniqueInput>? connect,
   });
   TRes disconnect(
-      Iterable<Input$ExpoTokenWhereUniqueInput>? Function(
+      Iterable<Input$FcmTokenWhereUniqueInput>? Function(
               Iterable<
-                  CopyWith$Input$ExpoTokenWhereUniqueInput<
-                      Input$ExpoTokenWhereUniqueInput>>?)
+                  CopyWith$Input$FcmTokenWhereUniqueInput<
+                      Input$FcmTokenWhereUniqueInput>>?)
           _fn);
   TRes $set(
-      Iterable<Input$ExpoTokenWhereUniqueInput>? Function(
+      Iterable<Input$FcmTokenWhereUniqueInput>? Function(
               Iterable<
-                  CopyWith$Input$ExpoTokenWhereUniqueInput<
-                      Input$ExpoTokenWhereUniqueInput>>?)
+                  CopyWith$Input$FcmTokenWhereUniqueInput<
+                      Input$FcmTokenWhereUniqueInput>>?)
           _fn);
   TRes connect(
-      Iterable<Input$ExpoTokenWhereUniqueInput>? Function(
+      Iterable<Input$FcmTokenWhereUniqueInput>? Function(
               Iterable<
-                  CopyWith$Input$ExpoTokenWhereUniqueInput<
-                      Input$ExpoTokenWhereUniqueInput>>?)
+                  CopyWith$Input$FcmTokenWhereUniqueInput<
+                      Input$FcmTokenWhereUniqueInput>>?)
           _fn);
 }
 
-class _CopyWithImpl$Input$ExpoTokenRelateToManyForUpdateInput<TRes>
-    implements CopyWith$Input$ExpoTokenRelateToManyForUpdateInput<TRes> {
-  _CopyWithImpl$Input$ExpoTokenRelateToManyForUpdateInput(
+class _CopyWithImpl$Input$FcmTokenRelateToManyForUpdateInput<TRes>
+    implements CopyWith$Input$FcmTokenRelateToManyForUpdateInput<TRes> {
+  _CopyWithImpl$Input$FcmTokenRelateToManyForUpdateInput(
     this._instance,
     this._then,
   );
 
-  final Input$ExpoTokenRelateToManyForUpdateInput _instance;
+  final Input$FcmTokenRelateToManyForUpdateInput _instance;
 
-  final TRes Function(Input$ExpoTokenRelateToManyForUpdateInput) _then;
+  final TRes Function(Input$FcmTokenRelateToManyForUpdateInput) _then;
 
   static const _undefined = <dynamic, dynamic>{};
 
@@ -4754,66 +4750,66 @@ class _CopyWithImpl$Input$ExpoTokenRelateToManyForUpdateInput<TRes>
     Object? $set = _undefined,
     Object? connect = _undefined,
   }) =>
-      _then(Input$ExpoTokenRelateToManyForUpdateInput._({
+      _then(Input$FcmTokenRelateToManyForUpdateInput._({
         ..._instance._$data,
         if (disconnect != _undefined)
-          'disconnect': (disconnect as List<Input$ExpoTokenWhereUniqueInput>?),
+          'disconnect': (disconnect as List<Input$FcmTokenWhereUniqueInput>?),
         if ($set != _undefined)
-          'set': ($set as List<Input$ExpoTokenWhereUniqueInput>?),
+          'set': ($set as List<Input$FcmTokenWhereUniqueInput>?),
         if (connect != _undefined)
-          'connect': (connect as List<Input$ExpoTokenWhereUniqueInput>?),
+          'connect': (connect as List<Input$FcmTokenWhereUniqueInput>?),
       }));
 
   TRes disconnect(
-          Iterable<Input$ExpoTokenWhereUniqueInput>? Function(
+          Iterable<Input$FcmTokenWhereUniqueInput>? Function(
                   Iterable<
-                      CopyWith$Input$ExpoTokenWhereUniqueInput<
-                          Input$ExpoTokenWhereUniqueInput>>?)
+                      CopyWith$Input$FcmTokenWhereUniqueInput<
+                          Input$FcmTokenWhereUniqueInput>>?)
               _fn) =>
       call(
           disconnect: _fn(_instance.disconnect
-              ?.map((e) => CopyWith$Input$ExpoTokenWhereUniqueInput(
+              ?.map((e) => CopyWith$Input$FcmTokenWhereUniqueInput(
                     e,
                     (i) => i,
                   )))?.toList());
 
   TRes $set(
-          Iterable<Input$ExpoTokenWhereUniqueInput>? Function(
+          Iterable<Input$FcmTokenWhereUniqueInput>? Function(
                   Iterable<
-                      CopyWith$Input$ExpoTokenWhereUniqueInput<
-                          Input$ExpoTokenWhereUniqueInput>>?)
+                      CopyWith$Input$FcmTokenWhereUniqueInput<
+                          Input$FcmTokenWhereUniqueInput>>?)
               _fn) =>
       call(
           $set: _fn(_instance.$set
-              ?.map((e) => CopyWith$Input$ExpoTokenWhereUniqueInput(
+              ?.map((e) => CopyWith$Input$FcmTokenWhereUniqueInput(
                     e,
                     (i) => i,
                   )))?.toList());
 
   TRes connect(
-          Iterable<Input$ExpoTokenWhereUniqueInput>? Function(
+          Iterable<Input$FcmTokenWhereUniqueInput>? Function(
                   Iterable<
-                      CopyWith$Input$ExpoTokenWhereUniqueInput<
-                          Input$ExpoTokenWhereUniqueInput>>?)
+                      CopyWith$Input$FcmTokenWhereUniqueInput<
+                          Input$FcmTokenWhereUniqueInput>>?)
               _fn) =>
       call(
           connect: _fn(_instance.connect
-              ?.map((e) => CopyWith$Input$ExpoTokenWhereUniqueInput(
+              ?.map((e) => CopyWith$Input$FcmTokenWhereUniqueInput(
                     e,
                     (i) => i,
                   )))?.toList());
 }
 
-class _CopyWithStubImpl$Input$ExpoTokenRelateToManyForUpdateInput<TRes>
-    implements CopyWith$Input$ExpoTokenRelateToManyForUpdateInput<TRes> {
-  _CopyWithStubImpl$Input$ExpoTokenRelateToManyForUpdateInput(this._res);
+class _CopyWithStubImpl$Input$FcmTokenRelateToManyForUpdateInput<TRes>
+    implements CopyWith$Input$FcmTokenRelateToManyForUpdateInput<TRes> {
+  _CopyWithStubImpl$Input$FcmTokenRelateToManyForUpdateInput(this._res);
 
   TRes _res;
 
   call({
-    List<Input$ExpoTokenWhereUniqueInput>? disconnect,
-    List<Input$ExpoTokenWhereUniqueInput>? $set,
-    List<Input$ExpoTokenWhereUniqueInput>? connect,
+    List<Input$FcmTokenWhereUniqueInput>? disconnect,
+    List<Input$FcmTokenWhereUniqueInput>? $set,
+    List<Input$FcmTokenWhereUniqueInput>? connect,
   }) =>
       _res;
 
@@ -4981,7 +4977,7 @@ class Input$UserCreateInput {
     required String password,
     Input$NoticeRelateToManyForCreateInput? notices,
     Input$ClassTestRelateToManyForCreateInput? classTests,
-    Input$ExpoTokenRelateToManyForCreateInput? tokens,
+    Input$FcmTokenRelateToManyForCreateInput? tokens,
     Enum$UserRoleType? role,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -5030,7 +5026,7 @@ class Input$UserCreateInput {
       final l$tokens = data['tokens'];
       result$data['tokens'] = l$tokens == null
           ? null
-          : Input$ExpoTokenRelateToManyForCreateInput.fromJson(
+          : Input$FcmTokenRelateToManyForCreateInput.fromJson(
               (l$tokens as Map<String, dynamic>));
     }
     if (data.containsKey('role')) {
@@ -5066,8 +5062,8 @@ class Input$UserCreateInput {
   Input$ClassTestRelateToManyForCreateInput? get classTests =>
       (_$data['classTests'] as Input$ClassTestRelateToManyForCreateInput?);
 
-  Input$ExpoTokenRelateToManyForCreateInput? get tokens =>
-      (_$data['tokens'] as Input$ExpoTokenRelateToManyForCreateInput?);
+  Input$FcmTokenRelateToManyForCreateInput? get tokens =>
+      (_$data['tokens'] as Input$FcmTokenRelateToManyForCreateInput?);
 
   Enum$UserRoleType? get role => (_$data['role'] as Enum$UserRoleType?);
 
@@ -5244,14 +5240,14 @@ abstract class CopyWith$Input$UserCreateInput<TRes> {
     String? password,
     Input$NoticeRelateToManyForCreateInput? notices,
     Input$ClassTestRelateToManyForCreateInput? classTests,
-    Input$ExpoTokenRelateToManyForCreateInput? tokens,
+    Input$FcmTokenRelateToManyForCreateInput? tokens,
     Enum$UserRoleType? role,
     DateTime? createdAt,
     DateTime? updatedAt,
   });
   CopyWith$Input$NoticeRelateToManyForCreateInput<TRes> get notices;
   CopyWith$Input$ClassTestRelateToManyForCreateInput<TRes> get classTests;
-  CopyWith$Input$ExpoTokenRelateToManyForCreateInput<TRes> get tokens;
+  CopyWith$Input$FcmTokenRelateToManyForCreateInput<TRes> get tokens;
 }
 
 class _CopyWithImpl$Input$UserCreateInput<TRes>
@@ -5290,7 +5286,7 @@ class _CopyWithImpl$Input$UserCreateInput<TRes>
           'classTests':
               (classTests as Input$ClassTestRelateToManyForCreateInput?),
         if (tokens != _undefined)
-          'tokens': (tokens as Input$ExpoTokenRelateToManyForCreateInput?),
+          'tokens': (tokens as Input$FcmTokenRelateToManyForCreateInput?),
         if (role != _undefined) 'role': (role as Enum$UserRoleType?),
         if (createdAt != _undefined) 'createdAt': (createdAt as DateTime?),
         if (updatedAt != _undefined) 'updatedAt': (updatedAt as DateTime?),
@@ -5313,12 +5309,12 @@ class _CopyWithImpl$Input$UserCreateInput<TRes>
             local$classTests, (e) => call(classTests: e));
   }
 
-  CopyWith$Input$ExpoTokenRelateToManyForCreateInput<TRes> get tokens {
+  CopyWith$Input$FcmTokenRelateToManyForCreateInput<TRes> get tokens {
     final local$tokens = _instance.tokens;
     return local$tokens == null
-        ? CopyWith$Input$ExpoTokenRelateToManyForCreateInput.stub(
+        ? CopyWith$Input$FcmTokenRelateToManyForCreateInput.stub(
             _then(_instance))
-        : CopyWith$Input$ExpoTokenRelateToManyForCreateInput(
+        : CopyWith$Input$FcmTokenRelateToManyForCreateInput(
             local$tokens, (e) => call(tokens: e));
   }
 }
@@ -5335,7 +5331,7 @@ class _CopyWithStubImpl$Input$UserCreateInput<TRes>
     String? password,
     Input$NoticeRelateToManyForCreateInput? notices,
     Input$ClassTestRelateToManyForCreateInput? classTests,
-    Input$ExpoTokenRelateToManyForCreateInput? tokens,
+    Input$FcmTokenRelateToManyForCreateInput? tokens,
     Enum$UserRoleType? role,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -5348,8 +5344,8 @@ class _CopyWithStubImpl$Input$UserCreateInput<TRes>
   CopyWith$Input$ClassTestRelateToManyForCreateInput<TRes> get classTests =>
       CopyWith$Input$ClassTestRelateToManyForCreateInput.stub(_res);
 
-  CopyWith$Input$ExpoTokenRelateToManyForCreateInput<TRes> get tokens =>
-      CopyWith$Input$ExpoTokenRelateToManyForCreateInput.stub(_res);
+  CopyWith$Input$FcmTokenRelateToManyForCreateInput<TRes> get tokens =>
+      CopyWith$Input$FcmTokenRelateToManyForCreateInput.stub(_res);
 }
 
 class Input$NoticeRelateToManyForCreateInput {
@@ -5801,32 +5797,32 @@ class _CopyWithStubImpl$Input$ClassTestRelateToManyForCreateInput<TRes>
   connect(_fn) => _res;
 }
 
-class Input$ExpoTokenRelateToManyForCreateInput {
-  factory Input$ExpoTokenRelateToManyForCreateInput(
-          {List<Input$ExpoTokenWhereUniqueInput>? connect}) =>
-      Input$ExpoTokenRelateToManyForCreateInput._({
+class Input$FcmTokenRelateToManyForCreateInput {
+  factory Input$FcmTokenRelateToManyForCreateInput(
+          {List<Input$FcmTokenWhereUniqueInput>? connect}) =>
+      Input$FcmTokenRelateToManyForCreateInput._({
         if (connect != null) r'connect': connect,
       });
 
-  Input$ExpoTokenRelateToManyForCreateInput._(this._$data);
+  Input$FcmTokenRelateToManyForCreateInput._(this._$data);
 
-  factory Input$ExpoTokenRelateToManyForCreateInput.fromJson(
+  factory Input$FcmTokenRelateToManyForCreateInput.fromJson(
       Map<String, dynamic> data) {
     final result$data = <String, dynamic>{};
     if (data.containsKey('connect')) {
       final l$connect = data['connect'];
       result$data['connect'] = (l$connect as List<dynamic>?)
-          ?.map((e) => Input$ExpoTokenWhereUniqueInput.fromJson(
+          ?.map((e) => Input$FcmTokenWhereUniqueInput.fromJson(
               (e as Map<String, dynamic>)))
           .toList();
     }
-    return Input$ExpoTokenRelateToManyForCreateInput._(result$data);
+    return Input$FcmTokenRelateToManyForCreateInput._(result$data);
   }
 
   Map<String, dynamic> _$data;
 
-  List<Input$ExpoTokenWhereUniqueInput>? get connect =>
-      (_$data['connect'] as List<Input$ExpoTokenWhereUniqueInput>?);
+  List<Input$FcmTokenWhereUniqueInput>? get connect =>
+      (_$data['connect'] as List<Input$FcmTokenWhereUniqueInput>?);
 
   Map<String, dynamic> toJson() {
     final result$data = <String, dynamic>{};
@@ -5837,9 +5833,9 @@ class Input$ExpoTokenRelateToManyForCreateInput {
     return result$data;
   }
 
-  CopyWith$Input$ExpoTokenRelateToManyForCreateInput<
-          Input$ExpoTokenRelateToManyForCreateInput>
-      get copyWith => CopyWith$Input$ExpoTokenRelateToManyForCreateInput(
+  CopyWith$Input$FcmTokenRelateToManyForCreateInput<
+          Input$FcmTokenRelateToManyForCreateInput>
+      get copyWith => CopyWith$Input$FcmTokenRelateToManyForCreateInput(
             this,
             (i) => i,
           );
@@ -5849,7 +5845,7 @@ class Input$ExpoTokenRelateToManyForCreateInput {
     if (identical(this, other)) {
       return true;
     }
-    if (other is! Input$ExpoTokenRelateToManyForCreateInput ||
+    if (other is! Input$FcmTokenRelateToManyForCreateInput ||
         runtimeType != other.runtimeType) {
       return false;
     }
@@ -5888,89 +5884,99 @@ class Input$ExpoTokenRelateToManyForCreateInput {
   }
 }
 
-abstract class CopyWith$Input$ExpoTokenRelateToManyForCreateInput<TRes> {
-  factory CopyWith$Input$ExpoTokenRelateToManyForCreateInput(
-    Input$ExpoTokenRelateToManyForCreateInput instance,
-    TRes Function(Input$ExpoTokenRelateToManyForCreateInput) then,
-  ) = _CopyWithImpl$Input$ExpoTokenRelateToManyForCreateInput;
+abstract class CopyWith$Input$FcmTokenRelateToManyForCreateInput<TRes> {
+  factory CopyWith$Input$FcmTokenRelateToManyForCreateInput(
+    Input$FcmTokenRelateToManyForCreateInput instance,
+    TRes Function(Input$FcmTokenRelateToManyForCreateInput) then,
+  ) = _CopyWithImpl$Input$FcmTokenRelateToManyForCreateInput;
 
-  factory CopyWith$Input$ExpoTokenRelateToManyForCreateInput.stub(TRes res) =
-      _CopyWithStubImpl$Input$ExpoTokenRelateToManyForCreateInput;
+  factory CopyWith$Input$FcmTokenRelateToManyForCreateInput.stub(TRes res) =
+      _CopyWithStubImpl$Input$FcmTokenRelateToManyForCreateInput;
 
-  TRes call({List<Input$ExpoTokenWhereUniqueInput>? connect});
+  TRes call({List<Input$FcmTokenWhereUniqueInput>? connect});
   TRes connect(
-      Iterable<Input$ExpoTokenWhereUniqueInput>? Function(
+      Iterable<Input$FcmTokenWhereUniqueInput>? Function(
               Iterable<
-                  CopyWith$Input$ExpoTokenWhereUniqueInput<
-                      Input$ExpoTokenWhereUniqueInput>>?)
+                  CopyWith$Input$FcmTokenWhereUniqueInput<
+                      Input$FcmTokenWhereUniqueInput>>?)
           _fn);
 }
 
-class _CopyWithImpl$Input$ExpoTokenRelateToManyForCreateInput<TRes>
-    implements CopyWith$Input$ExpoTokenRelateToManyForCreateInput<TRes> {
-  _CopyWithImpl$Input$ExpoTokenRelateToManyForCreateInput(
+class _CopyWithImpl$Input$FcmTokenRelateToManyForCreateInput<TRes>
+    implements CopyWith$Input$FcmTokenRelateToManyForCreateInput<TRes> {
+  _CopyWithImpl$Input$FcmTokenRelateToManyForCreateInput(
     this._instance,
     this._then,
   );
 
-  final Input$ExpoTokenRelateToManyForCreateInput _instance;
+  final Input$FcmTokenRelateToManyForCreateInput _instance;
 
-  final TRes Function(Input$ExpoTokenRelateToManyForCreateInput) _then;
+  final TRes Function(Input$FcmTokenRelateToManyForCreateInput) _then;
 
   static const _undefined = <dynamic, dynamic>{};
 
   TRes call({Object? connect = _undefined}) =>
-      _then(Input$ExpoTokenRelateToManyForCreateInput._({
+      _then(Input$FcmTokenRelateToManyForCreateInput._({
         ..._instance._$data,
         if (connect != _undefined)
-          'connect': (connect as List<Input$ExpoTokenWhereUniqueInput>?),
+          'connect': (connect as List<Input$FcmTokenWhereUniqueInput>?),
       }));
 
   TRes connect(
-          Iterable<Input$ExpoTokenWhereUniqueInput>? Function(
+          Iterable<Input$FcmTokenWhereUniqueInput>? Function(
                   Iterable<
-                      CopyWith$Input$ExpoTokenWhereUniqueInput<
-                          Input$ExpoTokenWhereUniqueInput>>?)
+                      CopyWith$Input$FcmTokenWhereUniqueInput<
+                          Input$FcmTokenWhereUniqueInput>>?)
               _fn) =>
       call(
           connect: _fn(_instance.connect
-              ?.map((e) => CopyWith$Input$ExpoTokenWhereUniqueInput(
+              ?.map((e) => CopyWith$Input$FcmTokenWhereUniqueInput(
                     e,
                     (i) => i,
                   )))?.toList());
 }
 
-class _CopyWithStubImpl$Input$ExpoTokenRelateToManyForCreateInput<TRes>
-    implements CopyWith$Input$ExpoTokenRelateToManyForCreateInput<TRes> {
-  _CopyWithStubImpl$Input$ExpoTokenRelateToManyForCreateInput(this._res);
+class _CopyWithStubImpl$Input$FcmTokenRelateToManyForCreateInput<TRes>
+    implements CopyWith$Input$FcmTokenRelateToManyForCreateInput<TRes> {
+  _CopyWithStubImpl$Input$FcmTokenRelateToManyForCreateInput(this._res);
 
   TRes _res;
 
-  call({List<Input$ExpoTokenWhereUniqueInput>? connect}) => _res;
+  call({List<Input$FcmTokenWhereUniqueInput>? connect}) => _res;
 
   connect(_fn) => _res;
 }
 
-class Input$ExpoTokenWhereUniqueInput {
-  factory Input$ExpoTokenWhereUniqueInput({String? id}) =>
-      Input$ExpoTokenWhereUniqueInput._({
+class Input$FcmTokenWhereUniqueInput {
+  factory Input$FcmTokenWhereUniqueInput({
+    String? id,
+    String? token,
+  }) =>
+      Input$FcmTokenWhereUniqueInput._({
         if (id != null) r'id': id,
+        if (token != null) r'token': token,
       });
 
-  Input$ExpoTokenWhereUniqueInput._(this._$data);
+  Input$FcmTokenWhereUniqueInput._(this._$data);
 
-  factory Input$ExpoTokenWhereUniqueInput.fromJson(Map<String, dynamic> data) {
+  factory Input$FcmTokenWhereUniqueInput.fromJson(Map<String, dynamic> data) {
     final result$data = <String, dynamic>{};
     if (data.containsKey('id')) {
       final l$id = data['id'];
       result$data['id'] = (l$id as String?);
     }
-    return Input$ExpoTokenWhereUniqueInput._(result$data);
+    if (data.containsKey('token')) {
+      final l$token = data['token'];
+      result$data['token'] = (l$token as String?);
+    }
+    return Input$FcmTokenWhereUniqueInput._(result$data);
   }
 
   Map<String, dynamic> _$data;
 
   String? get id => (_$data['id'] as String?);
+
+  String? get token => (_$data['token'] as String?);
 
   Map<String, dynamic> toJson() {
     final result$data = <String, dynamic>{};
@@ -5978,11 +5984,15 @@ class Input$ExpoTokenWhereUniqueInput {
       final l$id = id;
       result$data['id'] = l$id;
     }
+    if (_$data.containsKey('token')) {
+      final l$token = token;
+      result$data['token'] = l$token;
+    }
     return result$data;
   }
 
-  CopyWith$Input$ExpoTokenWhereUniqueInput<Input$ExpoTokenWhereUniqueInput>
-      get copyWith => CopyWith$Input$ExpoTokenWhereUniqueInput(
+  CopyWith$Input$FcmTokenWhereUniqueInput<Input$FcmTokenWhereUniqueInput>
+      get copyWith => CopyWith$Input$FcmTokenWhereUniqueInput(
             this,
             (i) => i,
           );
@@ -5992,7 +6002,7 @@ class Input$ExpoTokenWhereUniqueInput {
     if (identical(this, other)) {
       return true;
     }
-    if (other is! Input$ExpoTokenWhereUniqueInput ||
+    if (other is! Input$FcmTokenWhereUniqueInput ||
         runtimeType != other.runtimeType) {
       return false;
     }
@@ -6004,100 +6014,127 @@ class Input$ExpoTokenWhereUniqueInput {
     if (l$id != lOther$id) {
       return false;
     }
+    final l$token = token;
+    final lOther$token = other.token;
+    if (_$data.containsKey('token') != other._$data.containsKey('token')) {
+      return false;
+    }
+    if (l$token != lOther$token) {
+      return false;
+    }
     return true;
   }
 
   @override
   int get hashCode {
     final l$id = id;
-    return Object.hashAll([_$data.containsKey('id') ? l$id : const {}]);
+    final l$token = token;
+    return Object.hashAll([
+      _$data.containsKey('id') ? l$id : const {},
+      _$data.containsKey('token') ? l$token : const {},
+    ]);
   }
 }
 
-abstract class CopyWith$Input$ExpoTokenWhereUniqueInput<TRes> {
-  factory CopyWith$Input$ExpoTokenWhereUniqueInput(
-    Input$ExpoTokenWhereUniqueInput instance,
-    TRes Function(Input$ExpoTokenWhereUniqueInput) then,
-  ) = _CopyWithImpl$Input$ExpoTokenWhereUniqueInput;
+abstract class CopyWith$Input$FcmTokenWhereUniqueInput<TRes> {
+  factory CopyWith$Input$FcmTokenWhereUniqueInput(
+    Input$FcmTokenWhereUniqueInput instance,
+    TRes Function(Input$FcmTokenWhereUniqueInput) then,
+  ) = _CopyWithImpl$Input$FcmTokenWhereUniqueInput;
 
-  factory CopyWith$Input$ExpoTokenWhereUniqueInput.stub(TRes res) =
-      _CopyWithStubImpl$Input$ExpoTokenWhereUniqueInput;
+  factory CopyWith$Input$FcmTokenWhereUniqueInput.stub(TRes res) =
+      _CopyWithStubImpl$Input$FcmTokenWhereUniqueInput;
 
-  TRes call({String? id});
+  TRes call({
+    String? id,
+    String? token,
+  });
 }
 
-class _CopyWithImpl$Input$ExpoTokenWhereUniqueInput<TRes>
-    implements CopyWith$Input$ExpoTokenWhereUniqueInput<TRes> {
-  _CopyWithImpl$Input$ExpoTokenWhereUniqueInput(
+class _CopyWithImpl$Input$FcmTokenWhereUniqueInput<TRes>
+    implements CopyWith$Input$FcmTokenWhereUniqueInput<TRes> {
+  _CopyWithImpl$Input$FcmTokenWhereUniqueInput(
     this._instance,
     this._then,
   );
 
-  final Input$ExpoTokenWhereUniqueInput _instance;
+  final Input$FcmTokenWhereUniqueInput _instance;
 
-  final TRes Function(Input$ExpoTokenWhereUniqueInput) _then;
+  final TRes Function(Input$FcmTokenWhereUniqueInput) _then;
 
   static const _undefined = <dynamic, dynamic>{};
 
-  TRes call({Object? id = _undefined}) =>
-      _then(Input$ExpoTokenWhereUniqueInput._({
+  TRes call({
+    Object? id = _undefined,
+    Object? token = _undefined,
+  }) =>
+      _then(Input$FcmTokenWhereUniqueInput._({
         ..._instance._$data,
         if (id != _undefined) 'id': (id as String?),
+        if (token != _undefined) 'token': (token as String?),
       }));
 }
 
-class _CopyWithStubImpl$Input$ExpoTokenWhereUniqueInput<TRes>
-    implements CopyWith$Input$ExpoTokenWhereUniqueInput<TRes> {
-  _CopyWithStubImpl$Input$ExpoTokenWhereUniqueInput(this._res);
+class _CopyWithStubImpl$Input$FcmTokenWhereUniqueInput<TRes>
+    implements CopyWith$Input$FcmTokenWhereUniqueInput<TRes> {
+  _CopyWithStubImpl$Input$FcmTokenWhereUniqueInput(this._res);
 
   TRes _res;
 
-  call({String? id}) => _res;
+  call({
+    String? id,
+    String? token,
+  }) =>
+      _res;
 }
 
-class Input$ExpoTokenWhereInput {
-  factory Input$ExpoTokenWhereInput({
-    List<Input$ExpoTokenWhereInput>? AND,
-    List<Input$ExpoTokenWhereInput>? OR,
-    List<Input$ExpoTokenWhereInput>? NOT,
+class Input$FcmTokenWhereInput {
+  factory Input$FcmTokenWhereInput({
+    List<Input$FcmTokenWhereInput>? AND,
+    List<Input$FcmTokenWhereInput>? OR,
+    List<Input$FcmTokenWhereInput>? NOT,
     Input$IDFilter? id,
+    Input$StringFilter? token,
+    Input$FcmTokenDeviceTypeTypeNullableFilter? deviceType,
     Input$DateTimeNullableFilter? createdAt,
     Input$DateTimeNullableFilter? updatedAt,
     Input$UserWhereInput? user,
   }) =>
-      Input$ExpoTokenWhereInput._({
+      Input$FcmTokenWhereInput._({
         if (AND != null) r'AND': AND,
         if (OR != null) r'OR': OR,
         if (NOT != null) r'NOT': NOT,
         if (id != null) r'id': id,
+        if (token != null) r'token': token,
+        if (deviceType != null) r'deviceType': deviceType,
         if (createdAt != null) r'createdAt': createdAt,
         if (updatedAt != null) r'updatedAt': updatedAt,
         if (user != null) r'user': user,
       });
 
-  Input$ExpoTokenWhereInput._(this._$data);
+  Input$FcmTokenWhereInput._(this._$data);
 
-  factory Input$ExpoTokenWhereInput.fromJson(Map<String, dynamic> data) {
+  factory Input$FcmTokenWhereInput.fromJson(Map<String, dynamic> data) {
     final result$data = <String, dynamic>{};
     if (data.containsKey('AND')) {
       final l$AND = data['AND'];
       result$data['AND'] = (l$AND as List<dynamic>?)
           ?.map((e) =>
-              Input$ExpoTokenWhereInput.fromJson((e as Map<String, dynamic>)))
+              Input$FcmTokenWhereInput.fromJson((e as Map<String, dynamic>)))
           .toList();
     }
     if (data.containsKey('OR')) {
       final l$OR = data['OR'];
       result$data['OR'] = (l$OR as List<dynamic>?)
           ?.map((e) =>
-              Input$ExpoTokenWhereInput.fromJson((e as Map<String, dynamic>)))
+              Input$FcmTokenWhereInput.fromJson((e as Map<String, dynamic>)))
           .toList();
     }
     if (data.containsKey('NOT')) {
       final l$NOT = data['NOT'];
       result$data['NOT'] = (l$NOT as List<dynamic>?)
           ?.map((e) =>
-              Input$ExpoTokenWhereInput.fromJson((e as Map<String, dynamic>)))
+              Input$FcmTokenWhereInput.fromJson((e as Map<String, dynamic>)))
           .toList();
     }
     if (data.containsKey('id')) {
@@ -6105,6 +6142,19 @@ class Input$ExpoTokenWhereInput {
       result$data['id'] = l$id == null
           ? null
           : Input$IDFilter.fromJson((l$id as Map<String, dynamic>));
+    }
+    if (data.containsKey('token')) {
+      final l$token = data['token'];
+      result$data['token'] = l$token == null
+          ? null
+          : Input$StringFilter.fromJson((l$token as Map<String, dynamic>));
+    }
+    if (data.containsKey('deviceType')) {
+      final l$deviceType = data['deviceType'];
+      result$data['deviceType'] = l$deviceType == null
+          ? null
+          : Input$FcmTokenDeviceTypeTypeNullableFilter.fromJson(
+              (l$deviceType as Map<String, dynamic>));
     }
     if (data.containsKey('createdAt')) {
       final l$createdAt = data['createdAt'];
@@ -6126,21 +6176,26 @@ class Input$ExpoTokenWhereInput {
           ? null
           : Input$UserWhereInput.fromJson((l$user as Map<String, dynamic>));
     }
-    return Input$ExpoTokenWhereInput._(result$data);
+    return Input$FcmTokenWhereInput._(result$data);
   }
 
   Map<String, dynamic> _$data;
 
-  List<Input$ExpoTokenWhereInput>? get AND =>
-      (_$data['AND'] as List<Input$ExpoTokenWhereInput>?);
+  List<Input$FcmTokenWhereInput>? get AND =>
+      (_$data['AND'] as List<Input$FcmTokenWhereInput>?);
 
-  List<Input$ExpoTokenWhereInput>? get OR =>
-      (_$data['OR'] as List<Input$ExpoTokenWhereInput>?);
+  List<Input$FcmTokenWhereInput>? get OR =>
+      (_$data['OR'] as List<Input$FcmTokenWhereInput>?);
 
-  List<Input$ExpoTokenWhereInput>? get NOT =>
-      (_$data['NOT'] as List<Input$ExpoTokenWhereInput>?);
+  List<Input$FcmTokenWhereInput>? get NOT =>
+      (_$data['NOT'] as List<Input$FcmTokenWhereInput>?);
 
   Input$IDFilter? get id => (_$data['id'] as Input$IDFilter?);
+
+  Input$StringFilter? get token => (_$data['token'] as Input$StringFilter?);
+
+  Input$FcmTokenDeviceTypeTypeNullableFilter? get deviceType =>
+      (_$data['deviceType'] as Input$FcmTokenDeviceTypeTypeNullableFilter?);
 
   Input$DateTimeNullableFilter? get createdAt =>
       (_$data['createdAt'] as Input$DateTimeNullableFilter?);
@@ -6168,6 +6223,14 @@ class Input$ExpoTokenWhereInput {
       final l$id = id;
       result$data['id'] = l$id?.toJson();
     }
+    if (_$data.containsKey('token')) {
+      final l$token = token;
+      result$data['token'] = l$token?.toJson();
+    }
+    if (_$data.containsKey('deviceType')) {
+      final l$deviceType = deviceType;
+      result$data['deviceType'] = l$deviceType?.toJson();
+    }
     if (_$data.containsKey('createdAt')) {
       final l$createdAt = createdAt;
       result$data['createdAt'] = l$createdAt?.toJson();
@@ -6183,8 +6246,8 @@ class Input$ExpoTokenWhereInput {
     return result$data;
   }
 
-  CopyWith$Input$ExpoTokenWhereInput<Input$ExpoTokenWhereInput> get copyWith =>
-      CopyWith$Input$ExpoTokenWhereInput(
+  CopyWith$Input$FcmTokenWhereInput<Input$FcmTokenWhereInput> get copyWith =>
+      CopyWith$Input$FcmTokenWhereInput(
         this,
         (i) => i,
       );
@@ -6194,7 +6257,7 @@ class Input$ExpoTokenWhereInput {
     if (identical(this, other)) {
       return true;
     }
-    if (other is! Input$ExpoTokenWhereInput ||
+    if (other is! Input$FcmTokenWhereInput ||
         runtimeType != other.runtimeType) {
       return false;
     }
@@ -6263,6 +6326,23 @@ class Input$ExpoTokenWhereInput {
     if (l$id != lOther$id) {
       return false;
     }
+    final l$token = token;
+    final lOther$token = other.token;
+    if (_$data.containsKey('token') != other._$data.containsKey('token')) {
+      return false;
+    }
+    if (l$token != lOther$token) {
+      return false;
+    }
+    final l$deviceType = deviceType;
+    final lOther$deviceType = other.deviceType;
+    if (_$data.containsKey('deviceType') !=
+        other._$data.containsKey('deviceType')) {
+      return false;
+    }
+    if (l$deviceType != lOther$deviceType) {
+      return false;
+    }
     final l$createdAt = createdAt;
     final lOther$createdAt = other.createdAt;
     if (_$data.containsKey('createdAt') !=
@@ -6298,6 +6378,8 @@ class Input$ExpoTokenWhereInput {
     final l$OR = OR;
     final l$NOT = NOT;
     final l$id = id;
+    final l$token = token;
+    final l$deviceType = deviceType;
     final l$createdAt = createdAt;
     final l$updatedAt = updatedAt;
     final l$user = user;
@@ -6318,6 +6400,8 @@ class Input$ExpoTokenWhereInput {
               : Object.hashAll(l$NOT.map((v) => v))
           : const {},
       _$data.containsKey('id') ? l$id : const {},
+      _$data.containsKey('token') ? l$token : const {},
+      _$data.containsKey('deviceType') ? l$deviceType : const {},
       _$data.containsKey('createdAt') ? l$createdAt : const {},
       _$data.containsKey('updatedAt') ? l$updatedAt : const {},
       _$data.containsKey('user') ? l$user : const {},
@@ -6325,58 +6409,59 @@ class Input$ExpoTokenWhereInput {
   }
 }
 
-abstract class CopyWith$Input$ExpoTokenWhereInput<TRes> {
-  factory CopyWith$Input$ExpoTokenWhereInput(
-    Input$ExpoTokenWhereInput instance,
-    TRes Function(Input$ExpoTokenWhereInput) then,
-  ) = _CopyWithImpl$Input$ExpoTokenWhereInput;
+abstract class CopyWith$Input$FcmTokenWhereInput<TRes> {
+  factory CopyWith$Input$FcmTokenWhereInput(
+    Input$FcmTokenWhereInput instance,
+    TRes Function(Input$FcmTokenWhereInput) then,
+  ) = _CopyWithImpl$Input$FcmTokenWhereInput;
 
-  factory CopyWith$Input$ExpoTokenWhereInput.stub(TRes res) =
-      _CopyWithStubImpl$Input$ExpoTokenWhereInput;
+  factory CopyWith$Input$FcmTokenWhereInput.stub(TRes res) =
+      _CopyWithStubImpl$Input$FcmTokenWhereInput;
 
   TRes call({
-    List<Input$ExpoTokenWhereInput>? AND,
-    List<Input$ExpoTokenWhereInput>? OR,
-    List<Input$ExpoTokenWhereInput>? NOT,
+    List<Input$FcmTokenWhereInput>? AND,
+    List<Input$FcmTokenWhereInput>? OR,
+    List<Input$FcmTokenWhereInput>? NOT,
     Input$IDFilter? id,
+    Input$StringFilter? token,
+    Input$FcmTokenDeviceTypeTypeNullableFilter? deviceType,
     Input$DateTimeNullableFilter? createdAt,
     Input$DateTimeNullableFilter? updatedAt,
     Input$UserWhereInput? user,
   });
   TRes AND(
-      Iterable<Input$ExpoTokenWhereInput>? Function(
+      Iterable<Input$FcmTokenWhereInput>? Function(
               Iterable<
-                  CopyWith$Input$ExpoTokenWhereInput<
-                      Input$ExpoTokenWhereInput>>?)
+                  CopyWith$Input$FcmTokenWhereInput<Input$FcmTokenWhereInput>>?)
           _fn);
   TRes OR(
-      Iterable<Input$ExpoTokenWhereInput>? Function(
+      Iterable<Input$FcmTokenWhereInput>? Function(
               Iterable<
-                  CopyWith$Input$ExpoTokenWhereInput<
-                      Input$ExpoTokenWhereInput>>?)
+                  CopyWith$Input$FcmTokenWhereInput<Input$FcmTokenWhereInput>>?)
           _fn);
   TRes NOT(
-      Iterable<Input$ExpoTokenWhereInput>? Function(
+      Iterable<Input$FcmTokenWhereInput>? Function(
               Iterable<
-                  CopyWith$Input$ExpoTokenWhereInput<
-                      Input$ExpoTokenWhereInput>>?)
+                  CopyWith$Input$FcmTokenWhereInput<Input$FcmTokenWhereInput>>?)
           _fn);
   CopyWith$Input$IDFilter<TRes> get id;
+  CopyWith$Input$StringFilter<TRes> get token;
+  CopyWith$Input$FcmTokenDeviceTypeTypeNullableFilter<TRes> get deviceType;
   CopyWith$Input$DateTimeNullableFilter<TRes> get createdAt;
   CopyWith$Input$DateTimeNullableFilter<TRes> get updatedAt;
   CopyWith$Input$UserWhereInput<TRes> get user;
 }
 
-class _CopyWithImpl$Input$ExpoTokenWhereInput<TRes>
-    implements CopyWith$Input$ExpoTokenWhereInput<TRes> {
-  _CopyWithImpl$Input$ExpoTokenWhereInput(
+class _CopyWithImpl$Input$FcmTokenWhereInput<TRes>
+    implements CopyWith$Input$FcmTokenWhereInput<TRes> {
+  _CopyWithImpl$Input$FcmTokenWhereInput(
     this._instance,
     this._then,
   );
 
-  final Input$ExpoTokenWhereInput _instance;
+  final Input$FcmTokenWhereInput _instance;
 
-  final TRes Function(Input$ExpoTokenWhereInput) _then;
+  final TRes Function(Input$FcmTokenWhereInput) _then;
 
   static const _undefined = <dynamic, dynamic>{};
 
@@ -6385,16 +6470,22 @@ class _CopyWithImpl$Input$ExpoTokenWhereInput<TRes>
     Object? OR = _undefined,
     Object? NOT = _undefined,
     Object? id = _undefined,
+    Object? token = _undefined,
+    Object? deviceType = _undefined,
     Object? createdAt = _undefined,
     Object? updatedAt = _undefined,
     Object? user = _undefined,
   }) =>
-      _then(Input$ExpoTokenWhereInput._({
+      _then(Input$FcmTokenWhereInput._({
         ..._instance._$data,
-        if (AND != _undefined) 'AND': (AND as List<Input$ExpoTokenWhereInput>?),
-        if (OR != _undefined) 'OR': (OR as List<Input$ExpoTokenWhereInput>?),
-        if (NOT != _undefined) 'NOT': (NOT as List<Input$ExpoTokenWhereInput>?),
+        if (AND != _undefined) 'AND': (AND as List<Input$FcmTokenWhereInput>?),
+        if (OR != _undefined) 'OR': (OR as List<Input$FcmTokenWhereInput>?),
+        if (NOT != _undefined) 'NOT': (NOT as List<Input$FcmTokenWhereInput>?),
         if (id != _undefined) 'id': (id as Input$IDFilter?),
+        if (token != _undefined) 'token': (token as Input$StringFilter?),
+        if (deviceType != _undefined)
+          'deviceType':
+              (deviceType as Input$FcmTokenDeviceTypeTypeNullableFilter?),
         if (createdAt != _undefined)
           'createdAt': (createdAt as Input$DateTimeNullableFilter?),
         if (updatedAt != _undefined)
@@ -6403,37 +6494,37 @@ class _CopyWithImpl$Input$ExpoTokenWhereInput<TRes>
       }));
 
   TRes AND(
-          Iterable<Input$ExpoTokenWhereInput>? Function(
+          Iterable<Input$FcmTokenWhereInput>? Function(
                   Iterable<
-                      CopyWith$Input$ExpoTokenWhereInput<
-                          Input$ExpoTokenWhereInput>>?)
+                      CopyWith$Input$FcmTokenWhereInput<
+                          Input$FcmTokenWhereInput>>?)
               _fn) =>
       call(
-          AND: _fn(_instance.AND?.map((e) => CopyWith$Input$ExpoTokenWhereInput(
+          AND: _fn(_instance.AND?.map((e) => CopyWith$Input$FcmTokenWhereInput(
                 e,
                 (i) => i,
               )))?.toList());
 
   TRes OR(
-          Iterable<Input$ExpoTokenWhereInput>? Function(
+          Iterable<Input$FcmTokenWhereInput>? Function(
                   Iterable<
-                      CopyWith$Input$ExpoTokenWhereInput<
-                          Input$ExpoTokenWhereInput>>?)
+                      CopyWith$Input$FcmTokenWhereInput<
+                          Input$FcmTokenWhereInput>>?)
               _fn) =>
       call(
-          OR: _fn(_instance.OR?.map((e) => CopyWith$Input$ExpoTokenWhereInput(
+          OR: _fn(_instance.OR?.map((e) => CopyWith$Input$FcmTokenWhereInput(
                 e,
                 (i) => i,
               )))?.toList());
 
   TRes NOT(
-          Iterable<Input$ExpoTokenWhereInput>? Function(
+          Iterable<Input$FcmTokenWhereInput>? Function(
                   Iterable<
-                      CopyWith$Input$ExpoTokenWhereInput<
-                          Input$ExpoTokenWhereInput>>?)
+                      CopyWith$Input$FcmTokenWhereInput<
+                          Input$FcmTokenWhereInput>>?)
               _fn) =>
       call(
-          NOT: _fn(_instance.NOT?.map((e) => CopyWith$Input$ExpoTokenWhereInput(
+          NOT: _fn(_instance.NOT?.map((e) => CopyWith$Input$FcmTokenWhereInput(
                 e,
                 (i) => i,
               )))?.toList());
@@ -6443,6 +6534,22 @@ class _CopyWithImpl$Input$ExpoTokenWhereInput<TRes>
     return local$id == null
         ? CopyWith$Input$IDFilter.stub(_then(_instance))
         : CopyWith$Input$IDFilter(local$id, (e) => call(id: e));
+  }
+
+  CopyWith$Input$StringFilter<TRes> get token {
+    final local$token = _instance.token;
+    return local$token == null
+        ? CopyWith$Input$StringFilter.stub(_then(_instance))
+        : CopyWith$Input$StringFilter(local$token, (e) => call(token: e));
+  }
+
+  CopyWith$Input$FcmTokenDeviceTypeTypeNullableFilter<TRes> get deviceType {
+    final local$deviceType = _instance.deviceType;
+    return local$deviceType == null
+        ? CopyWith$Input$FcmTokenDeviceTypeTypeNullableFilter.stub(
+            _then(_instance))
+        : CopyWith$Input$FcmTokenDeviceTypeTypeNullableFilter(
+            local$deviceType, (e) => call(deviceType: e));
   }
 
   CopyWith$Input$DateTimeNullableFilter<TRes> get createdAt {
@@ -6469,17 +6576,19 @@ class _CopyWithImpl$Input$ExpoTokenWhereInput<TRes>
   }
 }
 
-class _CopyWithStubImpl$Input$ExpoTokenWhereInput<TRes>
-    implements CopyWith$Input$ExpoTokenWhereInput<TRes> {
-  _CopyWithStubImpl$Input$ExpoTokenWhereInput(this._res);
+class _CopyWithStubImpl$Input$FcmTokenWhereInput<TRes>
+    implements CopyWith$Input$FcmTokenWhereInput<TRes> {
+  _CopyWithStubImpl$Input$FcmTokenWhereInput(this._res);
 
   TRes _res;
 
   call({
-    List<Input$ExpoTokenWhereInput>? AND,
-    List<Input$ExpoTokenWhereInput>? OR,
-    List<Input$ExpoTokenWhereInput>? NOT,
+    List<Input$FcmTokenWhereInput>? AND,
+    List<Input$FcmTokenWhereInput>? OR,
+    List<Input$FcmTokenWhereInput>? NOT,
     Input$IDFilter? id,
+    Input$StringFilter? token,
+    Input$FcmTokenDeviceTypeTypeNullableFilter? deviceType,
     Input$DateTimeNullableFilter? createdAt,
     Input$DateTimeNullableFilter? updatedAt,
     Input$UserWhereInput? user,
@@ -6494,6 +6603,12 @@ class _CopyWithStubImpl$Input$ExpoTokenWhereInput<TRes>
 
   CopyWith$Input$IDFilter<TRes> get id => CopyWith$Input$IDFilter.stub(_res);
 
+  CopyWith$Input$StringFilter<TRes> get token =>
+      CopyWith$Input$StringFilter.stub(_res);
+
+  CopyWith$Input$FcmTokenDeviceTypeTypeNullableFilter<TRes> get deviceType =>
+      CopyWith$Input$FcmTokenDeviceTypeTypeNullableFilter.stub(_res);
+
   CopyWith$Input$DateTimeNullableFilter<TRes> get createdAt =>
       CopyWith$Input$DateTimeNullableFilter.stub(_res);
 
@@ -6504,26 +6619,301 @@ class _CopyWithStubImpl$Input$ExpoTokenWhereInput<TRes>
       CopyWith$Input$UserWhereInput.stub(_res);
 }
 
-class Input$ExpoTokenOrderByInput {
-  factory Input$ExpoTokenOrderByInput({
+class Input$FcmTokenDeviceTypeTypeNullableFilter {
+  factory Input$FcmTokenDeviceTypeTypeNullableFilter({
+    Enum$FcmTokenDeviceTypeType? equals,
+    List<Enum$FcmTokenDeviceTypeType>? $in,
+    List<Enum$FcmTokenDeviceTypeType>? notIn,
+    Input$FcmTokenDeviceTypeTypeNullableFilter? not,
+  }) =>
+      Input$FcmTokenDeviceTypeTypeNullableFilter._({
+        if (equals != null) r'equals': equals,
+        if ($in != null) r'in': $in,
+        if (notIn != null) r'notIn': notIn,
+        if (not != null) r'not': not,
+      });
+
+  Input$FcmTokenDeviceTypeTypeNullableFilter._(this._$data);
+
+  factory Input$FcmTokenDeviceTypeTypeNullableFilter.fromJson(
+      Map<String, dynamic> data) {
+    final result$data = <String, dynamic>{};
+    if (data.containsKey('equals')) {
+      final l$equals = data['equals'];
+      result$data['equals'] = l$equals == null
+          ? null
+          : fromJson$Enum$FcmTokenDeviceTypeType((l$equals as String));
+    }
+    if (data.containsKey('in')) {
+      final l$$in = data['in'];
+      result$data['in'] = (l$$in as List<dynamic>?)
+          ?.map((e) => fromJson$Enum$FcmTokenDeviceTypeType((e as String)))
+          .toList();
+    }
+    if (data.containsKey('notIn')) {
+      final l$notIn = data['notIn'];
+      result$data['notIn'] = (l$notIn as List<dynamic>?)
+          ?.map((e) => fromJson$Enum$FcmTokenDeviceTypeType((e as String)))
+          .toList();
+    }
+    if (data.containsKey('not')) {
+      final l$not = data['not'];
+      result$data['not'] = l$not == null
+          ? null
+          : Input$FcmTokenDeviceTypeTypeNullableFilter.fromJson(
+              (l$not as Map<String, dynamic>));
+    }
+    return Input$FcmTokenDeviceTypeTypeNullableFilter._(result$data);
+  }
+
+  Map<String, dynamic> _$data;
+
+  Enum$FcmTokenDeviceTypeType? get equals =>
+      (_$data['equals'] as Enum$FcmTokenDeviceTypeType?);
+
+  List<Enum$FcmTokenDeviceTypeType>? get $in =>
+      (_$data['in'] as List<Enum$FcmTokenDeviceTypeType>?);
+
+  List<Enum$FcmTokenDeviceTypeType>? get notIn =>
+      (_$data['notIn'] as List<Enum$FcmTokenDeviceTypeType>?);
+
+  Input$FcmTokenDeviceTypeTypeNullableFilter? get not =>
+      (_$data['not'] as Input$FcmTokenDeviceTypeTypeNullableFilter?);
+
+  Map<String, dynamic> toJson() {
+    final result$data = <String, dynamic>{};
+    if (_$data.containsKey('equals')) {
+      final l$equals = equals;
+      result$data['equals'] = l$equals == null
+          ? null
+          : toJson$Enum$FcmTokenDeviceTypeType(l$equals);
+    }
+    if (_$data.containsKey('in')) {
+      final l$$in = $in;
+      result$data['in'] =
+          l$$in?.map((e) => toJson$Enum$FcmTokenDeviceTypeType(e)).toList();
+    }
+    if (_$data.containsKey('notIn')) {
+      final l$notIn = notIn;
+      result$data['notIn'] =
+          l$notIn?.map((e) => toJson$Enum$FcmTokenDeviceTypeType(e)).toList();
+    }
+    if (_$data.containsKey('not')) {
+      final l$not = not;
+      result$data['not'] = l$not?.toJson();
+    }
+    return result$data;
+  }
+
+  CopyWith$Input$FcmTokenDeviceTypeTypeNullableFilter<
+          Input$FcmTokenDeviceTypeTypeNullableFilter>
+      get copyWith => CopyWith$Input$FcmTokenDeviceTypeTypeNullableFilter(
+            this,
+            (i) => i,
+          );
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (other is! Input$FcmTokenDeviceTypeTypeNullableFilter ||
+        runtimeType != other.runtimeType) {
+      return false;
+    }
+    final l$equals = equals;
+    final lOther$equals = other.equals;
+    if (_$data.containsKey('equals') != other._$data.containsKey('equals')) {
+      return false;
+    }
+    if (l$equals != lOther$equals) {
+      return false;
+    }
+    final l$$in = $in;
+    final lOther$$in = other.$in;
+    if (_$data.containsKey('in') != other._$data.containsKey('in')) {
+      return false;
+    }
+    if (l$$in != null && lOther$$in != null) {
+      if (l$$in.length != lOther$$in.length) {
+        return false;
+      }
+      for (int i = 0; i < l$$in.length; i++) {
+        final l$$in$entry = l$$in[i];
+        final lOther$$in$entry = lOther$$in[i];
+        if (l$$in$entry != lOther$$in$entry) {
+          return false;
+        }
+      }
+    } else if (l$$in != lOther$$in) {
+      return false;
+    }
+    final l$notIn = notIn;
+    final lOther$notIn = other.notIn;
+    if (_$data.containsKey('notIn') != other._$data.containsKey('notIn')) {
+      return false;
+    }
+    if (l$notIn != null && lOther$notIn != null) {
+      if (l$notIn.length != lOther$notIn.length) {
+        return false;
+      }
+      for (int i = 0; i < l$notIn.length; i++) {
+        final l$notIn$entry = l$notIn[i];
+        final lOther$notIn$entry = lOther$notIn[i];
+        if (l$notIn$entry != lOther$notIn$entry) {
+          return false;
+        }
+      }
+    } else if (l$notIn != lOther$notIn) {
+      return false;
+    }
+    final l$not = not;
+    final lOther$not = other.not;
+    if (_$data.containsKey('not') != other._$data.containsKey('not')) {
+      return false;
+    }
+    if (l$not != lOther$not) {
+      return false;
+    }
+    return true;
+  }
+
+  @override
+  int get hashCode {
+    final l$equals = equals;
+    final l$$in = $in;
+    final l$notIn = notIn;
+    final l$not = not;
+    return Object.hashAll([
+      _$data.containsKey('equals') ? l$equals : const {},
+      _$data.containsKey('in')
+          ? l$$in == null
+              ? null
+              : Object.hashAll(l$$in.map((v) => v))
+          : const {},
+      _$data.containsKey('notIn')
+          ? l$notIn == null
+              ? null
+              : Object.hashAll(l$notIn.map((v) => v))
+          : const {},
+      _$data.containsKey('not') ? l$not : const {},
+    ]);
+  }
+}
+
+abstract class CopyWith$Input$FcmTokenDeviceTypeTypeNullableFilter<TRes> {
+  factory CopyWith$Input$FcmTokenDeviceTypeTypeNullableFilter(
+    Input$FcmTokenDeviceTypeTypeNullableFilter instance,
+    TRes Function(Input$FcmTokenDeviceTypeTypeNullableFilter) then,
+  ) = _CopyWithImpl$Input$FcmTokenDeviceTypeTypeNullableFilter;
+
+  factory CopyWith$Input$FcmTokenDeviceTypeTypeNullableFilter.stub(TRes res) =
+      _CopyWithStubImpl$Input$FcmTokenDeviceTypeTypeNullableFilter;
+
+  TRes call({
+    Enum$FcmTokenDeviceTypeType? equals,
+    List<Enum$FcmTokenDeviceTypeType>? $in,
+    List<Enum$FcmTokenDeviceTypeType>? notIn,
+    Input$FcmTokenDeviceTypeTypeNullableFilter? not,
+  });
+  CopyWith$Input$FcmTokenDeviceTypeTypeNullableFilter<TRes> get not;
+}
+
+class _CopyWithImpl$Input$FcmTokenDeviceTypeTypeNullableFilter<TRes>
+    implements CopyWith$Input$FcmTokenDeviceTypeTypeNullableFilter<TRes> {
+  _CopyWithImpl$Input$FcmTokenDeviceTypeTypeNullableFilter(
+    this._instance,
+    this._then,
+  );
+
+  final Input$FcmTokenDeviceTypeTypeNullableFilter _instance;
+
+  final TRes Function(Input$FcmTokenDeviceTypeTypeNullableFilter) _then;
+
+  static const _undefined = <dynamic, dynamic>{};
+
+  TRes call({
+    Object? equals = _undefined,
+    Object? $in = _undefined,
+    Object? notIn = _undefined,
+    Object? not = _undefined,
+  }) =>
+      _then(Input$FcmTokenDeviceTypeTypeNullableFilter._({
+        ..._instance._$data,
+        if (equals != _undefined)
+          'equals': (equals as Enum$FcmTokenDeviceTypeType?),
+        if ($in != _undefined)
+          'in': ($in as List<Enum$FcmTokenDeviceTypeType>?),
+        if (notIn != _undefined)
+          'notIn': (notIn as List<Enum$FcmTokenDeviceTypeType>?),
+        if (not != _undefined)
+          'not': (not as Input$FcmTokenDeviceTypeTypeNullableFilter?),
+      }));
+
+  CopyWith$Input$FcmTokenDeviceTypeTypeNullableFilter<TRes> get not {
+    final local$not = _instance.not;
+    return local$not == null
+        ? CopyWith$Input$FcmTokenDeviceTypeTypeNullableFilter.stub(
+            _then(_instance))
+        : CopyWith$Input$FcmTokenDeviceTypeTypeNullableFilter(
+            local$not, (e) => call(not: e));
+  }
+}
+
+class _CopyWithStubImpl$Input$FcmTokenDeviceTypeTypeNullableFilter<TRes>
+    implements CopyWith$Input$FcmTokenDeviceTypeTypeNullableFilter<TRes> {
+  _CopyWithStubImpl$Input$FcmTokenDeviceTypeTypeNullableFilter(this._res);
+
+  TRes _res;
+
+  call({
+    Enum$FcmTokenDeviceTypeType? equals,
+    List<Enum$FcmTokenDeviceTypeType>? $in,
+    List<Enum$FcmTokenDeviceTypeType>? notIn,
+    Input$FcmTokenDeviceTypeTypeNullableFilter? not,
+  }) =>
+      _res;
+
+  CopyWith$Input$FcmTokenDeviceTypeTypeNullableFilter<TRes> get not =>
+      CopyWith$Input$FcmTokenDeviceTypeTypeNullableFilter.stub(_res);
+}
+
+class Input$FcmTokenOrderByInput {
+  factory Input$FcmTokenOrderByInput({
     Enum$OrderDirection? id,
+    Enum$OrderDirection? token,
+    Enum$OrderDirection? deviceType,
     Enum$OrderDirection? createdAt,
     Enum$OrderDirection? updatedAt,
   }) =>
-      Input$ExpoTokenOrderByInput._({
+      Input$FcmTokenOrderByInput._({
         if (id != null) r'id': id,
+        if (token != null) r'token': token,
+        if (deviceType != null) r'deviceType': deviceType,
         if (createdAt != null) r'createdAt': createdAt,
         if (updatedAt != null) r'updatedAt': updatedAt,
       });
 
-  Input$ExpoTokenOrderByInput._(this._$data);
+  Input$FcmTokenOrderByInput._(this._$data);
 
-  factory Input$ExpoTokenOrderByInput.fromJson(Map<String, dynamic> data) {
+  factory Input$FcmTokenOrderByInput.fromJson(Map<String, dynamic> data) {
     final result$data = <String, dynamic>{};
     if (data.containsKey('id')) {
       final l$id = data['id'];
       result$data['id'] =
           l$id == null ? null : fromJson$Enum$OrderDirection((l$id as String));
+    }
+    if (data.containsKey('token')) {
+      final l$token = data['token'];
+      result$data['token'] = l$token == null
+          ? null
+          : fromJson$Enum$OrderDirection((l$token as String));
+    }
+    if (data.containsKey('deviceType')) {
+      final l$deviceType = data['deviceType'];
+      result$data['deviceType'] = l$deviceType == null
+          ? null
+          : fromJson$Enum$OrderDirection((l$deviceType as String));
     }
     if (data.containsKey('createdAt')) {
       final l$createdAt = data['createdAt'];
@@ -6537,12 +6927,17 @@ class Input$ExpoTokenOrderByInput {
           ? null
           : fromJson$Enum$OrderDirection((l$updatedAt as String));
     }
-    return Input$ExpoTokenOrderByInput._(result$data);
+    return Input$FcmTokenOrderByInput._(result$data);
   }
 
   Map<String, dynamic> _$data;
 
   Enum$OrderDirection? get id => (_$data['id'] as Enum$OrderDirection?);
+
+  Enum$OrderDirection? get token => (_$data['token'] as Enum$OrderDirection?);
+
+  Enum$OrderDirection? get deviceType =>
+      (_$data['deviceType'] as Enum$OrderDirection?);
 
   Enum$OrderDirection? get createdAt =>
       (_$data['createdAt'] as Enum$OrderDirection?);
@@ -6557,6 +6952,17 @@ class Input$ExpoTokenOrderByInput {
       result$data['id'] =
           l$id == null ? null : toJson$Enum$OrderDirection(l$id);
     }
+    if (_$data.containsKey('token')) {
+      final l$token = token;
+      result$data['token'] =
+          l$token == null ? null : toJson$Enum$OrderDirection(l$token);
+    }
+    if (_$data.containsKey('deviceType')) {
+      final l$deviceType = deviceType;
+      result$data['deviceType'] = l$deviceType == null
+          ? null
+          : toJson$Enum$OrderDirection(l$deviceType);
+    }
     if (_$data.containsKey('createdAt')) {
       final l$createdAt = createdAt;
       result$data['createdAt'] =
@@ -6570,8 +6976,8 @@ class Input$ExpoTokenOrderByInput {
     return result$data;
   }
 
-  CopyWith$Input$ExpoTokenOrderByInput<Input$ExpoTokenOrderByInput>
-      get copyWith => CopyWith$Input$ExpoTokenOrderByInput(
+  CopyWith$Input$FcmTokenOrderByInput<Input$FcmTokenOrderByInput>
+      get copyWith => CopyWith$Input$FcmTokenOrderByInput(
             this,
             (i) => i,
           );
@@ -6581,7 +6987,7 @@ class Input$ExpoTokenOrderByInput {
     if (identical(this, other)) {
       return true;
     }
-    if (other is! Input$ExpoTokenOrderByInput ||
+    if (other is! Input$FcmTokenOrderByInput ||
         runtimeType != other.runtimeType) {
       return false;
     }
@@ -6591,6 +6997,23 @@ class Input$ExpoTokenOrderByInput {
       return false;
     }
     if (l$id != lOther$id) {
+      return false;
+    }
+    final l$token = token;
+    final lOther$token = other.token;
+    if (_$data.containsKey('token') != other._$data.containsKey('token')) {
+      return false;
+    }
+    if (l$token != lOther$token) {
+      return false;
+    }
+    final l$deviceType = deviceType;
+    final lOther$deviceType = other.deviceType;
+    if (_$data.containsKey('deviceType') !=
+        other._$data.containsKey('deviceType')) {
+      return false;
+    }
+    if (l$deviceType != lOther$deviceType) {
       return false;
     }
     final l$createdAt = createdAt;
@@ -6617,53 +7040,64 @@ class Input$ExpoTokenOrderByInput {
   @override
   int get hashCode {
     final l$id = id;
+    final l$token = token;
+    final l$deviceType = deviceType;
     final l$createdAt = createdAt;
     final l$updatedAt = updatedAt;
     return Object.hashAll([
       _$data.containsKey('id') ? l$id : const {},
+      _$data.containsKey('token') ? l$token : const {},
+      _$data.containsKey('deviceType') ? l$deviceType : const {},
       _$data.containsKey('createdAt') ? l$createdAt : const {},
       _$data.containsKey('updatedAt') ? l$updatedAt : const {},
     ]);
   }
 }
 
-abstract class CopyWith$Input$ExpoTokenOrderByInput<TRes> {
-  factory CopyWith$Input$ExpoTokenOrderByInput(
-    Input$ExpoTokenOrderByInput instance,
-    TRes Function(Input$ExpoTokenOrderByInput) then,
-  ) = _CopyWithImpl$Input$ExpoTokenOrderByInput;
+abstract class CopyWith$Input$FcmTokenOrderByInput<TRes> {
+  factory CopyWith$Input$FcmTokenOrderByInput(
+    Input$FcmTokenOrderByInput instance,
+    TRes Function(Input$FcmTokenOrderByInput) then,
+  ) = _CopyWithImpl$Input$FcmTokenOrderByInput;
 
-  factory CopyWith$Input$ExpoTokenOrderByInput.stub(TRes res) =
-      _CopyWithStubImpl$Input$ExpoTokenOrderByInput;
+  factory CopyWith$Input$FcmTokenOrderByInput.stub(TRes res) =
+      _CopyWithStubImpl$Input$FcmTokenOrderByInput;
 
   TRes call({
     Enum$OrderDirection? id,
+    Enum$OrderDirection? token,
+    Enum$OrderDirection? deviceType,
     Enum$OrderDirection? createdAt,
     Enum$OrderDirection? updatedAt,
   });
 }
 
-class _CopyWithImpl$Input$ExpoTokenOrderByInput<TRes>
-    implements CopyWith$Input$ExpoTokenOrderByInput<TRes> {
-  _CopyWithImpl$Input$ExpoTokenOrderByInput(
+class _CopyWithImpl$Input$FcmTokenOrderByInput<TRes>
+    implements CopyWith$Input$FcmTokenOrderByInput<TRes> {
+  _CopyWithImpl$Input$FcmTokenOrderByInput(
     this._instance,
     this._then,
   );
 
-  final Input$ExpoTokenOrderByInput _instance;
+  final Input$FcmTokenOrderByInput _instance;
 
-  final TRes Function(Input$ExpoTokenOrderByInput) _then;
+  final TRes Function(Input$FcmTokenOrderByInput) _then;
 
   static const _undefined = <dynamic, dynamic>{};
 
   TRes call({
     Object? id = _undefined,
+    Object? token = _undefined,
+    Object? deviceType = _undefined,
     Object? createdAt = _undefined,
     Object? updatedAt = _undefined,
   }) =>
-      _then(Input$ExpoTokenOrderByInput._({
+      _then(Input$FcmTokenOrderByInput._({
         ..._instance._$data,
         if (id != _undefined) 'id': (id as Enum$OrderDirection?),
+        if (token != _undefined) 'token': (token as Enum$OrderDirection?),
+        if (deviceType != _undefined)
+          'deviceType': (deviceType as Enum$OrderDirection?),
         if (createdAt != _undefined)
           'createdAt': (createdAt as Enum$OrderDirection?),
         if (updatedAt != _undefined)
@@ -6671,14 +7105,16 @@ class _CopyWithImpl$Input$ExpoTokenOrderByInput<TRes>
       }));
 }
 
-class _CopyWithStubImpl$Input$ExpoTokenOrderByInput<TRes>
-    implements CopyWith$Input$ExpoTokenOrderByInput<TRes> {
-  _CopyWithStubImpl$Input$ExpoTokenOrderByInput(this._res);
+class _CopyWithStubImpl$Input$FcmTokenOrderByInput<TRes>
+    implements CopyWith$Input$FcmTokenOrderByInput<TRes> {
+  _CopyWithStubImpl$Input$FcmTokenOrderByInput(this._res);
 
   TRes _res;
 
   call({
     Enum$OrderDirection? id,
+    Enum$OrderDirection? token,
+    Enum$OrderDirection? deviceType,
     Enum$OrderDirection? createdAt,
     Enum$OrderDirection? updatedAt,
   }) =>
@@ -10397,72 +10833,73 @@ class _CopyWithStubImpl$Input$ClassTestCreateInput<TRes>
       CopyWith$Input$UserRelateToOneForCreateInput.stub(_res);
 }
 
-class Input$ExpoTokenUploadInput {
-  factory Input$ExpoTokenUploadInput({
+class Input$FcmTokenUploadInput {
+  factory Input$FcmTokenUploadInput({
     required String token,
-    DateTime? createdAt,
-    DateTime? updatedAt,
+    Enum$DeviceType? deviceType,
+    String? userId,
   }) =>
-      Input$ExpoTokenUploadInput._({
+      Input$FcmTokenUploadInput._({
         r'token': token,
-        if (createdAt != null) r'createdAt': createdAt,
-        if (updatedAt != null) r'updatedAt': updatedAt,
+        if (deviceType != null) r'deviceType': deviceType,
+        if (userId != null) r'userId': userId,
       });
 
-  Input$ExpoTokenUploadInput._(this._$data);
+  Input$FcmTokenUploadInput._(this._$data);
 
-  factory Input$ExpoTokenUploadInput.fromJson(Map<String, dynamic> data) {
+  factory Input$FcmTokenUploadInput.fromJson(Map<String, dynamic> data) {
     final result$data = <String, dynamic>{};
     final l$token = data['token'];
     result$data['token'] = (l$token as String);
-    if (data.containsKey('createdAt')) {
-      final l$createdAt = data['createdAt'];
-      result$data['createdAt'] =
-          l$createdAt == null ? null : DateTime.parse((l$createdAt as String));
+    if (data.containsKey('deviceType')) {
+      final l$deviceType = data['deviceType'];
+      result$data['deviceType'] = l$deviceType == null
+          ? null
+          : fromJson$Enum$DeviceType((l$deviceType as String));
     }
-    if (data.containsKey('updatedAt')) {
-      final l$updatedAt = data['updatedAt'];
-      result$data['updatedAt'] =
-          l$updatedAt == null ? null : DateTime.parse((l$updatedAt as String));
+    if (data.containsKey('userId')) {
+      final l$userId = data['userId'];
+      result$data['userId'] = (l$userId as String?);
     }
-    return Input$ExpoTokenUploadInput._(result$data);
+    return Input$FcmTokenUploadInput._(result$data);
   }
 
   Map<String, dynamic> _$data;
 
   String get token => (_$data['token'] as String);
 
-  DateTime? get createdAt => (_$data['createdAt'] as DateTime?);
+  Enum$DeviceType? get deviceType => (_$data['deviceType'] as Enum$DeviceType?);
 
-  DateTime? get updatedAt => (_$data['updatedAt'] as DateTime?);
+  String? get userId => (_$data['userId'] as String?);
 
   Map<String, dynamic> toJson() {
     final result$data = <String, dynamic>{};
     final l$token = token;
     result$data['token'] = l$token;
-    if (_$data.containsKey('createdAt')) {
-      final l$createdAt = createdAt;
-      result$data['createdAt'] = l$createdAt?.toIso8601String();
+    if (_$data.containsKey('deviceType')) {
+      final l$deviceType = deviceType;
+      result$data['deviceType'] =
+          l$deviceType == null ? null : toJson$Enum$DeviceType(l$deviceType);
     }
-    if (_$data.containsKey('updatedAt')) {
-      final l$updatedAt = updatedAt;
-      result$data['updatedAt'] = l$updatedAt?.toIso8601String();
+    if (_$data.containsKey('userId')) {
+      final l$userId = userId;
+      result$data['userId'] = l$userId;
     }
     return result$data;
   }
 
-  CopyWith$Input$ExpoTokenUploadInput<Input$ExpoTokenUploadInput>
-      get copyWith => CopyWith$Input$ExpoTokenUploadInput(
-            this,
-            (i) => i,
-          );
+  CopyWith$Input$FcmTokenUploadInput<Input$FcmTokenUploadInput> get copyWith =>
+      CopyWith$Input$FcmTokenUploadInput(
+        this,
+        (i) => i,
+      );
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) {
       return true;
     }
-    if (other is! Input$ExpoTokenUploadInput ||
+    if (other is! Input$FcmTokenUploadInput ||
         runtimeType != other.runtimeType) {
       return false;
     }
@@ -10471,22 +10908,21 @@ class Input$ExpoTokenUploadInput {
     if (l$token != lOther$token) {
       return false;
     }
-    final l$createdAt = createdAt;
-    final lOther$createdAt = other.createdAt;
-    if (_$data.containsKey('createdAt') !=
-        other._$data.containsKey('createdAt')) {
+    final l$deviceType = deviceType;
+    final lOther$deviceType = other.deviceType;
+    if (_$data.containsKey('deviceType') !=
+        other._$data.containsKey('deviceType')) {
       return false;
     }
-    if (l$createdAt != lOther$createdAt) {
+    if (l$deviceType != lOther$deviceType) {
       return false;
     }
-    final l$updatedAt = updatedAt;
-    final lOther$updatedAt = other.updatedAt;
-    if (_$data.containsKey('updatedAt') !=
-        other._$data.containsKey('updatedAt')) {
+    final l$userId = userId;
+    final lOther$userId = other.userId;
+    if (_$data.containsKey('userId') != other._$data.containsKey('userId')) {
       return false;
     }
-    if (l$updatedAt != lOther$updatedAt) {
+    if (l$userId != lOther$userId) {
       return false;
     }
     return true;
@@ -10495,68 +10931,69 @@ class Input$ExpoTokenUploadInput {
   @override
   int get hashCode {
     final l$token = token;
-    final l$createdAt = createdAt;
-    final l$updatedAt = updatedAt;
+    final l$deviceType = deviceType;
+    final l$userId = userId;
     return Object.hashAll([
       l$token,
-      _$data.containsKey('createdAt') ? l$createdAt : const {},
-      _$data.containsKey('updatedAt') ? l$updatedAt : const {},
+      _$data.containsKey('deviceType') ? l$deviceType : const {},
+      _$data.containsKey('userId') ? l$userId : const {},
     ]);
   }
 }
 
-abstract class CopyWith$Input$ExpoTokenUploadInput<TRes> {
-  factory CopyWith$Input$ExpoTokenUploadInput(
-    Input$ExpoTokenUploadInput instance,
-    TRes Function(Input$ExpoTokenUploadInput) then,
-  ) = _CopyWithImpl$Input$ExpoTokenUploadInput;
+abstract class CopyWith$Input$FcmTokenUploadInput<TRes> {
+  factory CopyWith$Input$FcmTokenUploadInput(
+    Input$FcmTokenUploadInput instance,
+    TRes Function(Input$FcmTokenUploadInput) then,
+  ) = _CopyWithImpl$Input$FcmTokenUploadInput;
 
-  factory CopyWith$Input$ExpoTokenUploadInput.stub(TRes res) =
-      _CopyWithStubImpl$Input$ExpoTokenUploadInput;
+  factory CopyWith$Input$FcmTokenUploadInput.stub(TRes res) =
+      _CopyWithStubImpl$Input$FcmTokenUploadInput;
 
   TRes call({
     String? token,
-    DateTime? createdAt,
-    DateTime? updatedAt,
+    Enum$DeviceType? deviceType,
+    String? userId,
   });
 }
 
-class _CopyWithImpl$Input$ExpoTokenUploadInput<TRes>
-    implements CopyWith$Input$ExpoTokenUploadInput<TRes> {
-  _CopyWithImpl$Input$ExpoTokenUploadInput(
+class _CopyWithImpl$Input$FcmTokenUploadInput<TRes>
+    implements CopyWith$Input$FcmTokenUploadInput<TRes> {
+  _CopyWithImpl$Input$FcmTokenUploadInput(
     this._instance,
     this._then,
   );
 
-  final Input$ExpoTokenUploadInput _instance;
+  final Input$FcmTokenUploadInput _instance;
 
-  final TRes Function(Input$ExpoTokenUploadInput) _then;
+  final TRes Function(Input$FcmTokenUploadInput) _then;
 
   static const _undefined = <dynamic, dynamic>{};
 
   TRes call({
     Object? token = _undefined,
-    Object? createdAt = _undefined,
-    Object? updatedAt = _undefined,
+    Object? deviceType = _undefined,
+    Object? userId = _undefined,
   }) =>
-      _then(Input$ExpoTokenUploadInput._({
+      _then(Input$FcmTokenUploadInput._({
         ..._instance._$data,
         if (token != _undefined && token != null) 'token': (token as String),
-        if (createdAt != _undefined) 'createdAt': (createdAt as DateTime?),
-        if (updatedAt != _undefined) 'updatedAt': (updatedAt as DateTime?),
+        if (deviceType != _undefined)
+          'deviceType': (deviceType as Enum$DeviceType?),
+        if (userId != _undefined) 'userId': (userId as String?),
       }));
 }
 
-class _CopyWithStubImpl$Input$ExpoTokenUploadInput<TRes>
-    implements CopyWith$Input$ExpoTokenUploadInput<TRes> {
-  _CopyWithStubImpl$Input$ExpoTokenUploadInput(this._res);
+class _CopyWithStubImpl$Input$FcmTokenUploadInput<TRes>
+    implements CopyWith$Input$FcmTokenUploadInput<TRes> {
+  _CopyWithStubImpl$Input$FcmTokenUploadInput(this._res);
 
   TRes _res;
 
   call({
     String? token,
-    DateTime? createdAt,
-    DateTime? updatedAt,
+    Enum$DeviceType? deviceType,
+    String? userId,
   }) =>
       _res;
 }
@@ -10790,6 +11227,72 @@ Enum$OrderDirection fromJson$Enum$OrderDirection(String value) {
       return Enum$OrderDirection.desc;
     default:
       return Enum$OrderDirection.$unknown;
+  }
+}
+
+enum Enum$FcmTokenDeviceTypeType {
+  ios,
+  android,
+  $unknown;
+
+  factory Enum$FcmTokenDeviceTypeType.fromJson(String value) =>
+      fromJson$Enum$FcmTokenDeviceTypeType(value);
+
+  String toJson() => toJson$Enum$FcmTokenDeviceTypeType(this);
+}
+
+String toJson$Enum$FcmTokenDeviceTypeType(Enum$FcmTokenDeviceTypeType e) {
+  switch (e) {
+    case Enum$FcmTokenDeviceTypeType.ios:
+      return r'ios';
+    case Enum$FcmTokenDeviceTypeType.android:
+      return r'android';
+    case Enum$FcmTokenDeviceTypeType.$unknown:
+      return r'$unknown';
+  }
+}
+
+Enum$FcmTokenDeviceTypeType fromJson$Enum$FcmTokenDeviceTypeType(String value) {
+  switch (value) {
+    case r'ios':
+      return Enum$FcmTokenDeviceTypeType.ios;
+    case r'android':
+      return Enum$FcmTokenDeviceTypeType.android;
+    default:
+      return Enum$FcmTokenDeviceTypeType.$unknown;
+  }
+}
+
+enum Enum$DeviceType {
+  ios,
+  android,
+  $unknown;
+
+  factory Enum$DeviceType.fromJson(String value) =>
+      fromJson$Enum$DeviceType(value);
+
+  String toJson() => toJson$Enum$DeviceType(this);
+}
+
+String toJson$Enum$DeviceType(Enum$DeviceType e) {
+  switch (e) {
+    case Enum$DeviceType.ios:
+      return r'ios';
+    case Enum$DeviceType.android:
+      return r'android';
+    case Enum$DeviceType.$unknown:
+      return r'$unknown';
+  }
+}
+
+Enum$DeviceType fromJson$Enum$DeviceType(String value) {
+  switch (value) {
+    case r'ios':
+      return Enum$DeviceType.ios;
+    case r'android':
+      return Enum$DeviceType.android;
+    default:
+      return Enum$DeviceType.$unknown;
   }
 }
 

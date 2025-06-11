@@ -68,7 +68,6 @@ class _ClassTestsViewState extends State<ClassTestsView> {
         _pagingController.error = result.exception;
         return;
       }
-
       final classTests = result.parsedData?.classTests ?? [];
       final totalCount = result.parsedData?.classTestsCount ?? 0;
 

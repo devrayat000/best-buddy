@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:get_it/get_it.dart';
 
+import '../auth/auth_cubit.dart';
+import '../services/firebase_messaging_service.dart';
+import '../services/notification_navigation_service.dart';
 import 'network_status_banner.dart';
 
 class MainShell extends StatefulWidget {
@@ -17,6 +22,29 @@ class MainShell extends StatefulWidget {
 
 class _MainShellState extends State<MainShell> {
   int _selectedIndex = 0;
+  @override
+  void initState() {
+    super.initState();
+    // Initialize notifications when main shell loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeNotifications();
+      _initializeNavigationService();
+    });
+  }
+
+  void _initializeNotifications() {
+    final authState = context.read<AuthCubit>().state;
+    if (authState is AuthAuthenticated) {
+      // Initialize Firebase Messaging Service if user is authenticated
+      GetIt.instance<FirebaseMessagingService>().initialize();
+    }
+  }
+
+  void _initializeNavigationService() {
+    // Initialize the navigation service with current context and router
+    final router = GoRouter.of(context);
+    GetIt.instance<NotificationNavigationService>().initialize(context, router);
+  }
 
   void _onItemTapped(int index) {
     setState(() {
