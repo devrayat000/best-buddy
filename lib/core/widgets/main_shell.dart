@@ -47,21 +47,24 @@ class _MainShellState extends State<MainShell> {
   }
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
     switch (index) {
       case 0:
         context.go('/notices');
         break;
       case 1:
-        context.go('/class-tests');
+        context.go(
+          '/class-tests',
+          extra: {'from': _selectedIndex == 0 ? 'notices' : 'profile'},
+        );
         break;
       case 2:
         context.go('/profile');
         break;
     }
+
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   @override

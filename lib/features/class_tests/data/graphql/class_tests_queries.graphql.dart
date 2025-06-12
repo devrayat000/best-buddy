@@ -11,13 +11,15 @@ import 'package:graphql_flutter/graphql_flutter.dart' as graphql_flutter;
 class Variables$Query$ClassTests {
   factory Variables$Query$ClassTests({
     int? limit,
-    required int offset,
+    int? offset,
     required List<Input$ClassTestOrderByInput> orderBy,
+    Input$ClassTestWhereInput? where,
   }) =>
       Variables$Query$ClassTests._({
         if (limit != null) r'limit': limit,
-        r'offset': offset,
+        if (offset != null) r'offset': offset,
         r'orderBy': orderBy,
+        if (where != null) r'where': where,
       });
 
   Variables$Query$ClassTests._(this._$data);
@@ -28,13 +30,20 @@ class Variables$Query$ClassTests {
       final l$limit = data['limit'];
       result$data['limit'] = (l$limit as int?);
     }
-    final l$offset = data['offset'];
-    result$data['offset'] = (l$offset as int);
+    if (data.containsKey('offset')) {
+      final l$offset = data['offset'];
+      result$data['offset'] = (l$offset as int);
+    }
     final l$orderBy = data['orderBy'];
     result$data['orderBy'] = (l$orderBy as List<dynamic>)
         .map((e) =>
             Input$ClassTestOrderByInput.fromJson((e as Map<String, dynamic>)))
         .toList();
+    if (data.containsKey('where')) {
+      final l$where = data['where'];
+      result$data['where'] =
+          Input$ClassTestWhereInput.fromJson((l$where as Map<String, dynamic>));
+    }
     return Variables$Query$ClassTests._(result$data);
   }
 
@@ -42,10 +51,13 @@ class Variables$Query$ClassTests {
 
   int? get limit => (_$data['limit'] as int?);
 
-  int get offset => (_$data['offset'] as int);
+  int? get offset => (_$data['offset'] as int?);
 
   List<Input$ClassTestOrderByInput> get orderBy =>
       (_$data['orderBy'] as List<Input$ClassTestOrderByInput>);
+
+  Input$ClassTestWhereInput? get where =>
+      (_$data['where'] as Input$ClassTestWhereInput?);
 
   Map<String, dynamic> toJson() {
     final result$data = <String, dynamic>{};
@@ -53,10 +65,16 @@ class Variables$Query$ClassTests {
       final l$limit = limit;
       result$data['limit'] = l$limit;
     }
-    final l$offset = offset;
-    result$data['offset'] = l$offset;
+    if (_$data.containsKey('offset')) {
+      final l$offset = offset;
+      result$data['offset'] = (l$offset as int);
+    }
     final l$orderBy = orderBy;
     result$data['orderBy'] = l$orderBy.map((e) => e.toJson()).toList();
+    if (_$data.containsKey('where')) {
+      final l$where = where;
+      result$data['where'] = (l$where as Input$ClassTestWhereInput).toJson();
+    }
     return result$data;
   }
 
@@ -85,6 +103,9 @@ class Variables$Query$ClassTests {
     }
     final l$offset = offset;
     final lOther$offset = other.offset;
+    if (_$data.containsKey('offset') != other._$data.containsKey('offset')) {
+      return false;
+    }
     if (l$offset != lOther$offset) {
       return false;
     }
@@ -100,6 +121,14 @@ class Variables$Query$ClassTests {
         return false;
       }
     }
+    final l$where = where;
+    final lOther$where = other.where;
+    if (_$data.containsKey('where') != other._$data.containsKey('where')) {
+      return false;
+    }
+    if (l$where != lOther$where) {
+      return false;
+    }
     return true;
   }
 
@@ -108,10 +137,12 @@ class Variables$Query$ClassTests {
     final l$limit = limit;
     final l$offset = offset;
     final l$orderBy = orderBy;
+    final l$where = where;
     return Object.hashAll([
       _$data.containsKey('limit') ? l$limit : const {},
-      l$offset,
+      _$data.containsKey('offset') ? l$offset : const {},
       Object.hashAll(l$orderBy.map((v) => v)),
+      _$data.containsKey('where') ? l$where : const {},
     ]);
   }
 }
@@ -129,6 +160,7 @@ abstract class CopyWith$Variables$Query$ClassTests<TRes> {
     int? limit,
     int? offset,
     List<Input$ClassTestOrderByInput>? orderBy,
+    Input$ClassTestWhereInput? where,
   });
 }
 
@@ -149,6 +181,7 @@ class _CopyWithImpl$Variables$Query$ClassTests<TRes>
     Object? limit = _undefined,
     Object? offset = _undefined,
     Object? orderBy = _undefined,
+    Object? where = _undefined,
   }) =>
       _then(Variables$Query$ClassTests._({
         ..._instance._$data,
@@ -156,6 +189,8 @@ class _CopyWithImpl$Variables$Query$ClassTests<TRes>
         if (offset != _undefined && offset != null) 'offset': (offset as int),
         if (orderBy != _undefined && orderBy != null)
           'orderBy': (orderBy as List<Input$ClassTestOrderByInput>),
+        if (where != _undefined && where != null)
+          'where': (where as Input$ClassTestWhereInput),
       }));
 }
 
@@ -169,6 +204,7 @@ class _CopyWithStubImpl$Variables$Query$ClassTests<TRes>
     int? limit,
     int? offset,
     List<Input$ClassTestOrderByInput>? orderBy,
+    Input$ClassTestWhereInput? where,
   }) =>
       _res;
 }
@@ -371,7 +407,7 @@ const documentNodeQueryClassTests = DocumentNode(definitions: [
           name: NameNode(value: 'Int'),
           isNonNull: true,
         ),
-        defaultValue: DefaultValueNode(value: null),
+        defaultValue: DefaultValueNode(value: IntValueNode(value: '0')),
         directives: [],
       ),
       VariableDefinitionNode(
@@ -384,6 +420,15 @@ const documentNodeQueryClassTests = DocumentNode(definitions: [
           isNonNull: true,
         ),
         defaultValue: DefaultValueNode(value: null),
+        directives: [],
+      ),
+      VariableDefinitionNode(
+        variable: VariableNode(name: NameNode(value: 'where')),
+        type: NamedTypeNode(
+          name: NameNode(value: 'ClassTestWhereInput'),
+          isNonNull: true,
+        ),
+        defaultValue: DefaultValueNode(value: ObjectValueNode(fields: [])),
         directives: [],
       ),
     ],
@@ -404,6 +449,10 @@ const documentNodeQueryClassTests = DocumentNode(definitions: [
           ArgumentNode(
             name: NameNode(value: 'orderBy'),
             value: VariableNode(name: NameNode(value: 'orderBy')),
+          ),
+          ArgumentNode(
+            name: NameNode(value: 'where'),
+            value: VariableNode(name: NameNode(value: 'where')),
           ),
         ],
         directives: [],

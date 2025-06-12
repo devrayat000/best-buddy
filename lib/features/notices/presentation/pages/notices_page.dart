@@ -123,6 +123,11 @@ class _NoticesPageState extends State<NoticesPage> {
                 fullScreen: false,
               ),
               itemBuilder: (context, notice, index) {
+                final dimmedColor = Theme.of(context)
+                    .colorScheme
+                    .onSurfaceVariant
+                    .withAlpha(120);
+
                 return ListTile(
                   title: Text(
                     notice.title ?? 'Untitled',
@@ -147,14 +152,14 @@ class _NoticesPageState extends State<NoticesPage> {
                                 Icon(
                                   Icons.person,
                                   size: 16,
-                                  color: Colors.grey[600],
+                                  color: dimmedColor,
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
                                   notice.createdBy!.name,
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: Colors.grey[600],
+                                    color: dimmedColor,
                                   ),
                                 ),
                               ],
@@ -165,14 +170,14 @@ class _NoticesPageState extends State<NoticesPage> {
                                 Icon(
                                   Icons.access_time,
                                   size: 16,
-                                  color: Colors.grey[600],
+                                  color: dimmedColor,
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
                                   DateFormat.yMMMd().format(notice.createdAt!),
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: Colors.grey[600],
+                                    color: dimmedColor,
                                   ),
                                 ),
                               ],

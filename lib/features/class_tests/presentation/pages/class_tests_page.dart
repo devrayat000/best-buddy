@@ -10,34 +10,26 @@ import '../../data/graphql/class_tests_queries.graphql.dart';
 import '../../../../core/graphql/schema.graphql.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/loading_view.dart';
+import '../widgets/widgets.dart';
 
-class ClassTestsPage extends StatelessWidget {
+class ClassTestsPage extends StatefulWidget {
   const ClassTestsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const ClassTestsView();
-  }
+  State<ClassTestsPage> createState() => _ClassTestsPageState();
 }
 
-class ClassTestsView extends StatefulWidget {
-  const ClassTestsView({super.key});
-
-  @override
-  State<ClassTestsView> createState() => _ClassTestsViewState();
-}
-
-class _ClassTestsViewState extends State<ClassTestsView> {
+class _ClassTestsPageState extends State<ClassTestsPage> {
   static const _pageSize = 20;
 
-  final PagingController<int, Query$ClassTests$classTests> _pagingController =
-      PagingController(firstPageKey: 0);
-
+  late final PagingController<int, Query$ClassTests$classTests>
+      _pagingController;
   late GraphQLClient _client;
 
   @override
   void initState() {
     super.initState();
+    _pagingController = PagingController(firstPageKey: 0);
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
@@ -104,94 +96,135 @@ class _ClassTestsViewState extends State<ClassTestsView> {
         onRefresh: () async {
           _pagingController.refresh();
         },
-        child: PagedListView<int, Query$ClassTests$classTests>(
-          pagingController: _pagingController,
-          padding: const EdgeInsets.all(8.0),
-          builderDelegate:
-              PagedChildBuilderDelegate<Query$ClassTests$classTests>(
-            firstPageProgressIndicatorBuilder: (context) => LoadingView.page(),
-            newPageProgressIndicatorBuilder: (context) => LoadingView.inline(),
-            noItemsFoundIndicatorBuilder: (context) =>
-                _buildEmptyWidget(context),
-            firstPageErrorIndicatorBuilder: (context) => ErrorView(
-              message: _pagingController.error.toString(),
-              title: 'Error loading class tests',
-              onRetry: () => _pagingController.refresh(),
+        child: CustomScrollView(
+          slivers: [
+            // Calendar header
+            const SliverToBoxAdapter(
+              child: ClassTestsCalendar(),
             ),
-            newPageErrorIndicatorBuilder: (context) => ErrorView.inline(
-              message: 'Error loading more class tests',
-              onRetry: () => _pagingController.retryLastFailedRequest(),
-            ),
-            itemBuilder: (context, classTest, index) {
-              return ListTile(
-                onTap: () {
-                  context.goNamed(
-                    'class-test-detail',
-                    pathParameters: {'id': classTest.id},
-                  );
+            // Class tests list
+            PagedSliverList<int, Query$ClassTests$classTests>(
+              pagingController: _pagingController,
+              builderDelegate:
+                  PagedChildBuilderDelegate<Query$ClassTests$classTests>(
+                firstPageProgressIndicatorBuilder: (context) =>
+                    LoadingView.page(),
+                newPageProgressIndicatorBuilder: (context) =>
+                    LoadingView.inline(),
+                noItemsFoundIndicatorBuilder: (context) =>
+                    _buildEmptyWidget(context),
+                firstPageErrorIndicatorBuilder: (context) => ErrorView(
+                  message: _pagingController.error.toString(),
+                  title: 'Error loading class tests',
+                  onRetry: () => _pagingController.refresh(),
+                ),
+                newPageErrorIndicatorBuilder: (context) => ErrorView.inline(
+                  message: 'Error loading more class tests',
+                  onRetry: () => _pagingController.retryLastFailedRequest(),
+                ),
+                itemBuilder: (context, classTest, index) {
+                  return _buildClassTestItem(context, classTest);
                 },
-                // contentPadding: const EdgeInsets.all(16),
-                title: Text(
-                  classTest.title,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (classTest.content.isNotEmpty)
-                      Text(
-                        classTest.content,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.access_time,
-                          size: 16,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          DateFormat.yMMMd()
-                              .add_jm()
-                              .format(classTest.datetime),
-                          style: TextStyle(
-                            fontSize: 12,
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        const Spacer(),
-                        if (classTest.createdBy?.name != null) ...[
-                          Icon(Icons.person,
-                              size: 16,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant),
-                          const SizedBox(width: 4),
-                          Text(
-                            classTest.createdBy!.name,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+              ),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildClassTestItem(
+      BuildContext context, Query$ClassTests$classTests classTest) {
+    final dimmedColor =
+        Theme.of(context).colorScheme.onSurfaceVariant.withAlpha(120);
+
+    return ListTile(
+      onTap: () {
+        context.goNamed(
+          'class-test-detail',
+          pathParameters: {'id': classTest.id},
+        );
+      },
+      leading: Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primaryContainer,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              DateFormat('MMM').format(classTest.datetime),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            Text(
+              DateFormat('dd').format(classTest.datetime),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+          ],
+        ),
+      ),
+      title: Text(
+        classTest.title,
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (classTest.content.isNotEmpty) ...[
+            const SizedBox(height: 4),
+            Text(
+              classTest.content,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Icon(
+                Icons.access_time,
+                size: 16,
+                color: dimmedColor,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                DateFormat.jm().format(classTest.datetime),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: dimmedColor,
+                ),
+              ),
+              const Spacer(),
+              if (classTest.createdBy?.name != null) ...[
+                Icon(
+                  Icons.person,
+                  size: 16,
+                  color: dimmedColor,
+                ),
+                const SizedBox(width: 4),
+                Flexible(
+                  child: Text(
+                    classTest.createdBy!.name,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: dimmedColor,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ],
       ),
     );
   }

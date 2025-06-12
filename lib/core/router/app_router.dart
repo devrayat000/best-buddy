@@ -170,7 +170,36 @@ class AppRouter {
                 GoRoute(
                   path: '/notices',
                   name: 'notices',
-                  builder: (context, state) => const NoticesPage(),
+                  pageBuilder: (context, state) {
+                    return CustomTransitionPage(
+                      name: state.name,
+                      key: state.pageKey,
+                      child: const NoticesPage(),
+                      transitionDuration: const Duration(milliseconds: 300),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return FadeTransition(
+                          opacity: animation.drive(
+                            Tween<double>(
+                              begin: 0.2,
+                              end: 1.0,
+                            ),
+                          ),
+                          child: SlideTransition(
+                            // slide from left
+                            position: Tween<Offset>(
+                              begin: const Offset(-1.0, 0.0),
+                              end: Offset.zero,
+                            ).animate(CurvedAnimation(
+                              parent: animation,
+                              curve: Curves.easeInOut,
+                            )),
+                            child: child,
+                          ),
+                        );
+                      },
+                    );
+                  },
                   routes: [
                     // Notice detail modal
                     GoRoute(
@@ -190,7 +219,41 @@ class AppRouter {
                 GoRoute(
                   path: '/class-tests',
                   name: 'class-tests',
-                  builder: (context, state) => const ClassTestsPage(),
+                  pageBuilder: (context, state) {
+                    // slide from left if navigating from /profile, or from right if navgating from /notices
+                    final isFromProfile = state.extra is Map<String, dynamic> &&
+                        (state.extra as Map<String, dynamic>)['from'] ==
+                            'profile';
+                    return CustomTransitionPage(
+                      name: state.name,
+                      key: state.pageKey,
+                      child: const ClassTestsPage(),
+                      transitionDuration: const Duration(milliseconds: 300),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return FadeTransition(
+                          opacity: animation.drive(
+                            Tween<double>(
+                              begin: 0.2,
+                              end: 1.0,
+                            ),
+                          ),
+                          child: SlideTransition(
+                            position: Tween<Offset>(
+                              begin: isFromProfile
+                                  ? const Offset(-1.0, 0.0)
+                                  : const Offset(1.0, 0.0),
+                              end: Offset.zero,
+                            ).animate(CurvedAnimation(
+                              parent: animation,
+                              curve: Curves.easeInOut,
+                            )),
+                            child: child,
+                          ),
+                        );
+                      },
+                    );
+                  },
                   routes: [
                     // Class test detail modal
                     GoRoute(
@@ -209,7 +272,36 @@ class AppRouter {
                 GoRoute(
                   path: '/profile',
                   name: 'profile',
-                  builder: (context, state) => const ProfilePage(),
+                  pageBuilder: (context, state) {
+                    return CustomTransitionPage(
+                      name: state.name,
+                      key: state.pageKey,
+                      child: const ProfilePage(),
+                      transitionDuration: const Duration(milliseconds: 300),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return FadeTransition(
+                          opacity: animation.drive(
+                            Tween<double>(
+                              begin: 0.2,
+                              end: 1.0,
+                            ),
+                          ),
+                          child: SlideTransition(
+                            // slide from right
+                            position: Tween<Offset>(
+                              begin: const Offset(1.0, 0.0),
+                              end: Offset.zero,
+                            ).animate(CurvedAnimation(
+                              parent: animation,
+                              curve: Curves.easeInOut,
+                            )),
+                            child: child,
+                          ),
+                        );
+                      },
+                    );
+                  },
                   routes: [
                     GoRoute(
                       path: '/personal',
