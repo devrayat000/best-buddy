@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
 import '../../data/graphql/class_tests_queries.graphql.dart';
 import '../../../../core/widgets/rich_text_utils.dart';
@@ -27,6 +28,8 @@ class ClassTestDetailsModal extends StatelessWidget {
         child: Query$ClassTest$Widget(
           options: Options$Query$ClassTest(
             variables: Variables$Query$ClassTest(id: classTestId),
+            fetchPolicy: FetchPolicy
+                .cacheAndNetwork, // Use cache-first for offline support
           ),
           builder: (result, {fetchMore, refetch}) {
             if (result.hasException) {

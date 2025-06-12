@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:graphql/client.dart';
 
 import '../auth/auth_cubit.dart';
+import '../cubits/reload_cubit.dart';
 import '../graphql/graphql_client.dart';
 import '../services/connectivity_service.dart';
 import '../services/firebase_messaging_service.dart';
@@ -20,10 +21,6 @@ Future<void> setupServiceLocator() async {
   // Connectivity
   sl.registerLazySingleton<ConnectivityService>(() => ConnectivityService());
   await sl<ConnectivityService>().initialize();
-  // Firebase Messaging
-  sl.registerLazySingleton<FirebaseMessagingService>(
-      () => FirebaseMessagingService());
-  await sl<FirebaseMessagingService>().initialize();
 
   // Notification Navigation
   sl.registerLazySingleton<NotificationNavigationService>(
@@ -44,6 +41,19 @@ Future<void> setupServiceLocator() async {
         sl<StorageService>(),
       ));
   await sl<AuthCubit>().init(); // Initialize auth state
+
+  // Reload Cubit for notifications
+  sl.registerLazySingleton(() => ReloadCubit());
+
+  // Firebase Messaging
+  sl.registerLazySingleton<FirebaseMessagingService>(
+      () => FirebaseMessagingService(
+            sl<ValueNotifier<GraphQLClient>>().value,
+            sl<StorageService>(),
+            sl<NotificationNavigationService>(),
+            sl<ReloadCubit>(),
+          ));
+  await sl<FirebaseMessagingService>().initialize();
 
   // Settings
   sl.registerLazySingleton(() => SettingsCubit());

@@ -152,7 +152,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
   Future<void> _registerForPushNotifications() async {
     try {
       final messagingService = GetIt.instance<FirebaseMessagingService>();
-      await messagingService.uploadTokenToServer();
+      await messagingService.uploadTokenAfterLogin();
       log('📱 FCM token uploaded after login');
     } catch (e) {
       log('❌ Error uploading FCM token after login: $e');

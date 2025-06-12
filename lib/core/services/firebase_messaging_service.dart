@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:get_it/get_it.dart';
 import 'package:graphql/client.dart';
 import 'package:timezone/timezone.dart' as tz;
 import '../storage/storage_service.dart';
+import '../cubits/reload_cubit.dart';
 import 'notification_navigation_service.dart';
 import '../../features/notifications/data/upload_fcm_token.dart';
 import '../../firebase_options.dart';
@@ -217,10 +217,17 @@ Priority _getPriority(String channelId) {
 }
 
 class FirebaseMessagingService {
-  static final FirebaseMessagingService _instance =
-      FirebaseMessagingService._internal();
-  factory FirebaseMessagingService() => _instance;
-  FirebaseMessagingService._internal();
+  final GraphQLClient _graphqlClient;
+  final StorageService _storageService;
+  final NotificationNavigationService _notificationNavigationService;
+  final ReloadCubit _reloadCubit;
+
+  FirebaseMessagingService(
+    this._graphqlClient,
+    this._storageService,
+    this._notificationNavigationService,
+    this._reloadCubit,
+  ) : _isInitialized = false;
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications =
@@ -235,10 +242,7 @@ class FirebaseMessagingService {
   /// Initialize Firebase Messaging service
   Future<void> initialize() async {
     if (_isInitialized) return;
-
     try {
-      await Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform);
       await _initializeLocalNotifications();
       await _requestPermissions();
       await _getFCMToken();
@@ -320,10 +324,18 @@ class FirebaseMessagingService {
   Future<void> _getFCMToken() async {
     try {
       _fcmToken = await _firebaseMessaging.getToken();
+      log('📱 FCM Token: $_fcmToken');
       if (_fcmToken != null) {
         log('📱 FCM Token obtained');
-        final storageService = GetIt.instance<StorageService>();
-        await storageService.setString('fcm_token', _fcmToken!);
+        await _storageService.setString('fcm_token', _fcmToken!);
+
+        // Try to upload token to server if GraphQL client is available
+        // If not available (user not authenticated), it will be uploaded later
+        try {
+          await uploadTokenToServer();
+        } catch (e) {
+          log('📱 FCM token will be uploaded after authentication');
+        }
       }
     } catch (e) {
       log('❌ Failed to get FCM token: $e');
@@ -355,6 +367,37 @@ class FirebaseMessagingService {
     log('📱 Foreground message received');
     await _showNotification(message,
         localNotificationsInstance: _localNotifications);
+
+    // Refresh GraphQL cache based on notification type
+    await _refreshCacheForNotification(message);
+  }
+
+  /// Refresh GraphQL cache when relevant notifications are received
+  Future<void> _refreshCacheForNotification(RemoteMessage message) async {
+    try {
+      final type = message.data['type'] as String?;
+
+      switch (type) {
+        case 'notice':
+          // Clear cache and trigger reload
+          // _graphqlClient.cache.store.delete('Query.notices');
+          _reloadCubit.reloadNotices();
+          log('📱 Notices reload triggered');
+          break;
+
+        case 'class_test':
+          // Clear cache and trigger reload
+          _graphqlClient.cache.store.delete('Query.classTests');
+          _reloadCubit.reloadClassTests();
+          log('📱 Class tests reload triggered');
+          break;
+
+        default:
+          log('📱 No cache refresh needed for notification type: $type');
+      }
+    } catch (e) {
+      log('❌ Error refreshing cache for notification: $e');
+    }
   }
 
   /// Handle notification tap
@@ -383,8 +426,7 @@ class FirebaseMessagingService {
     if (type == null || id == null) return;
 
     try {
-      final navigationService = GetIt.instance<NotificationNavigationService>();
-      navigationService.navigateFromNotification(type, id);
+      _notificationNavigationService.navigateFromNotification(type, id);
     } catch (e) {
       log('❌ Navigation service not available: $e');
     }
@@ -395,8 +437,7 @@ class FirebaseMessagingService {
     log('📱 FCM Token refreshed');
     _fcmToken = token;
 
-    final storageService = GetIt.instance<StorageService>();
-    await storageService.setString('fcm_token', token);
+    await _storageService.setString('fcm_token', token);
     await uploadTokenToServer();
   }
 
@@ -405,15 +446,60 @@ class FirebaseMessagingService {
     if (_fcmToken == null) return;
 
     try {
-      final client = GetIt.instance<GraphQLClient>();
       await uploadFcmToken(
-        client: client,
+        client: _graphqlClient,
         token: _fcmToken!,
         deviceType: Platform.isIOS ? 'ios' : 'android',
       );
       log('📱 FCM token uploaded successfully');
     } catch (e) {
       log('❌ Failed to upload FCM token: $e');
+      // Don't rethrow to avoid breaking the initialization flow
+    }
+  }
+
+  /// Upload token to server when user is authenticated
+  /// This should be called after successful login
+  Future<void> uploadTokenAfterLogin() async {
+    if (_fcmToken == null) {
+      log('📱 No FCM token available, attempting to get one');
+      await _getFCMToken();
+    }
+
+    if (_fcmToken != null) {
+      // Add a small delay to ensure the GraphQL client has the updated auth token
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // Retry mechanism for authentication issues
+      int attempts = 0;
+      const maxAttempts = 3;
+
+      while (attempts < maxAttempts) {
+        attempts++;
+        try {
+          await uploadTokenToServer();
+          log('📱 FCM token uploaded successfully on attempt $attempts');
+          return;
+        } catch (e) {
+          final errorMessage = e.toString().toLowerCase();
+          if (errorMessage.contains('not authenticated') ||
+              errorMessage.contains('authentication') ||
+              errorMessage.contains('unauthorized')) {
+            if (attempts < maxAttempts) {
+              log('📱 Authentication error on attempt $attempts, retrying in ${attempts * 1000}ms...');
+              await Future.delayed(Duration(milliseconds: attempts * 1000));
+              continue;
+            } else {
+              log('❌ Max attempts reached, FCM token upload failed: $e');
+              break;
+            }
+          } else {
+            // Non-authentication error, don't retry
+            log('❌ FCM token upload failed with non-auth error: $e');
+            break;
+          }
+        }
+      }
     }
   }
 

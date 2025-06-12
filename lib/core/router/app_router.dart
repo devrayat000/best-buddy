@@ -1,5 +1,7 @@
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:best_buddy_flutter/core/cubits/reload_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -112,11 +114,14 @@ class AppRouter {
           builder: (context, state, child) {
             return MultiBlocProvider(
               providers: [
-                BlocProvider<AuthCubit>.value(
-                  value: GetIt.instance<AuthCubit>(),
+                BlocProvider<AuthCubit>(
+                  create: (_) => GetIt.instance.get<AuthCubit>(),
                 ),
-                BlocProvider<SettingsCubit>.value(
-                  value: GetIt.instance<SettingsCubit>(),
+                BlocProvider<SettingsCubit>(
+                  create: (_) => GetIt.instance.get<SettingsCubit>(),
+                ),
+                BlocProvider<ReloadCubit>(
+                  create: (_) => GetIt.instance.get<ReloadCubit>(),
                 ),
               ],
               child: GraphQLProvider(
@@ -127,38 +132,34 @@ class AppRouter {
           },
           routes: [
             // Auth routes
-            ShellRoute(
-              routes: [
-                GoRoute(
-                  path: '/',
-                  name: 'get-started',
-                  builder: (context, state) => const GetStartedPage(),
-                ),
-                GoRoute(
-                  path: '/login',
-                  name: 'login',
-                  builder: (context, state) => const LoginPage(),
-                ),
-                GoRoute(
-                  path: '/register',
-                  name: 'register',
-                  builder: (context, state) => const RegisterPage(),
-                ),
-                GoRoute(
-                  path: '/grant-access',
-                  name: 'grant-access',
-                  builder: (context, state) {
-                    final jwt = state.uri.queryParameters['jwt']!;
-                    final userId = state.uri.queryParameters['userId']!;
-                    final email = state.uri.queryParameters['email']!;
-                    return GrantAccessPage(
-                      jwt: jwt,
-                      userId: userId,
-                      email: email,
-                    );
-                  },
-                ),
-              ],
+            GoRoute(
+              path: '/',
+              name: 'get-started',
+              builder: (context, state) => const GetStartedPage(),
+            ),
+            GoRoute(
+              path: '/login',
+              name: 'login',
+              builder: (context, state) => const LoginPage(),
+            ),
+            GoRoute(
+              path: '/register',
+              name: 'register',
+              builder: (context, state) => const RegisterPage(),
+            ),
+            GoRoute(
+              path: '/grant-access',
+              name: 'grant-access',
+              builder: (context, state) {
+                final jwt = state.uri.queryParameters['jwt']!;
+                final userId = state.uri.queryParameters['userId']!;
+                final email = state.uri.queryParameters['email']!;
+                return GrantAccessPage(
+                  jwt: jwt,
+                  userId: userId,
+                  email: email,
+                );
+              },
             ), // Main app shell with tabs
             ShellRoute(
               builder: (context, state, child) {
@@ -287,6 +288,7 @@ class AppRouter {
     try {
       final authCubit = GetIt.instance<AuthCubit>();
       final authState = authCubit.state;
+      // return '/notices';
 
       final isOnGetStartedPage = state.matchedLocation == '/';
       final isOnAuthPage = ['/login', '/register', '/grant-access']
@@ -294,12 +296,14 @@ class AppRouter {
 
       // If still on splash after initialization, redirect based on auth state
       if (isOnSplashPage) {
+        log('🔄 Redirecting from splash page with: $authState');
         return authState is AuthAuthenticated ? '/notices' : '/';
       }
 
       // If authenticated and on get-started or auth pages, redirect to notices
       if (authState is AuthAuthenticated &&
           (isOnGetStartedPage || isOnAuthPage)) {
+        log('Redirecting authenticated user from $state to /notices');
         return '/notices';
       }
 
@@ -307,11 +311,14 @@ class AppRouter {
       if (authState is AuthUnauthenticated &&
           !isOnGetStartedPage &&
           !isOnAuthPage) {
+        log('Redirecting unauthenticated user from $state to /');
         return '/';
       }
 
+      log('No redirect needed for state: ${state.fullPath} with authState: $authState');
       return null;
     } catch (e) {
+      log('❌ Error checking auth state: $e');
       // Services not initialized yet, redirect to splash (unless already there)
       return isOnSplashPage ? null : '/splash';
     }

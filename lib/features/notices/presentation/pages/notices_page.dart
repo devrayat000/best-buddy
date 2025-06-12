@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -10,6 +11,7 @@ import '../../data/graphql/notices_queries.graphql.dart';
 import '../../../../core/graphql/schema.graphql.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/loading_view.dart';
+import '../../../../core/cubits/reload_cubit.dart';
 
 class NoticesPage extends StatefulWidget {
   const NoticesPage({super.key});
@@ -42,7 +44,7 @@ class _NoticesPageState extends State<NoticesPage> {
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      final result = await _client.query(
+      final result = await _client.query$Notices(
         Options$Query$Notices(
           variables: Variables$Query$Notices(
             offset: pageKey,
@@ -51,8 +53,8 @@ class _NoticesPageState extends State<NoticesPage> {
               Input$NoticeOrderByInput(createdAt: Enum$OrderDirection.desc)
             ],
           ),
-          fetchPolicy:
-              FetchPolicy.cacheFirst, // Use cache-first for offline support
+          fetchPolicy: FetchPolicy
+              .cacheAndNetwork, // Use cache-first for offline support
         ),
       );
 
@@ -86,99 +88,109 @@ class _NoticesPageState extends State<NoticesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Notices'),
-      ),
-      body: RefreshIndicator(
-        onRefresh: () async {
+    return BlocListener<ReloadCubit, ReloadEvent?>(
+      listener: (context, event) {
+        if (event == ReloadEvent.notices) {
+          log('📱 Notices reload event received, refreshing...');
           _pagingController.refresh();
-        },
-        child: PagedListView<int, Query$Notices$notices>(
-          pagingController: _pagingController,
-          padding: const EdgeInsets.all(8.0),
-          builderDelegate: PagedChildBuilderDelegate<Query$Notices$notices>(
-            firstPageProgressIndicatorBuilder: (context) => LoadingView.page(),
-            newPageProgressIndicatorBuilder: (context) => LoadingView.inline(),
-            noItemsFoundIndicatorBuilder: (context) =>
-                _buildEmptyWidget(context),
-            firstPageErrorIndicatorBuilder: (context) => ErrorView.smart(
-              error: _pagingController.error,
-              onRetry: () => _pagingController.refresh(),
-            ),
-            newPageErrorIndicatorBuilder: (context) => ErrorView.smart(
-              error: _pagingController.error,
-              onRetry: () => _pagingController.retryLastFailedRequest(),
-              fullScreen: false,
-            ),
-            itemBuilder: (context, notice, index) {
-              return ListTile(
-                title: Text(
-                  notice.title ?? 'Untitled',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (notice.content.isNotEmpty)
-                      Text(
-                        notice.content,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Notices'),
+        ),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            _pagingController.refresh();
+          },
+          child: PagedListView<int, Query$Notices$notices>(
+            pagingController: _pagingController,
+            padding: const EdgeInsets.all(8.0),
+            builderDelegate: PagedChildBuilderDelegate<Query$Notices$notices>(
+              firstPageProgressIndicatorBuilder: (context) =>
+                  LoadingView.page(),
+              newPageProgressIndicatorBuilder: (context) =>
+                  LoadingView.inline(),
+              noItemsFoundIndicatorBuilder: (context) =>
+                  _buildEmptyWidget(context),
+              firstPageErrorIndicatorBuilder: (context) => ErrorView.smart(
+                error: _pagingController.error,
+                onRetry: () => _pagingController.refresh(),
+              ),
+              newPageErrorIndicatorBuilder: (context) => ErrorView.smart(
+                error: _pagingController.error,
+                onRetry: () => _pagingController.retryLastFailedRequest(),
+                fullScreen: false,
+              ),
+              itemBuilder: (context, notice, index) {
+                return ListTile(
+                  title: Text(
+                    notice.title ?? 'Untitled',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (notice.content.isNotEmpty)
+                        Text(
+                          notice.content,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      const SizedBox(height: 4),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          if (notice.createdBy?.name != null)
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.person,
+                                  size: 16,
+                                  color: Colors.grey[600],
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  notice.createdBy!.name,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          if (notice.createdAt != null)
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.access_time,
+                                  size: 16,
+                                  color: Colors.grey[600],
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  DateFormat.yMMMd().format(notice.createdAt!),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
+                            ),
+                        ],
                       ),
-                    const SizedBox(height: 4),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        if (notice.createdBy?.name != null)
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.person,
-                                size: 16,
-                                color: Colors.grey[600],
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                notice.createdBy!.name,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
-                          ),
-                        if (notice.createdAt != null)
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.access_time,
-                                size: 16,
-                                color: Colors.grey[600],
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                DateFormat.yMMMd().format(notice.createdAt!),
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
-                          ),
-                      ],
-                    ),
-                  ],
-                ),
-                onTap: () {
-                  context.goNamed(
-                    'notice-detail',
-                    pathParameters: {'id': notice.id},
-                  );
-                },
-                isThreeLine: true,
-              );
-            },
+                    ],
+                  ),
+                  onTap: () {
+                    context.goNamed(
+                      'notice-detail',
+                      pathParameters: {'id': notice.id},
+                    );
+                  },
+                  isThreeLine: true,
+                );
+              },
+            ),
           ),
         ),
       ),

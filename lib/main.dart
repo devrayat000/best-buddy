@@ -11,10 +11,12 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:firebase_core/firebase_core.dart';
 
 import 'core/router/app_router.dart';
 import 'core/theme/theme_cubit.dart';
 import 'core/services/app_lifecycle_service.dart';
+import 'firebase_options.dart';
 
 void main() {
   runZonedGuarded(
@@ -28,10 +30,15 @@ void main() {
 Future<void> _initializeApp() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Initialize Firebase first
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   // Initialize timezone data
   tz.initializeTimeZones();
 
-  // Initialize Hive storage first
+  // Initialize Hive storage
   await _initializeHive();
   // Initialize and register ThemeCubit immediately after Hive
   GetIt.instance.registerLazySingleton<ThemeCubit>(() => ThemeCubit());

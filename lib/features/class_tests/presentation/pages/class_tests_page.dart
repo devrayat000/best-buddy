@@ -51,7 +51,7 @@ class _ClassTestsViewState extends State<ClassTestsView> {
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      final result = await _client.query(
+      final result = await _client.query$ClassTests(
         Options$Query$ClassTests(
           variables: Variables$Query$ClassTests(
             offset: pageKey,
@@ -60,6 +60,8 @@ class _ClassTestsViewState extends State<ClassTestsView> {
               Input$ClassTestOrderByInput(createdAt: Enum$OrderDirection.desc)
             ],
           ),
+          fetchPolicy: FetchPolicy
+              .cacheAndNetwork, // Use cache-first for offline support
         ),
       );
 

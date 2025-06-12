@@ -36,7 +36,9 @@ ValueNotifier<GraphQLClient> createGraphQLClient(
     getToken: () async {
       final token = await storageService.getToken();
       if (token != null) {
-        log('Using token: $token');
+        log('🔑 Using auth token for GraphQL request');
+      } else {
+        log('⚠️ No auth token available for GraphQL request');
       }
       return token != null ? 'Bearer $token' : null;
     },

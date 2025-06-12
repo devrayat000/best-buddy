@@ -23,17 +23,20 @@ class LogoutDialogPage extends StatelessWidget {
           options: WidgetOptions$Mutation$EndSession(
             onCompleted: (data, result) {
               context.read<AuthCubit>().logout();
+              // Close dialog and let router redirect to auth pages
+              context.pop();
             },
             onError: (error) {
               // Even if logout fails on server, clear local state
               context.read<AuthCubit>().logout();
+              // Close dialog and let router redirect to auth pages
+              context.pop();
             },
           ),
           builder: (runMutation, result) {
             return FilledButton(
               onPressed: () {
                 runMutation();
-                context.pop();
               },
               style: FilledButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.error,

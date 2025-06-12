@@ -13,6 +13,12 @@ class RichTextUtils {
       }
       return buffer.toString().trim();
     } else if (document is Map<String, dynamic>) {
+      // Handle the case where document has a 'document' property
+      final doc = document['document'];
+      if (doc != null) {
+        return extractPlainText(doc);
+      }
+
       final children = document['children'] as List?;
       if (children != null) {
         final buffer = StringBuffer();
@@ -21,6 +27,9 @@ class RichTextUtils {
             final text = child['text'] as String?;
             if (text != null) {
               buffer.write(text);
+            } else {
+              // Handle nested children
+              buffer.write(extractPlainText(child));
             }
           } else if (child is String) {
             buffer.write(child);

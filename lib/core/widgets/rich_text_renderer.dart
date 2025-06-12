@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// A custom rich text renderer for Quill/TipTap document structures
 class RichTextRenderer extends StatelessWidget {
@@ -39,6 +41,11 @@ class RichTextRenderer extends StatelessWidget {
             .toList(),
       );
     } else if (content is Map<String, dynamic>) {
+      // Handle the case where content has a 'document' property
+      final document = content['document'];
+      if (document != null) {
+        return _buildContent(context, document, baseStyle);
+      }
       return _buildBlock(context, content, baseStyle);
     } else if (content is String) {
       return Text(
@@ -294,12 +301,26 @@ class RichTextRenderer extends StatelessWidget {
     for (final child in children) {
       if (child is Map<String, dynamic>) {
         final text = child['text'] as String?;
-        if (text != null) {
-          final marks = child['marks'] as List?;
-          final style = _applyMarks(baseStyle, marks, context);
-          spans.add(TextSpan(text: text, style: style));
+        if (text != null && text.isNotEmpty) {
+          final style = _applyMarksFromTextNode(baseStyle, child, context);
+          final href = child['link'] as String?;
+
+          spans.add(TextSpan(
+            text: text,
+            style: style,
+            recognizer: href != null
+                ? (TapGestureRecognizer()
+                  ..onTap = () => _handleLinkTap(context, href))
+                : null,
+          ));
         }
-      } else if (child is String) {
+        // Handle nested content
+        final children = child['children'] as List?;
+        if (children != null) {
+          final nestedSpans = _buildInlineSpans(context, children, baseStyle);
+          spans.addAll(nestedSpans);
+        }
+      } else if (child is String && child.isNotEmpty) {
         spans.add(TextSpan(text: child, style: baseStyle));
       }
     }
@@ -316,52 +337,156 @@ class RichTextRenderer extends StatelessWidget {
     );
   }
 
-  TextStyle? _applyMarks(
-      TextStyle? baseStyle, List? marks, BuildContext context) {
-    if (marks == null || marks.isEmpty) {
-      return baseStyle;
-    }
+  List<TextSpan> _buildInlineSpans(
+      BuildContext context, List children, TextStyle? baseStyle) {
+    final spans = <TextSpan>[];
 
-    TextStyle? style = baseStyle;
+    for (final child in children) {
+      if (child is Map<String, dynamic>) {
+        final text = child['text'] as String?;
+        if (text != null && text.isNotEmpty) {
+          final style = _applyMarksFromTextNode(baseStyle, child, context);
+          final href = child['link'] as String?;
 
-    for (final mark in marks) {
-      if (mark is Map<String, dynamic>) {
-        final type = mark['type'] as String?;
-
-        switch (type) {
-          case 'bold':
-            style = style?.copyWith(fontWeight: FontWeight.bold);
-            break;
-          case 'italic':
-            style = style?.copyWith(fontStyle: FontStyle.italic);
-            break;
-          case 'underline':
-            style = style?.copyWith(decoration: TextDecoration.underline);
-            break;
-          case 'strike':
-            style = style?.copyWith(decoration: TextDecoration.lineThrough);
-            break;
-          case 'code':
-            style = style?.copyWith(
-              fontFamily: 'monospace',
-              backgroundColor:
-                  Theme.of(context).colorScheme.surfaceContainerHighest,
-            );
-            break;
-          case 'link':
-            final href = mark['attrs']?['href'] as String?;
-            if (href != null) {
-              style = style?.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-                decoration: TextDecoration.underline,
-              );
-            }
-            break;
+          spans.add(TextSpan(
+            text: text,
+            style: style,
+            recognizer: href != null
+                ? (TapGestureRecognizer()
+                  ..onTap = () => _handleLinkTap(context, href))
+                : null,
+          ));
         }
+        // Handle nested content
+        final nestedChildren = child['children'] as List?;
+        if (nestedChildren != null) {
+          final nestedSpans =
+              _buildInlineSpans(context, nestedChildren, baseStyle);
+          spans.addAll(nestedSpans);
+        }
+      } else if (child is String && child.isNotEmpty) {
+        spans.add(TextSpan(text: child, style: baseStyle));
       }
     }
 
+    return spans;
+  }
+
+  TextStyle? _applyMarksFromTextNode(TextStyle? baseStyle,
+      Map<String, dynamic> textNode, BuildContext context) {
+    // Start with base style or default text style
+    TextStyle style = baseStyle ?? const TextStyle();
+
+    // Check for styling properties directly on the text node
+    if (textNode['bold'] == true) {
+      style = style.copyWith(fontWeight: FontWeight.bold);
+    }
+
+    if (textNode['italic'] == true) {
+      style = style.copyWith(fontStyle: FontStyle.italic);
+    }
+
+    if (textNode['underline'] == true) {
+      style = style.copyWith(decoration: TextDecoration.underline);
+    }
+
+    if (textNode['strikethrough'] == true) {
+      style = style.copyWith(decoration: TextDecoration.lineThrough);
+    }
+
+    if (textNode['code'] == true) {
+      style = style.copyWith(
+        fontFamily: 'monospace',
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+      );
+    }
+
+    // Handle link marks
+    final href = textNode['link'] as String?;
+    if (href != null) {
+      style = style.copyWith(
+        color: Theme.of(context).colorScheme.primary,
+        decoration: TextDecoration.underline,
+      );
+    }
     return style;
+  }
+
+  /// Show security alert and launch URL if user confirms
+  Future<void> _handleLinkTap(BuildContext context, String url) async {
+    // Show security confirmation dialog
+    final shouldOpen = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Open External Link'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('You are about to open an external link:'),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  url,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontFamily: 'monospace',
+                      ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text('Make sure you trust this link before proceeding.'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Open Link'),
+            ),
+          ],
+        );
+      },
+    );
+
+    // If user confirmed, launch the URL
+    if (shouldOpen == true) {
+      try {
+        final uri = Uri.parse(url);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(
+            uri,
+            mode: LaunchMode.externalApplication,
+          );
+        } else {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Could not open the link'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Invalid URL format'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    }
   }
 
   String _extractPlainText(List children) {

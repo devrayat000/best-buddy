@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:graphql/client.dart';
 import 'package:intl/intl.dart';
 import '../../data/graphql/notices_queries.graphql.dart';
 import '../../../../core/widgets/rich_text_utils.dart';
@@ -29,6 +28,8 @@ class NoticeDetailsModal extends StatelessWidget {
         child: Query$Notice$Widget(
           options: Options$Query$Notice(
             variables: Variables$Query$Notice(id: noticeId),
+            fetchPolicy: FetchPolicy
+                .cacheAndNetwork, // Use cache-first for offline support
           ),
           builder: (result, {fetchMore, refetch}) {
             if (result.hasException) {
@@ -50,7 +51,6 @@ class NoticeDetailsModal extends StatelessWidget {
               return _buildLoading(context);
             }
             final notice = result.parsedData?.notice;
-            log('LOG: ${result.toString()}');
             if (notice == null) {
               return Column(
                 children: [
