@@ -6,6 +6,7 @@ import '../../../../core/auth/auth_cubit.dart';
 import '../../../../core/auth/biometric_service.dart';
 import '../../../../core/settings/biometric_settings_service.dart';
 import '../../../../core/storage/storage_service.dart';
+import '../../../../core/services/analytics_service.dart';
 
 class BiometricLoginWidget extends StatefulWidget {
   const BiometricLoginWidget({super.key});
@@ -56,6 +57,8 @@ class _BiometricLoginWidgetState extends State<BiometricLoginWidget> {
   }
 
   Future<void> _authenticateWithBiometric() async {
+    // Track biometric login attempt
+    AnalyticsService.logLogin('biometric');
     await context.read<AuthCubit>().loginWithBiometric();
   }
 

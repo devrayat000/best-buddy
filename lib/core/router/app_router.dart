@@ -11,6 +11,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../auth/auth_cubit.dart';
 import '../settings/settings_cubit.dart';
+import '../services/analytics_service.dart';
 import '../../features/auth/presentation/pages/get_started_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
@@ -103,6 +104,9 @@ class AppRouter {
     _router = GoRouter(
       initialLocation: '/splash',
       redirect: _redirect,
+      observers: [
+        AnalyticsService.observer,
+      ],
       routes: [
         // Splash screen route
         GoRoute(

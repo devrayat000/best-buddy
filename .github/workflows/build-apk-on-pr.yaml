@@ -18,6 +18,7 @@ concurrency:
 jobs:
   build-apk:
     name: Build APK
+    environment: Production
     runs-on: ubuntu-latest
 
     steps:
