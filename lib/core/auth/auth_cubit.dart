@@ -1,4 +1,3 @@
-import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'dart:async';
 import 'dart:developer';
@@ -8,8 +7,9 @@ import '../storage/storage_service.dart';
 import '../services/firebase_messaging_service.dart';
 import 'session_service.dart';
 import 'biometric_service.dart';
+import 'auth_state.dart';
 
-part 'auth_state.dart';
+export 'auth_state.dart';
 
 class AuthCubit extends HydratedCubit<AuthState> {
   Timer? _sessionValidationTimer;
@@ -187,8 +187,8 @@ class AuthCubit extends HydratedCubit<AuthState> {
     if (state is AuthAuthenticated) {
       final currentState = state as AuthAuthenticated;
       emit(currentState.copyWith(
-        name: name,
-        email: email,
+        name: name ?? currentState.name,
+        email: email ?? currentState.email,
         role: role,
       ));
     }

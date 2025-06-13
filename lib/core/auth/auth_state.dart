@@ -1,68 +1,49 @@
-part of 'auth_cubit.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class AuthState extends Equatable {
+part 'auth_state.freezed.dart';
+
+abstract class AuthState {
   const AuthState();
-
-  @override
-  List<Object?> get props => [];
 }
 
-class AuthInitial extends AuthState {
-  const AuthInitial();
+@Freezed(equal: true, copyWith: true, fromJson: false, toJson: false)
+sealed class AuthInitial extends AuthState with _$AuthInitial {
+  const AuthInitial._();
+  const factory AuthInitial() = _AuthInitial;
 }
 
-class AuthLoading extends AuthState {
-  const AuthLoading();
+@Freezed(equal: true, copyWith: true, fromJson: false, toJson: false)
+sealed class AuthLoading extends AuthState with _$AuthLoading {
+  const AuthLoading._();
+  const factory AuthLoading() = _AuthLoading;
 }
 
-class AuthAuthenticated extends AuthState {
-  const AuthAuthenticated({
-    required this.token,
-    required this.userId,
-    required this.email,
-    required this.name,
-    this.role,
-  });
-
-  final String token;
-  final String userId;
-  final String email;
-  final String name;
-  final String? role;
-
-  AuthAuthenticated copyWith({
-    String? token,
-    String? userId,
-    String? email,
-    String? name,
-    String? role,
-  }) {
-    return AuthAuthenticated(
-      token: token ?? this.token,
-      userId: userId ?? this.userId,
-      email: email ?? this.email,
-      name: name ?? this.name,
-      role: role ?? this.role,
-    );
-  }
-
-  @override
-  List<Object?> get props => [token, userId, email, name, role];
+@Freezed(equal: true, copyWith: true, fromJson: false, toJson: false)
+sealed class AuthAuthenticated extends AuthState with _$AuthAuthenticated {
+  const AuthAuthenticated._();
+  const factory AuthAuthenticated({
+    required String token,
+    required String userId,
+    required String email,
+    required String name,
+    final String? role,
+  }) = _AuthAuthenticated;
 }
 
-class AuthUnauthenticated extends AuthState {
-  const AuthUnauthenticated();
+@Freezed(equal: true, copyWith: true, fromJson: false, toJson: false)
+sealed class AuthUnauthenticated extends AuthState with _$AuthUnauthenticated {
+  const AuthUnauthenticated._();
+  const factory AuthUnauthenticated() = _AuthUnauthenticated;
 }
 
-class AuthError extends AuthState {
-  const AuthError(this.message);
-
-  final String message;
-
-  @override
-  List<Object?> get props => [message];
+@Freezed(equal: true, copyWith: true, fromJson: false, toJson: false)
+sealed class AuthError extends AuthState with _$AuthError {
+  const AuthError._();
+  const factory AuthError(String message) = _AuthError;
 }
 
-class AuthSessionExpired extends AuthState {
-  const AuthSessionExpired();
+@Freezed(equal: true, copyWith: true, fromJson: false, toJson: false)
+sealed class AuthSessionExpired extends AuthState with _$AuthSessionExpired {
+  const AuthSessionExpired._();
+  const factory AuthSessionExpired() = _AuthSessionExpired;
 }

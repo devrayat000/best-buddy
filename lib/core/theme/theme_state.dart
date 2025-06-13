@@ -1,10 +1,9 @@
-part of 'theme_cubit.dart';
+import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class ThemeState extends Equatable {
-  const ThemeState(this.themeMode);
+part 'theme_state.freezed.dart';
 
-  final ThemeMode themeMode;
-
-  @override
-  List<Object> get props => [themeMode];
+@Freezed(equal: true, copyWith: true, fromJson: false, toJson: false)
+sealed class ThemeState with _$ThemeState {
+  const factory ThemeState(ThemeMode themeMode) = _ThemeState;
 }

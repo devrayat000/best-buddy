@@ -1,8 +1,8 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
-part 'theme_state.dart';
+import 'theme_state.dart';
+export 'theme_state.dart';
 
 class ThemeCubit extends HydratedCubit<ThemeState> {
   ThemeCubit() : super(const ThemeState(ThemeMode.system));
