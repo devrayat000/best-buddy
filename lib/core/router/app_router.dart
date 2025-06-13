@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 import '../auth/auth_cubit.dart';
 import '../settings/settings_cubit.dart';
@@ -103,6 +104,9 @@ class AppRouter {
     _router = GoRouter(
       initialLocation: '/splash',
       redirect: _redirect,
+      observers: [
+        FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+      ],
       routes: [
         // Splash screen route
         GoRoute(
