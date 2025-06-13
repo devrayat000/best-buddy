@@ -63,6 +63,7 @@ jobs:
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
           KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
+          GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
         run: |
           # Create keystore from base64
           if [ -n "$KEYSTORE_BASE64" ]; then
@@ -74,17 +75,25 @@ jobs:
 
           # Create key.properties file
           if [ -n "$KEY_PROPERTIES" ]; then
-            echo "$KEY_PROPERTIES" > android/key.properties
-            echo "✅ Key properties created successfully"
+          echo "$KEY_PROPERTIES" > android/key.properties
+          echo "✅ Key properties created successfully"
           else
-            echo "⚠️ No key properties found in secrets, using debug signing"
-            # Create a default key.properties that falls back to debug
-            cat > android/key.properties << EOF
+          echo "⚠️ No key properties found in secrets, using debug signing"
+          # Create a default key.properties that falls back to debug
+          cat > android/key.properties << EOF
           storePassword=android
           keyPassword=android
           keyAlias=androiddebugkey
           storeFile=debug.keystore
           EOF
+          fi
+
+          # Create google-services.json file
+          if [ -n "$GOOGLE_SERVICES" ]; then
+            echo "$GOOGLE_SERVICES" > android/app/google-services.json
+            echo "✅ Google services file created successfully"
+          else
+            echo "⚠️ No google-services.json found in secrets, skipping"
           fi
 
       # Generate any needed files (if using build_runner)
