@@ -105,14 +105,14 @@ jobs:
 
       # Build APK
       - name: 🏗️ Build signed APK
-        run: flutter build apk --release # Get APK file size for release notes
+        run: flutter build apk --no-pub --release --dart-define="BACKEND_URL=${{ secrets.BACKEND_URL }}" # Get APK file size for release notes
 
       - name: 📦 Rename APK file
         run: |
           APK_PATH="build/app/outputs/flutter-apk/app-release.apk"
           if [ -f "$APK_PATH" ]; then
-            mv "$APK_PATH" "build/app/outputs/flutter-apk/yts-movies-v${{ steps.version.outputs.version }}.apk"
-            echo "APK renamed to yts-movies-v${{ steps.version.outputs.version }}.apk"
+            mv "$APK_PATH" "build/app/outputs/flutter-apk/multiversity-v${{ steps.version.outputs.version }}.apk"
+            echo "APK renamed to multiversity-v${{ steps.version.outputs.version }}.apk"
           else
             echo "APK file not found, skipping rename"
           fi
@@ -123,7 +123,7 @@ jobs:
           # Install bc for calculations
           sudo apt-get update && sudo apt-get install -y bc
 
-          APK_PATH="build/app/outputs/flutter-apk/yts-movies-v${{ steps.version.outputs.version }}.apk"
+          APK_PATH="build/app/outputs/flutter-apk/multiversity-v${{ steps.version.outputs.version }}.apk"
           if [ -f "$APK_PATH" ]; then
             SIZE_BYTES=$(stat -c%s "$APK_PATH")
             SIZE_MB=$(echo "scale=2; $SIZE_BYTES / 1024 / 1024" | bc)
@@ -174,7 +174,7 @@ jobs:
           draft: false
           prerelease: true
           files: |
-            build/app/outputs/flutter-apk/yts-movies-v${{ steps.version.outputs.version }}.apk
+            build/app/outputs/flutter-apk/multiversity-v${{ steps.version.outputs.version }}.apk
           token: ${{ secrets.GITHUB_TOKEN }} # Add comment to PR with release link
 
       - name: 💬 Comment PR with Release Link

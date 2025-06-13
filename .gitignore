@@ -76,3 +76,7 @@ app.*.map.json
 /android/app/src/debug
 /android/app/src/profile
 /android/app/src/release
+
+# Firebase related
+firebase-debug.log
+**/google-services.json
