@@ -16,6 +16,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/theme_cubit.dart';
 import 'core/services/app_lifecycle_service.dart';
+import 'core/services/analytics_service.dart';
 import 'firebase_options.dart';
 
 void main() {
@@ -23,6 +24,8 @@ void main() {
     _initializeApp,
     (Object error, StackTrace stack) {
       log(error.toString(), error: error, stackTrace: stack);
+      // Track unhandled errors in analytics
+      AnalyticsService.logError('unhandled_exception', error.toString());
     },
   );
 }
@@ -46,12 +49,13 @@ Future<void> _initializeApp() async {
 
   // Initialize app lifecycle service
   AppLifecycleService.instance.initialize();
-
   // Set error handler
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.presentError(details);
     if (kReleaseMode) {
       log('Flutter error: ${details.toString()}');
+      // Track Flutter errors in analytics
+      AnalyticsService.logError('flutter_error', details.exception.toString());
     }
   };
 

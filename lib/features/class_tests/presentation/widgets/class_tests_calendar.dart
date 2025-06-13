@@ -3,9 +3,11 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:intl/intl.dart';
 
 import '../../data/graphql/class_tests_queries.graphql.dart';
 import '../../../../../core/graphql/schema.graphql.dart';
+import '../../../../../core/services/analytics_service.dart';
 
 class ClassTestsCalendar extends StatefulWidget {
   const ClassTestsCalendar({
@@ -17,8 +19,9 @@ class ClassTestsCalendar extends StatefulWidget {
 }
 
 class _ClassTestsCalendarState extends State<ClassTestsCalendar> {
-  DateTime _focusedDay = DateTime
-      .now(); // Helper method to get the start and end of the current month as UTC DateTime objects
+  DateTime _focusedDay = DateTime.now();
+
+  // Helper method to get the start and end of the current month as UTC DateTime objects
   (DateTime start, DateTime end) get _monthRange {
     final start = DateTime.utc(_focusedDay.year, _focusedDay.month, 1);
     final end = DateTime.utc(
@@ -129,6 +132,13 @@ class _ClassTestsCalendarState extends State<ClassTestsCalendar> {
             setState(() {
               _focusedDay = focusedDay;
             });
+
+            // Track calendar month navigation
+            AnalyticsService.logCalendarMonthChange(
+              DateFormat.MMMM().format(focusedDay),
+              focusedDay.year.toString(),
+            );
+
             // Refetch data when month changes
             refetch?.call();
           },

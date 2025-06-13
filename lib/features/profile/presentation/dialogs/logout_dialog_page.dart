@@ -3,11 +3,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/auth/auth_cubit.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../../auth/data/graphql/auth_mutations.graphql.dart';
 import '../../../../core/widgets/loading_view.dart';
 
 class LogoutDialogPage extends StatelessWidget {
   const LogoutDialogPage({super.key});
+
+  void _logout(BuildContext context) {
+    // Track logout
+    AnalyticsService.logSignOut();
+
+    context.read<AuthCubit>().logout();
+    // Close dialog and let router redirect to auth pages
+    context.pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,15 +32,10 @@ class LogoutDialogPage extends StatelessWidget {
         Mutation$EndSession$Widget(
           options: WidgetOptions$Mutation$EndSession(
             onCompleted: (data, result) {
-              context.read<AuthCubit>().logout();
-              // Close dialog and let router redirect to auth pages
-              context.pop();
+              _logout(context);
             },
             onError: (error) {
-              // Even if logout fails on server, clear local state
-              context.read<AuthCubit>().logout();
-              // Close dialog and let router redirect to auth pages
-              context.pop();
+              _logout(context);
             },
           ),
           builder: (runMutation, result) {

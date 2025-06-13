@@ -1,3 +1,4 @@
+import 'package:best_buddy_flutter/core/services/analytics_service.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'dart:async';
 import 'dart:developer';
@@ -34,6 +35,9 @@ class AuthCubit extends HydratedCubit<AuthState> {
           'name': currentState.name,
           'role': currentState.role,
         });
+        await AnalyticsService.setUserId(currentState.userId);
+        await AnalyticsService.setUserProperty(
+            'user_role', currentState.role ?? 'student');
       }
       // Validate session on app startup
       await validateSession();

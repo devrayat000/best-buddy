@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/settings/settings_cubit.dart';
+import '../../../../core/services/analytics_service.dart';
 
 class LanguageDialogPage extends StatelessWidget {
   const LanguageDialogPage({super.key});
@@ -23,6 +24,7 @@ class LanguageDialogPage extends StatelessWidget {
             onChanged: (value) {
               if (value != null) {
                 settingsCubit.setLanguage(value);
+                AnalyticsService.logLanguageChange(value);
                 context.pop();
               }
             },
@@ -34,6 +36,7 @@ class LanguageDialogPage extends StatelessWidget {
             onChanged: (value) {
               if (value != null) {
                 settingsCubit.setLanguage(value);
+                AnalyticsService.logLanguageChange(value);
                 context.pop();
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -49,6 +52,7 @@ class LanguageDialogPage extends StatelessWidget {
             onChanged: (value) {
               if (value != null) {
                 settingsCubit.setLanguage(value);
+                AnalyticsService.logLanguageChange(value);
                 context.pop();
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../../../core/auth/auth_cubit.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../data/graphql/auth_mutations.graphql.dart';
 import '../forms/register_form.dart';
 import '../widgets/auth_form_field.dart';
@@ -129,6 +130,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         options: WidgetOptions$Mutation$CreateUser(
                           onCompleted: (data, result) {
                             if (result?.createUser != null) {
+                              // Track successful registration
+                              AnalyticsService.logSignUp('email_password');
+
                               // After successful registration, automatically log in
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -143,6 +147,11 @@ class _RegisterPageState extends State<RegisterPage> {
                             }
                           },
                           onError: (error) {
+                            // Track failed registration
+                            AnalyticsService.logError('registration_failed',
+                                error?.toString() ?? 'Registration failed',
+                                screen: 'register');
+
                             context.read<AuthCubit>().setError(
                                 error?.toString() ?? 'Registration failed');
                           },

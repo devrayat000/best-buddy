@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 
 import '../../../../core/auth/auth_cubit.dart';
 import '../../../../core/auth/biometric_service.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../data/graphql/auth_mutations.graphql.dart';
 import '../forms/login_form.dart';
 import '../widgets/auth_form_field.dart';
@@ -139,6 +140,12 @@ class _LoginPageState extends State<LoginPage> {
                               final user = authResult.item;
                               final token = authResult.sessionToken;
 
+                              // Track successful login
+                              AnalyticsService.logLogin('email_password');
+                              AnalyticsService.setUserId(user.id);
+                              AnalyticsService.setUserProperty(
+                                  'user_role', user.role?.name ?? 'student');
+
                               context.read<AuthCubit>().login(
                                     token: token,
                                     userId: user.id,
@@ -149,10 +156,14 @@ class _LoginPageState extends State<LoginPage> {
 
                               // Check if we should prompt for biometric setup
                               _checkBiometricSetup();
-                            }
-                            // Handle failure case
+                            } // Handle failure case
                             else if (authResult
                                 is Mutation$AuthenticateUserWithPassword$authenticateUserWithPassword$$UserAuthenticationWithPasswordFailure) {
+                              // Track failed login
+                              AnalyticsService.logError(
+                                  'login_failed', authResult.message,
+                                  screen: 'login');
+
                               context
                                   .read<AuthCubit>()
                                   .setError(authResult.message);
