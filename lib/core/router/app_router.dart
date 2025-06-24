@@ -9,8 +9,10 @@ import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import '../auth/auth_cubit.dart';
+import '../auth/auth_service.dart';
 import '../settings/settings_cubit.dart';
+import '../models/notice_model.dart';
+import '../models/class_test_model.dart';
 import '../../features/auth/presentation/pages/get_started_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
@@ -31,6 +33,8 @@ import '../../features/notices/presentation/modals/notice_details_modal.dart';
 import '../../features/class_tests/presentation/modals/class_test_details_modal.dart';
 import '../widgets/main_shell.dart';
 import '../splash/splash_screen.dart';
+import '../../features/notices/presentation/pages/add_edit_notice_page.dart';
+import '../../features/class_tests/presentation/pages/add_edit_class_test_page.dart';
 
 /// A dialog page with Material entrance and exit animations, modal barrier color,
 /// and modal barrier behavior (dialog is dismissible with a tap on the barrier).
@@ -114,9 +118,6 @@ class AppRouter {
           builder: (context, state, child) {
             return MultiBlocProvider(
               providers: [
-                BlocProvider<AuthCubit>(
-                  create: (_) => GetIt.instance.get<AuthCubit>(),
-                ),
                 BlocProvider<SettingsCubit>(
                   create: (_) => GetIt.instance.get<SettingsCubit>(),
                 ),
@@ -201,6 +202,31 @@ class AppRouter {
                     );
                   },
                   routes: [
+                    // Add notice page
+                    GoRoute(
+                      path: 'add',
+                      name: 'add-notice',
+                      pageBuilder: (context, state) {
+                        return DialogPage(
+                          key: state.pageKey,
+                          barrierDismissible: false,
+                          builder: (_) => const AddEditNoticePage(),
+                        );
+                      },
+                    ),
+                    // Edit notice page
+                    GoRoute(
+                      path: 'edit/:noticeId',
+                      name: 'edit-notice',
+                      pageBuilder: (context, state) {
+                        final notice = state.extra as NoticeModel?;
+                        return DialogPage(
+                          key: state.pageKey,
+                          barrierDismissible: false,
+                          builder: (_) => AddEditNoticePage(existingNotice: notice),
+                        );
+                      },
+                    ),
                     // Notice detail modal
                     GoRoute(
                       path: ':id',
@@ -255,9 +281,34 @@ class AppRouter {
                     );
                   },
                   routes: [
+                    // Add class test page
+                    GoRoute(
+                      path: 'add',
+                      name: 'add-class-test',
+                      pageBuilder: (context, state) {
+                        return DialogPage(
+                          key: state.pageKey,
+                          barrierDismissible: false,
+                          builder: (_) => const AddEditClassTestPage(),
+                        );
+                      },
+                    ),
+                    // Edit class test page
+                    GoRoute(
+                      path: 'edit/:classTestId',
+                      name: 'edit-class-test',
+                      pageBuilder: (context, state) {
+                        final classTest = state.extra as ClassTestModel?;
+                        return DialogPage(
+                          key: state.pageKey,
+                          barrierDismissible: false,
+                          builder: (_) => AddEditClassTestPage(classTest: classTest),
+                        );
+                      },
+                    ),
                     // Class test detail modal
                     GoRoute(
-                      path: '/:id',
+                      path: ':id',
                       name: 'class-test-detail',
                       pageBuilder: (context, state) {
                         final classTestId = state.pathParameters['id']!;
@@ -376,38 +427,34 @@ class AppRouter {
   String? _redirect(BuildContext context, GoRouterState state) {
     final isOnSplashPage = state.matchedLocation == '/splash';
 
-    // Check if services are initialized by checking if AuthCubit is registered
+    // Check if services are initialized by checking Firebase Auth
     try {
-      final authCubit = GetIt.instance<AuthCubit>();
-      final authState = authCubit.state;
-      // return '/notices';
-
+      final authService = AuthService();
+      final isAuthenticated = authService.isAuthenticated;
+      
       final isOnGetStartedPage = state.matchedLocation == '/';
       final isOnAuthPage = ['/login', '/register', '/grant-access']
           .contains(state.matchedLocation);
 
       // If still on splash after initialization, redirect based on auth state
       if (isOnSplashPage) {
-        log('🔄 Redirecting from splash page with: $authState');
-        return authState is AuthAuthenticated ? '/notices' : '/';
+        log('🔄 Redirecting from splash page, authenticated: $isAuthenticated');
+        return isAuthenticated ? '/notices' : '/';
       }
 
       // If authenticated and on get-started or auth pages, redirect to notices
-      if (authState is AuthAuthenticated &&
-          (isOnGetStartedPage || isOnAuthPage)) {
-        log('Redirecting authenticated user from $state to /notices');
+      if (isAuthenticated && (isOnGetStartedPage || isOnAuthPage)) {
+        log('Redirecting authenticated user from ${state.matchedLocation} to /notices');
         return '/notices';
       }
 
       // If unauthenticated and not on get-started or auth pages, redirect to get-started
-      if (authState is AuthUnauthenticated &&
-          !isOnGetStartedPage &&
-          !isOnAuthPage) {
-        log('Redirecting unauthenticated user from $state to /');
+      if (!isAuthenticated && !isOnGetStartedPage && !isOnAuthPage) {
+        log('Redirecting unauthenticated user from ${state.matchedLocation} to /');
         return '/';
       }
 
-      log('No redirect needed for state: ${state.fullPath} with authState: $authState');
+      log('No redirect needed for state: ${state.fullPath}, authenticated: $isAuthenticated');
       return null;
     } catch (e) {
       log('❌ Error checking auth state: $e');

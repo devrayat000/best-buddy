@@ -16,6 +16,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/theme_cubit.dart';
 import 'core/services/app_lifecycle_service.dart';
+import 'core/auth/auth_service.dart';
+import 'core/di/injection_container.dart';
 import 'firebase_options.dart';
 
 void main() {
@@ -34,6 +36,12 @@ Future<void> _initializeApp() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Initialize Auth Service
+  await AuthService().initialize();
+
+  // Initialize dependency injection
+  await setupServiceLocator();
 
   // Initialize timezone data
   tz.initializeTimeZones();

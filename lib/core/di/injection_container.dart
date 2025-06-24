@@ -1,6 +1,5 @@
 import 'package:get_it/get_it.dart';
 
-import '../auth/auth_cubit.dart';
 import '../auth/firebase_auth_service.dart';
 import '../auth/biometric_service.dart';
 import '../cubits/reload_cubit.dart';
@@ -44,12 +43,6 @@ Future<void> setupServiceLocator() async {
       () => NoticesFirebaseService());
   sl.registerLazySingleton<ClassTestsFirebaseService>(
       () => ClassTestsFirebaseService());
-
-  // Auth Cubit with Firebase services
-  sl.registerFactory(() => AuthCubit(
-        sl<FirebaseAuthService>(),
-        sl<StorageService>(),
-      ));
 
   // Feature Cubits
   sl.registerFactory(() => NoticesCubit(sl<NoticesFirebaseService>()));

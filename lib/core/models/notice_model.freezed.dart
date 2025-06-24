@@ -1,4 +1,3 @@
-// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -10,69 +9,47 @@ part of 'notice_model.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
 T _$identity<T>(T value) => value;
+
+final _privateConstructorUsedError = UnsupportedError(
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+
+NoticeModel _$NoticeModelFromJson(Map<String, dynamic> json) {
+  return _NoticeModel.fromJson(json);
+}
 
 /// @nodoc
 mixin _$NoticeModel {
-  String get title;
-  String get content;
-  String get createdById;
-  String? get createdByName;
-  UserRole? get createdByRole;
+  String? get id => throw _privateConstructorUsedError;
+  String get title => throw _privateConstructorUsedError;
+  String get content => throw _privateConstructorUsedError;
+  String get createdById => throw _privateConstructorUsedError;
+  String? get createdByName => throw _privateConstructorUsedError;
+  UserRole? get createdByRole => throw _privateConstructorUsedError;
   @TimestampConverter()
-  DateTime? get createdAt;
+  DateTime? get createdAt => throw _privateConstructorUsedError;
   @TimestampConverter()
-  DateTime? get updatedAt;
+  DateTime? get updatedAt => throw _privateConstructorUsedError;
+
+  /// Serializes this NoticeModel to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of NoticeModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
   $NoticeModelCopyWith<NoticeModel> get copyWith =>
-      _$NoticeModelCopyWithImpl<NoticeModel>(this as NoticeModel, _$identity);
-
-  /// Serializes this NoticeModel to a JSON map.
-  Map<String, dynamic> toJson();
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is NoticeModel &&
-            (identical(other.title, title) || other.title == title) &&
-            (identical(other.content, content) || other.content == content) &&
-            (identical(other.createdById, createdById) ||
-                other.createdById == createdById) &&
-            (identical(other.createdByName, createdByName) ||
-                other.createdByName == createdByName) &&
-            (identical(other.createdByRole, createdByRole) ||
-                other.createdByRole == createdByRole) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
-            (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, title, content, createdById,
-      createdByName, createdByRole, createdAt, updatedAt);
-
-  @override
-  String toString() {
-    return 'NoticeModel(title: $title, content: $content, createdById: $createdById, createdByName: $createdByName, createdByRole: $createdByRole, createdAt: $createdAt, updatedAt: $updatedAt)';
-  }
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract mixin class $NoticeModelCopyWith<$Res> {
+abstract class $NoticeModelCopyWith<$Res> {
   factory $NoticeModelCopyWith(
-          NoticeModel value, $Res Function(NoticeModel) _then) =
-      _$NoticeModelCopyWithImpl;
+          NoticeModel value, $Res Function(NoticeModel) then) =
+      _$NoticeModelCopyWithImpl<$Res, NoticeModel>;
   @useResult
   $Res call(
-      {String title,
+      {String? id,
+      String title,
       String content,
       String createdById,
       String? createdByName,
@@ -82,17 +59,21 @@ abstract mixin class $NoticeModelCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$NoticeModelCopyWithImpl<$Res> implements $NoticeModelCopyWith<$Res> {
-  _$NoticeModelCopyWithImpl(this._self, this._then);
+class _$NoticeModelCopyWithImpl<$Res, $Val extends NoticeModel>
+    implements $NoticeModelCopyWith<$Res> {
+  _$NoticeModelCopyWithImpl(this._value, this._then);
 
-  final NoticeModel _self;
-  final $Res Function(NoticeModel) _then;
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
   /// Create a copy of NoticeModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = freezed,
     Object? title = null,
     Object? content = null,
     Object? createdById = null,
@@ -101,33 +82,115 @@ class _$NoticeModelCopyWithImpl<$Res> implements $NoticeModelCopyWith<$Res> {
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
   }) {
-    return _then(_self.copyWith(
+    return _then(_value.copyWith(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
       title: null == title
-          ? _self.title
+          ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
       content: null == content
-          ? _self.content
+          ? _value.content
           : content // ignore: cast_nullable_to_non_nullable
               as String,
       createdById: null == createdById
-          ? _self.createdById
+          ? _value.createdById
           : createdById // ignore: cast_nullable_to_non_nullable
               as String,
       createdByName: freezed == createdByName
-          ? _self.createdByName
+          ? _value.createdByName
           : createdByName // ignore: cast_nullable_to_non_nullable
               as String?,
       createdByRole: freezed == createdByRole
-          ? _self.createdByRole
+          ? _value.createdByRole
           : createdByRole // ignore: cast_nullable_to_non_nullable
               as UserRole?,
       createdAt: freezed == createdAt
-          ? _self.createdAt
+          ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
       updatedAt: freezed == updatedAt
-          ? _self.updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$NoticeModelImplCopyWith<$Res>
+    implements $NoticeModelCopyWith<$Res> {
+  factory _$$NoticeModelImplCopyWith(
+          _$NoticeModelImpl value, $Res Function(_$NoticeModelImpl) then) =
+      __$$NoticeModelImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {String? id,
+      String title,
+      String content,
+      String createdById,
+      String? createdByName,
+      UserRole? createdByRole,
+      @TimestampConverter() DateTime? createdAt,
+      @TimestampConverter() DateTime? updatedAt});
+}
+
+/// @nodoc
+class __$$NoticeModelImplCopyWithImpl<$Res>
+    extends _$NoticeModelCopyWithImpl<$Res, _$NoticeModelImpl>
+    implements _$$NoticeModelImplCopyWith<$Res> {
+  __$$NoticeModelImplCopyWithImpl(
+      _$NoticeModelImpl _value, $Res Function(_$NoticeModelImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of NoticeModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = freezed,
+    Object? title = null,
+    Object? content = null,
+    Object? createdById = null,
+    Object? createdByName = freezed,
+    Object? createdByRole = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+  }) {
+    return _then(_$NoticeModelImpl(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      title: null == title
+          ? _value.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      content: null == content
+          ? _value.content
+          : content // ignore: cast_nullable_to_non_nullable
+              as String,
+      createdById: null == createdById
+          ? _value.createdById
+          : createdById // ignore: cast_nullable_to_non_nullable
+              as String,
+      createdByName: freezed == createdByName
+          ? _value.createdByName
+          : createdByName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      createdByRole: freezed == createdByRole
+          ? _value.createdByRole
+          : createdByRole // ignore: cast_nullable_to_non_nullable
+              as UserRole?,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
     ));
@@ -136,18 +199,22 @@ class _$NoticeModelCopyWithImpl<$Res> implements $NoticeModelCopyWith<$Res> {
 
 /// @nodoc
 @JsonSerializable()
-class _NoticeModel implements NoticeModel {
-  const _NoticeModel(
-      {required this.title,
+class _$NoticeModelImpl implements _NoticeModel {
+  const _$NoticeModelImpl(
+      {this.id,
+      required this.title,
       required this.content,
       required this.createdById,
       this.createdByName,
       this.createdByRole,
       @TimestampConverter() this.createdAt,
       @TimestampConverter() this.updatedAt});
-  factory _NoticeModel.fromJson(Map<String, dynamic> json) =>
-      _$NoticeModelFromJson(json);
 
+  factory _$NoticeModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$NoticeModelImplFromJson(json);
+
+  @override
+  final String? id;
   @override
   final String title;
   @override
@@ -165,26 +232,17 @@ class _NoticeModel implements NoticeModel {
   @TimestampConverter()
   final DateTime? updatedAt;
 
-  /// Create a copy of NoticeModel
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$NoticeModelCopyWith<_NoticeModel> get copyWith =>
-      __$NoticeModelCopyWithImpl<_NoticeModel>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$NoticeModelToJson(
-      this,
-    );
+  String toString() {
+    return 'NoticeModel(id: $id, title: $title, content: $content, createdById: $createdById, createdByName: $createdByName, createdByRole: $createdByRole, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _NoticeModel &&
+            other is _$NoticeModelImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.content, content) || other.content == content) &&
             (identical(other.createdById, createdById) ||
@@ -201,137 +259,103 @@ class _NoticeModel implements NoticeModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, title, content, createdById,
+  int get hashCode => Object.hash(runtimeType, id, title, content, createdById,
       createdByName, createdByRole, createdAt, updatedAt);
 
+  /// Create a copy of NoticeModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  String toString() {
-    return 'NoticeModel(title: $title, content: $content, createdById: $createdById, createdByName: $createdByName, createdByRole: $createdByRole, createdAt: $createdAt, updatedAt: $updatedAt)';
+  @pragma('vm:prefer-inline')
+  _$$NoticeModelImplCopyWith<_$NoticeModelImpl> get copyWith =>
+      __$$NoticeModelImplCopyWithImpl<_$NoticeModelImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$NoticeModelImplToJson(
+      this,
+    );
   }
 }
 
-/// @nodoc
-abstract mixin class _$NoticeModelCopyWith<$Res>
-    implements $NoticeModelCopyWith<$Res> {
-  factory _$NoticeModelCopyWith(
-          _NoticeModel value, $Res Function(_NoticeModel) _then) =
-      __$NoticeModelCopyWithImpl;
+abstract class _NoticeModel implements NoticeModel {
+  const factory _NoticeModel(
+      {final String? id,
+      required final String title,
+      required final String content,
+      required final String createdById,
+      final String? createdByName,
+      final UserRole? createdByRole,
+      @TimestampConverter() final DateTime? createdAt,
+      @TimestampConverter() final DateTime? updatedAt}) = _$NoticeModelImpl;
+
+  factory _NoticeModel.fromJson(Map<String, dynamic> json) =
+      _$NoticeModelImpl.fromJson;
+
   @override
-  @useResult
-  $Res call(
-      {String title,
-      String content,
-      String createdById,
-      String? createdByName,
-      UserRole? createdByRole,
-      @TimestampConverter() DateTime? createdAt,
-      @TimestampConverter() DateTime? updatedAt});
-}
-
-/// @nodoc
-class __$NoticeModelCopyWithImpl<$Res> implements _$NoticeModelCopyWith<$Res> {
-  __$NoticeModelCopyWithImpl(this._self, this._then);
-
-  final _NoticeModel _self;
-  final $Res Function(_NoticeModel) _then;
+  String? get id;
+  @override
+  String get title;
+  @override
+  String get content;
+  @override
+  String get createdById;
+  @override
+  String? get createdByName;
+  @override
+  UserRole? get createdByRole;
+  @override
+  @TimestampConverter()
+  DateTime? get createdAt;
+  @override
+  @TimestampConverter()
+  DateTime? get updatedAt;
 
   /// Create a copy of NoticeModel
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @pragma('vm:prefer-inline')
-  $Res call({
-    Object? title = null,
-    Object? content = null,
-    Object? createdById = null,
-    Object? createdByName = freezed,
-    Object? createdByRole = freezed,
-    Object? createdAt = freezed,
-    Object? updatedAt = freezed,
-  }) {
-    return _then(_NoticeModel(
-      title: null == title
-          ? _self.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      content: null == content
-          ? _self.content
-          : content // ignore: cast_nullable_to_non_nullable
-              as String,
-      createdById: null == createdById
-          ? _self.createdById
-          : createdById // ignore: cast_nullable_to_non_nullable
-              as String,
-      createdByName: freezed == createdByName
-          ? _self.createdByName
-          : createdByName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      createdByRole: freezed == createdByRole
-          ? _self.createdByRole
-          : createdByRole // ignore: cast_nullable_to_non_nullable
-              as UserRole?,
-      createdAt: freezed == createdAt
-          ? _self.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      updatedAt: freezed == updatedAt
-          ? _self.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-    ));
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$NoticeModelImplCopyWith<_$NoticeModelImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+CreateNoticeModel _$CreateNoticeModelFromJson(Map<String, dynamic> json) {
+  return _CreateNoticeModel.fromJson(json);
 }
 
 /// @nodoc
 mixin _$CreateNoticeModel {
-  String get title;
-  String get content;
+  String get title => throw _privateConstructorUsedError;
+  String get content => throw _privateConstructorUsedError;
+
+  /// Serializes this CreateNoticeModel to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of CreateNoticeModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
   $CreateNoticeModelCopyWith<CreateNoticeModel> get copyWith =>
-      _$CreateNoticeModelCopyWithImpl<CreateNoticeModel>(
-          this as CreateNoticeModel, _$identity);
-
-  /// Serializes this CreateNoticeModel to a JSON map.
-  Map<String, dynamic> toJson();
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is CreateNoticeModel &&
-            (identical(other.title, title) || other.title == title) &&
-            (identical(other.content, content) || other.content == content));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, title, content);
-
-  @override
-  String toString() {
-    return 'CreateNoticeModel(title: $title, content: $content)';
-  }
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract mixin class $CreateNoticeModelCopyWith<$Res> {
+abstract class $CreateNoticeModelCopyWith<$Res> {
   factory $CreateNoticeModelCopyWith(
-          CreateNoticeModel value, $Res Function(CreateNoticeModel) _then) =
-      _$CreateNoticeModelCopyWithImpl;
+          CreateNoticeModel value, $Res Function(CreateNoticeModel) then) =
+      _$CreateNoticeModelCopyWithImpl<$Res, CreateNoticeModel>;
   @useResult
   $Res call({String title, String content});
 }
 
 /// @nodoc
-class _$CreateNoticeModelCopyWithImpl<$Res>
+class _$CreateNoticeModelCopyWithImpl<$Res, $Val extends CreateNoticeModel>
     implements $CreateNoticeModelCopyWith<$Res> {
-  _$CreateNoticeModelCopyWithImpl(this._self, this._then);
+  _$CreateNoticeModelCopyWithImpl(this._value, this._then);
 
-  final CreateNoticeModel _self;
-  final $Res Function(CreateNoticeModel) _then;
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
   /// Create a copy of CreateNoticeModel
   /// with the given fields replaced by the non-null parameter values.
@@ -341,13 +365,53 @@ class _$CreateNoticeModelCopyWithImpl<$Res>
     Object? title = null,
     Object? content = null,
   }) {
-    return _then(_self.copyWith(
+    return _then(_value.copyWith(
       title: null == title
-          ? _self.title
+          ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
       content: null == content
-          ? _self.content
+          ? _value.content
+          : content // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$CreateNoticeModelImplCopyWith<$Res>
+    implements $CreateNoticeModelCopyWith<$Res> {
+  factory _$$CreateNoticeModelImplCopyWith(_$CreateNoticeModelImpl value,
+          $Res Function(_$CreateNoticeModelImpl) then) =
+      __$$CreateNoticeModelImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String title, String content});
+}
+
+/// @nodoc
+class __$$CreateNoticeModelImplCopyWithImpl<$Res>
+    extends _$CreateNoticeModelCopyWithImpl<$Res, _$CreateNoticeModelImpl>
+    implements _$$CreateNoticeModelImplCopyWith<$Res> {
+  __$$CreateNoticeModelImplCopyWithImpl(_$CreateNoticeModelImpl _value,
+      $Res Function(_$CreateNoticeModelImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of CreateNoticeModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? title = null,
+    Object? content = null,
+  }) {
+    return _then(_$CreateNoticeModelImpl(
+      title: null == title
+          ? _value.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      content: null == content
+          ? _value.content
           : content // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -356,111 +420,27 @@ class _$CreateNoticeModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _CreateNoticeModel implements CreateNoticeModel {
-  const _CreateNoticeModel({required this.title, required this.content});
-  factory _CreateNoticeModel.fromJson(Map<String, dynamic> json) =>
-      _$CreateNoticeModelFromJson(json);
+class _$CreateNoticeModelImpl implements _CreateNoticeModel {
+  const _$CreateNoticeModelImpl({required this.title, required this.content});
+
+  factory _$CreateNoticeModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$CreateNoticeModelImplFromJson(json);
 
   @override
   final String title;
   @override
   final String content;
 
-  /// Create a copy of CreateNoticeModel
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$CreateNoticeModelCopyWith<_CreateNoticeModel> get copyWith =>
-      __$CreateNoticeModelCopyWithImpl<_CreateNoticeModel>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$CreateNoticeModelToJson(
-      this,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _CreateNoticeModel &&
-            (identical(other.title, title) || other.title == title) &&
-            (identical(other.content, content) || other.content == content));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, title, content);
-
   @override
   String toString() {
     return 'CreateNoticeModel(title: $title, content: $content)';
   }
-}
-
-/// @nodoc
-abstract mixin class _$CreateNoticeModelCopyWith<$Res>
-    implements $CreateNoticeModelCopyWith<$Res> {
-  factory _$CreateNoticeModelCopyWith(
-          _CreateNoticeModel value, $Res Function(_CreateNoticeModel) _then) =
-      __$CreateNoticeModelCopyWithImpl;
-  @override
-  @useResult
-  $Res call({String title, String content});
-}
-
-/// @nodoc
-class __$CreateNoticeModelCopyWithImpl<$Res>
-    implements _$CreateNoticeModelCopyWith<$Res> {
-  __$CreateNoticeModelCopyWithImpl(this._self, this._then);
-
-  final _CreateNoticeModel _self;
-  final $Res Function(_CreateNoticeModel) _then;
-
-  /// Create a copy of CreateNoticeModel
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $Res call({
-    Object? title = null,
-    Object? content = null,
-  }) {
-    return _then(_CreateNoticeModel(
-      title: null == title
-          ? _self.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      content: null == content
-          ? _self.content
-          : content // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
-
-/// @nodoc
-mixin _$UpdateNoticeModel {
-  String? get title;
-  String? get content;
-
-  /// Create a copy of UpdateNoticeModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $UpdateNoticeModelCopyWith<UpdateNoticeModel> get copyWith =>
-      _$UpdateNoticeModelCopyWithImpl<UpdateNoticeModel>(
-          this as UpdateNoticeModel, _$identity);
-
-  /// Serializes this UpdateNoticeModel to a JSON map.
-  Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is UpdateNoticeModel &&
+            other is _$CreateNoticeModelImpl &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.content, content) || other.content == content));
   }
@@ -469,28 +449,81 @@ mixin _$UpdateNoticeModel {
   @override
   int get hashCode => Object.hash(runtimeType, title, content);
 
+  /// Create a copy of CreateNoticeModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  String toString() {
-    return 'UpdateNoticeModel(title: $title, content: $content)';
+  @pragma('vm:prefer-inline')
+  _$$CreateNoticeModelImplCopyWith<_$CreateNoticeModelImpl> get copyWith =>
+      __$$CreateNoticeModelImplCopyWithImpl<_$CreateNoticeModelImpl>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$CreateNoticeModelImplToJson(
+      this,
+    );
   }
 }
 
+abstract class _CreateNoticeModel implements CreateNoticeModel {
+  const factory _CreateNoticeModel(
+      {required final String title,
+      required final String content}) = _$CreateNoticeModelImpl;
+
+  factory _CreateNoticeModel.fromJson(Map<String, dynamic> json) =
+      _$CreateNoticeModelImpl.fromJson;
+
+  @override
+  String get title;
+  @override
+  String get content;
+
+  /// Create a copy of CreateNoticeModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$CreateNoticeModelImplCopyWith<_$CreateNoticeModelImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+UpdateNoticeModel _$UpdateNoticeModelFromJson(Map<String, dynamic> json) {
+  return _UpdateNoticeModel.fromJson(json);
+}
+
 /// @nodoc
-abstract mixin class $UpdateNoticeModelCopyWith<$Res> {
+mixin _$UpdateNoticeModel {
+  String? get title => throw _privateConstructorUsedError;
+  String? get content => throw _privateConstructorUsedError;
+
+  /// Serializes this UpdateNoticeModel to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of UpdateNoticeModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $UpdateNoticeModelCopyWith<UpdateNoticeModel> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $UpdateNoticeModelCopyWith<$Res> {
   factory $UpdateNoticeModelCopyWith(
-          UpdateNoticeModel value, $Res Function(UpdateNoticeModel) _then) =
-      _$UpdateNoticeModelCopyWithImpl;
+          UpdateNoticeModel value, $Res Function(UpdateNoticeModel) then) =
+      _$UpdateNoticeModelCopyWithImpl<$Res, UpdateNoticeModel>;
   @useResult
   $Res call({String? title, String? content});
 }
 
 /// @nodoc
-class _$UpdateNoticeModelCopyWithImpl<$Res>
+class _$UpdateNoticeModelCopyWithImpl<$Res, $Val extends UpdateNoticeModel>
     implements $UpdateNoticeModelCopyWith<$Res> {
-  _$UpdateNoticeModelCopyWithImpl(this._self, this._then);
+  _$UpdateNoticeModelCopyWithImpl(this._value, this._then);
 
-  final UpdateNoticeModel _self;
-  final $Res Function(UpdateNoticeModel) _then;
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
   /// Create a copy of UpdateNoticeModel
   /// with the given fields replaced by the non-null parameter values.
@@ -500,13 +533,53 @@ class _$UpdateNoticeModelCopyWithImpl<$Res>
     Object? title = freezed,
     Object? content = freezed,
   }) {
-    return _then(_self.copyWith(
+    return _then(_value.copyWith(
       title: freezed == title
-          ? _self.title
+          ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String?,
       content: freezed == content
-          ? _self.content
+          ? _value.content
+          : content // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$UpdateNoticeModelImplCopyWith<$Res>
+    implements $UpdateNoticeModelCopyWith<$Res> {
+  factory _$$UpdateNoticeModelImplCopyWith(_$UpdateNoticeModelImpl value,
+          $Res Function(_$UpdateNoticeModelImpl) then) =
+      __$$UpdateNoticeModelImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String? title, String? content});
+}
+
+/// @nodoc
+class __$$UpdateNoticeModelImplCopyWithImpl<$Res>
+    extends _$UpdateNoticeModelCopyWithImpl<$Res, _$UpdateNoticeModelImpl>
+    implements _$$UpdateNoticeModelImplCopyWith<$Res> {
+  __$$UpdateNoticeModelImplCopyWithImpl(_$UpdateNoticeModelImpl _value,
+      $Res Function(_$UpdateNoticeModelImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of UpdateNoticeModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? title = freezed,
+    Object? content = freezed,
+  }) {
+    return _then(_$UpdateNoticeModelImpl(
+      title: freezed == title
+          ? _value.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String?,
+      content: freezed == content
+          ? _value.content
           : content // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
@@ -515,36 +588,27 @@ class _$UpdateNoticeModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _UpdateNoticeModel implements UpdateNoticeModel {
-  const _UpdateNoticeModel({this.title, this.content});
-  factory _UpdateNoticeModel.fromJson(Map<String, dynamic> json) =>
-      _$UpdateNoticeModelFromJson(json);
+class _$UpdateNoticeModelImpl implements _UpdateNoticeModel {
+  const _$UpdateNoticeModelImpl({this.title, this.content});
+
+  factory _$UpdateNoticeModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$UpdateNoticeModelImplFromJson(json);
 
   @override
   final String? title;
   @override
   final String? content;
 
-  /// Create a copy of UpdateNoticeModel
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$UpdateNoticeModelCopyWith<_UpdateNoticeModel> get copyWith =>
-      __$UpdateNoticeModelCopyWithImpl<_UpdateNoticeModel>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$UpdateNoticeModelToJson(
-      this,
-    );
+  String toString() {
+    return 'UpdateNoticeModel(title: $title, content: $content)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _UpdateNoticeModel &&
+            other is _$UpdateNoticeModelImpl &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.content, content) || other.content == content));
   }
@@ -553,50 +617,39 @@ class _UpdateNoticeModel implements UpdateNoticeModel {
   @override
   int get hashCode => Object.hash(runtimeType, title, content);
 
+  /// Create a copy of UpdateNoticeModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  String toString() {
-    return 'UpdateNoticeModel(title: $title, content: $content)';
+  @pragma('vm:prefer-inline')
+  _$$UpdateNoticeModelImplCopyWith<_$UpdateNoticeModelImpl> get copyWith =>
+      __$$UpdateNoticeModelImplCopyWithImpl<_$UpdateNoticeModelImpl>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$UpdateNoticeModelImplToJson(
+      this,
+    );
   }
 }
 
-/// @nodoc
-abstract mixin class _$UpdateNoticeModelCopyWith<$Res>
-    implements $UpdateNoticeModelCopyWith<$Res> {
-  factory _$UpdateNoticeModelCopyWith(
-          _UpdateNoticeModel value, $Res Function(_UpdateNoticeModel) _then) =
-      __$UpdateNoticeModelCopyWithImpl;
+abstract class _UpdateNoticeModel implements UpdateNoticeModel {
+  const factory _UpdateNoticeModel(
+      {final String? title, final String? content}) = _$UpdateNoticeModelImpl;
+
+  factory _UpdateNoticeModel.fromJson(Map<String, dynamic> json) =
+      _$UpdateNoticeModelImpl.fromJson;
+
   @override
-  @useResult
-  $Res call({String? title, String? content});
-}
-
-/// @nodoc
-class __$UpdateNoticeModelCopyWithImpl<$Res>
-    implements _$UpdateNoticeModelCopyWith<$Res> {
-  __$UpdateNoticeModelCopyWithImpl(this._self, this._then);
-
-  final _UpdateNoticeModel _self;
-  final $Res Function(_UpdateNoticeModel) _then;
+  String? get title;
+  @override
+  String? get content;
 
   /// Create a copy of UpdateNoticeModel
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @pragma('vm:prefer-inline')
-  $Res call({
-    Object? title = freezed,
-    Object? content = freezed,
-  }) {
-    return _then(_UpdateNoticeModel(
-      title: freezed == title
-          ? _self.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String?,
-      content: freezed == content
-          ? _self.content
-          : content // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$UpdateNoticeModelImplCopyWith<_$UpdateNoticeModelImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
-
-// dart format on

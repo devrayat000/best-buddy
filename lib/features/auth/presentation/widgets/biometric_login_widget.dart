@@ -56,7 +56,13 @@ class _BiometricLoginWidgetState extends State<BiometricLoginWidget> {
   }
 
   Future<void> _authenticateWithBiometric() async {
-    await context.read<AuthCubit>().loginWithBiometric();
+    // For now, just show a message that biometric authentication is not implemented
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Biometric authentication is not yet implemented'),
+        backgroundColor: Colors.orange,
+      ),
+    );
   }
 
   @override

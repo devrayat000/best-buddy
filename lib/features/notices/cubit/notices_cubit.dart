@@ -6,7 +6,7 @@ import '../data/notices_firebase_service.dart';
 part 'notices_cubit.freezed.dart';
 
 @freezed
-class NoticesState with _$NoticesState {
+abstract class NoticesState with _$NoticesState {
   const factory NoticesState.initial() = _Initial;
   const factory NoticesState.loading() = _Loading;
   const factory NoticesState.loaded(List<NoticeModel> notices) = _Loaded;
@@ -57,7 +57,7 @@ class NoticesCubit extends Cubit<NoticesState> {
     }
   }
 
-  Future<bool> isCurrentUserAdmin() async {
-    return await _noticesService.isCurrentUserAdmin();
+  Future<bool> isCurrentUserCR() async {
+    return await _noticesService.isCurrentUserCR();
   }
 }

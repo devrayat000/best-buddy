@@ -208,22 +208,22 @@ class FirebaseAuthService {
     }
   }
 
-  // Check if current user is admin
-  Future<bool> isCurrentUserAdmin() async {
+  // Check if current user is cr
+  Future<bool> isCurrentUserCR() async {
     try {
       final userData = await getCurrentUserData();
-      return userData?.role == UserRole.admin;
+      return userData?.role == UserRole.cr;
     } catch (e) {
       return false;
     }
   }
 
-  // Get all users (admin only)
+  // Get all users (cr only)
   Future<List<UserModel>> getAllUsers() async {
     try {
       final currentUser = await getCurrentUserData();
-      if (currentUser?.role != UserRole.admin) {
-        throw Exception('Insufficient permissions. Admin role required.');
+      if (currentUser?.role != UserRole.cr) {
+        throw Exception('Insufficient permissions. CR role required.');
       }
 
       final snapshot = await _firestore.collection('users').get();
@@ -238,12 +238,12 @@ class FirebaseAuthService {
     }
   }
 
-  // Update user role (admin only)
+  // Update user role (cr only)
   Future<void> updateUserRole(String userId, UserRole role) async {
     try {
       final currentUser = await getCurrentUserData();
-      if (currentUser?.role != UserRole.admin) {
-        throw Exception('Insufficient permissions. Admin role required.');
+      if (currentUser?.role != UserRole.cr) {
+        throw Exception('Insufficient permissions. CR role required.');
       }
 
       await _firestore.collection('users').doc(userId).update({

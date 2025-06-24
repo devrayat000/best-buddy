@@ -23,8 +23,9 @@ class TimestampConverter implements JsonConverter<DateTime?, Timestamp?> {
 }
 
 @freezed
-class NoticeModel with _$NoticeModel {
+abstract class NoticeModel with _$NoticeModel {
   const factory NoticeModel({
+    String? id,
     required String title,
     required String content,
     required String createdById,
@@ -42,7 +43,7 @@ class NoticeModel with _$NoticeModel {
 final noticesRef = NoticeModelCollectionReference();
 
 @freezed
-class CreateNoticeModel with _$CreateNoticeModel {
+abstract class CreateNoticeModel with _$CreateNoticeModel {
   const factory CreateNoticeModel({
     required String title,
     required String content,
@@ -52,7 +53,7 @@ class CreateNoticeModel with _$CreateNoticeModel {
 }
 
 @freezed
-class UpdateNoticeModel with _$UpdateNoticeModel {
+abstract class UpdateNoticeModel with _$UpdateNoticeModel {
   const factory UpdateNoticeModel({
     String? title,
     String? content,

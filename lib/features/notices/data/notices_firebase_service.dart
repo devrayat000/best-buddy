@@ -38,7 +38,7 @@ class NoticesFirebaseService {
     }
   }
 
-  // Create a new notice (admin only)
+  // Create a new notice (cr only)
   Future<String> createNotice(CreateNoticeModel notice) async {
     try {
       final user = _auth.currentUser;
@@ -51,8 +51,8 @@ class NoticesFirebaseService {
       final userData = userDoc.data();
       final userRole = userData?['role'] as String?;
 
-      if (userRole != 'admin') {
-        throw Exception('Insufficient permissions. Admin role required.');
+      if (userRole != 'cr') {
+        throw Exception('Insufficient permissions. CR role required.');
       }
 
       final now = DateTime.now();
@@ -61,7 +61,7 @@ class NoticesFirebaseService {
         'content': notice.content,
         'createdById': user.uid,
         'createdByName': userData?['name'] ?? user.displayName ?? 'Unknown',
-        'createdByRole': UserRole.admin.name,
+        'createdByRole': UserRole.cr.name,
         'createdAt': Timestamp.fromDate(now),
         'updatedAt': Timestamp.fromDate(now),
       };
@@ -73,7 +73,7 @@ class NoticesFirebaseService {
     }
   }
 
-  // Update an existing notice (admin only)
+  // Update an existing notice (cr only)
   Future<void> updateNotice(String id, UpdateNoticeModel notice) async {
     try {
       final user = _auth.currentUser;
@@ -86,8 +86,8 @@ class NoticesFirebaseService {
       final userData = userDoc.data();
       final userRole = userData?['role'] as String?;
 
-      if (userRole != 'admin') {
-        throw Exception('Insufficient permissions. Admin role required.');
+      if (userRole != 'cr') {
+        throw Exception('Insufficient permissions. CR role required.');
       }
 
       final updateData = <String, dynamic>{
@@ -103,7 +103,7 @@ class NoticesFirebaseService {
     }
   }
 
-  // Delete a notice (admin only)
+  // Delete a notice (cr only)
   Future<void> deleteNotice(String id) async {
     try {
       final user = _auth.currentUser;
@@ -116,8 +116,8 @@ class NoticesFirebaseService {
       final userData = userDoc.data();
       final userRole = userData?['role'] as String?;
 
-      if (userRole != 'admin') {
-        throw Exception('Insufficient permissions. Admin role required.');
+      if (userRole != 'cr') {
+        throw Exception('Insufficient permissions. CR role required.');
       }
 
       await _noticesCollection.doc(id).delete();
@@ -126,15 +126,15 @@ class NoticesFirebaseService {
     }
   }
 
-  // Check if current user is admin
-  Future<bool> isCurrentUserAdmin() async {
+  // Check if current user is cr
+  Future<bool> isCurrentUserCR() async {
     try {
       final user = _auth.currentUser;
       if (user == null) return false;
 
       final userDoc = await _firestore.collection('users').doc(user.uid).get();
       final userData = userDoc.data();
-      return userData?['role'] == 'admin';
+      return userData?['role'] == 'cr';
     } catch (e) {
       return false;
     }

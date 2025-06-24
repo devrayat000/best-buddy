@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:go_router/go_router.dart';
-import 'package:get_it/get_it.dart';
 
-import '../../../../core/auth/auth_cubit.dart';
+import '../../../../core/auth/auth_service.dart';
 import '../../../../core/auth/biometric_service.dart';
-import '../../data/graphql/auth_mutations.graphql.dart';
 import '../forms/login_form.dart';
 import '../widgets/auth_form_field.dart';
 import '../widgets/auth_button.dart';
@@ -22,11 +19,22 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   late final LoginForm _loginForm;
+  final AuthService _authService = AuthService();
+  bool _isLoading = false;
+  String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
     _loginForm = LoginForm();
+    
+    // Listen to auth state changes
+    _authService.authStateChanges.listen((user) {
+      if (user != null && mounted) {
+        context.go('/notices');
+        _checkBiometricSetup();
+      }
+    });
   }
 
   @override
@@ -51,177 +59,147 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  Future<void> _signIn() async {
+    if (!_loginForm.form.valid) return;
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      await _authService.signInWithEmailAndPassword(
+        email: _loginForm.email!,
+        password: _loginForm.password!,
+      );
+      // Navigation will be handled by the auth state listener
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = e.toString();
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => GetIt.instance<AuthCubit>(),
-      child: Scaffold(
-        body: BlocListener<AuthCubit, AuthState>(
-          listener: (context, state) {
-            if (state is AuthAuthenticated) {
-              context.go('/notices');
-            } else if (state is AuthError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: Colors.red,
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: ReactiveForm(
+            formGroup: _loginForm.form,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Spacer(),
+                // Logo and Title
+                const Icon(
+                  Icons.school,
+                  size: 80,
+                  color: Colors.blue,
                 ),
-              );
-            } else if (state is AuthSessionExpired) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content:
-                      Text('Your session has expired. Please log in again.'),
-                  backgroundColor: Colors.orange,
+                const SizedBox(height: 16),
+                Text(
+                  'Study Buddy',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                  textAlign: TextAlign.center,
                 ),
-              );
-            }
-          },
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: ReactiveForm(
-                formGroup: _loginForm.form,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Spacer(),
-                    // Logo and Title
-                    const Icon(
-                      Icons.school,
-                      size: 80,
-                      color: Colors.blue,
+                const SizedBox(height: 8),
+                Text(
+                  'Welcome back! Please sign in to continue.',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: Colors.grey[600],
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 48),
+
+                // Student ID Field
+                const AuthFormField(
+                  controlName: LoginForm.emailControlName,
+                  labelText: 'Student ID',
+                  keyboardType: TextInputType.text,
+                  prefixIcon: Icons.person_outlined,
+                ),
+                const SizedBox(height: 16),
+
+                // Password Field
+                const AuthFormField(
+                  controlName: LoginForm.passwordControlName,
+                  labelText: 'Password',
+                  obscureText: true,
+                  prefixIcon: Icons.lock_outline,
+                ),
+                const SizedBox(height: 16),
+
+                // Error message
+                if (_errorMessage != null)
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.red[50],
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.red[200]!),
                     ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Study Buddy',
-                      style:
-                          Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Welcome back! Please sign in to continue.',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: Colors.grey[600],
+                    child: Row(
+                      children: [
+                        Icon(Icons.error_outline, color: Colors.red[600], size: 20),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            _errorMessage!,
+                            style: TextStyle(color: Colors.red[800], fontSize: 14),
                           ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 48), // Student ID Field
-                    const AuthFormField(
-                      controlName: LoginForm.emailControlName,
-                      labelText: 'Student ID',
-                      keyboardType: TextInputType.text,
-                      prefixIcon: Icons.person_outlined,
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Password Field
-                    const AuthFormField(
-                      controlName: LoginForm.passwordControlName,
-                      labelText: 'Password',
-                      obscureText: true,
-                      prefixIcon: Icons.lock_outline,
-                    ),
-                    const SizedBox(
-                        height: 32), // Login Button with GraphQL Mutation
-                    Mutation$AuthenticateUserWithPassword$Widget(
-                      options:
-                          WidgetOptions$Mutation$AuthenticateUserWithPassword(
-                        onCompleted: (data, result) {
-                          if (result?.authenticateUserWithPassword != null) {
-                            final authResult = result!
-                                .authenticateUserWithPassword!; // Handle success case
-                            if (authResult
-                                is Mutation$AuthenticateUserWithPassword$authenticateUserWithPassword$$UserAuthenticationWithPasswordSuccess) {
-                              final user = authResult.item;
-                              final token = authResult.sessionToken;
-
-                              context.read<AuthCubit>().login(
-                                    token: token,
-                                    userId: user.id,
-                                    email: user.email,
-                                    name: user.name,
-                                    role: user.role?.name,
-                                  );
-
-                              // Check if we should prompt for biometric setup
-                              _checkBiometricSetup();
-                            }
-                            // Handle failure case
-                            else if (authResult
-                                is Mutation$AuthenticateUserWithPassword$authenticateUserWithPassword$$UserAuthenticationWithPasswordFailure) {
-                              context
-                                  .read<AuthCubit>()
-                                  .setError(authResult.message);
-                            } else {
-                              context
-                                  .read<AuthCubit>()
-                                  .setError('Unknown authentication error');
-                            }
-                          }
-                        },
-                        onError: (error) {
-                          context
-                              .read<AuthCubit>()
-                              .setError(error?.toString() ?? 'Login failed');
-                        },
-                      ),
-                      builder: (runMutation, result) {
-                        return BlocBuilder<AuthCubit, AuthState>(
-                          builder: (context, state) {
-                            final isLoading = state is AuthLoading ||
-                                (result?.isLoading ?? false);
-
-                            return AuthButton(
-                              text: 'Sign In',
-                              isLoading: isLoading,
-                              onPressed: () {
-                                if (_loginForm.form.valid) {
-                                  context.read<AuthCubit>().setLoading();
-                                  runMutation(
-                                    Variables$Mutation$AuthenticateUserWithPassword(
-                                      email: _loginForm.email!,
-                                      password: _loginForm.password!,
-                                    ),
-                                  );
-                                }
-                              },
-                            );
-                          },
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Biometric Login Option
-                    const BiometricLoginWidget(),
-
-                    // Register Link
-                    TextButton(
-                      onPressed: () => context.push('/register'),
-                      child: RichText(
-                        text: TextSpan(
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          children: [
-                            const TextSpan(text: "Don't have an account? "),
-                            TextSpan(
-                              text: 'Sign up',
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
                         ),
-                      ),
+                      ],
                     ),
-                    const Spacer(),
-                  ],
+                  ),
+
+                const SizedBox(height: 16),
+
+                // Login Button
+                AuthButton(
+                  text: 'Sign In',
+                  isLoading: _isLoading,
+                  onPressed: _signIn,
                 ),
-              ),
+                const SizedBox(height: 16),
+
+                // Biometric Login Option
+                const BiometricLoginWidget(),
+
+                // Register Link
+                TextButton(
+                  onPressed: () => context.push('/register'),
+                  child: RichText(
+                    text: TextSpan(
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      children: [
+                        const TextSpan(text: "Don't have an account? "),
+                        TextSpan(
+                          text: 'Sign up',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const Spacer(),
+              ],
             ),
           ),
         ),

@@ -69,7 +69,7 @@ class ClassTestsFirebaseService {
     }
   }
 
-  // Create a new class test (admin only)
+  // Create a new class test (cr only)
   Future<String> createClassTest(CreateClassTestModel classTest) async {
     try {
       final user = _auth.currentUser;
@@ -82,8 +82,8 @@ class ClassTestsFirebaseService {
       final userData = userDoc.data();
       final userRole = userData?['role'] as String?;
 
-      if (userRole != 'admin') {
-        throw Exception('Insufficient permissions. Admin role required.');
+      if (userRole != 'cr') {
+        throw Exception('Insufficient permissions. CR role required.');
       }
 
       final now = DateTime.now();
@@ -96,7 +96,7 @@ class ClassTestsFirebaseService {
         'instructions': classTest.instructions,
         'createdById': user.uid,
         'createdByName': userData?['name'] ?? user.displayName ?? 'Unknown',
-        'createdByRole': UserRole.admin.name,
+        'createdByRole': UserRole.cr.name,
         'createdAt': Timestamp.fromDate(now),
         'updatedAt': Timestamp.fromDate(now),
       };
@@ -108,7 +108,7 @@ class ClassTestsFirebaseService {
     }
   }
 
-  // Update an existing class test (admin only)
+  // Update an existing class test (cr only)
   Future<void> updateClassTest(String id, UpdateClassTestModel classTest) async {
     try {
       final user = _auth.currentUser;
@@ -121,8 +121,8 @@ class ClassTestsFirebaseService {
       final userData = userDoc.data();
       final userRole = userData?['role'] as String?;
 
-      if (userRole != 'admin') {
-        throw Exception('Insufficient permissions. Admin role required.');
+      if (userRole != 'cr') {
+        throw Exception('Insufficient permissions. CR role required.');
       }
 
       final updateData = <String, dynamic>{
@@ -142,7 +142,7 @@ class ClassTestsFirebaseService {
     }
   }
 
-  // Delete a class test (admin only)
+  // Delete a class test (cr only)
   Future<void> deleteClassTest(String id) async {
     try {
       final user = _auth.currentUser;
@@ -155,8 +155,8 @@ class ClassTestsFirebaseService {
       final userData = userDoc.data();
       final userRole = userData?['role'] as String?;
 
-      if (userRole != 'admin') {
-        throw Exception('Insufficient permissions. Admin role required.');
+      if (userRole != 'cr') {
+        throw Exception('Insufficient permissions. CR role required.');
       }
 
       await _classTestsCollection.doc(id).delete();
@@ -165,15 +165,15 @@ class ClassTestsFirebaseService {
     }
   }
 
-  // Check if current user is admin
-  Future<bool> isCurrentUserAdmin() async {
+  // Check if current user is cr
+  Future<bool> isCurrentUserCR() async {
     try {
       final user = _auth.currentUser;
       if (user == null) return false;
 
       final userDoc = await _firestore.collection('users').doc(user.uid).get();
       final userData = userDoc.data();
-      return userData?['role'] == 'admin';
+      return userData?['role'] == 'cr';
     } catch (e) {
       return false;
     }

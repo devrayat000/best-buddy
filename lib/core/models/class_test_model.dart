@@ -23,8 +23,9 @@ class TimestampConverter implements JsonConverter<DateTime?, Timestamp?> {
 }
 
 @freezed
-class ClassTestModel with _$ClassTestModel {
+abstract class ClassTestModel with _$ClassTestModel {
   const factory ClassTestModel({
+    String? id,
     required String title,
     required String subject,
     required String description,
@@ -46,7 +47,7 @@ class ClassTestModel with _$ClassTestModel {
 final classTestsRef = ClassTestModelCollectionReference();
 
 @freezed
-class CreateClassTestModel with _$CreateClassTestModel {
+abstract class CreateClassTestModel with _$CreateClassTestModel {
   const factory CreateClassTestModel({
     required String title,
     required String subject,
@@ -60,7 +61,7 @@ class CreateClassTestModel with _$CreateClassTestModel {
 }
 
 @freezed
-class UpdateClassTestModel with _$UpdateClassTestModel {
+abstract class UpdateClassTestModel with _$UpdateClassTestModel {
   const factory UpdateClassTestModel({
     String? title,
     String? subject,

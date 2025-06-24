@@ -70,8 +70,8 @@ class FirebaseNotificationService {
       final userData = userDoc.data();
       final userRole = userData?['role'] as String?;
 
-      if (userRole != 'admin') {
-        throw Exception('Only admins can send notice notifications');
+      if (userRole != 'cr') {
+        throw Exception('Only CRs can send notice notifications');
       }
 
       // Create notification document that can be picked up by a cloud function
@@ -113,8 +113,8 @@ class FirebaseNotificationService {
       final userData = userDoc.data();
       final userRole = userData?['role'] as String?;
 
-      if (userRole != 'admin') {
-        throw Exception('Only admins can send class test notifications');
+      if (userRole != 'cr') {
+        throw Exception('Only CRs can send class test notifications');
       }
 
       final formattedDate = '${testDate.day}/${testDate.month}/${testDate.year}';

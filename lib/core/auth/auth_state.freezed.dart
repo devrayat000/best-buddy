@@ -1,4 +1,3 @@
-// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -10,165 +9,168 @@ part of 'auth_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
 T _$identity<T>(T value) => value;
 
-/// @nodoc
-mixin _$AuthInitial {
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is AuthInitial);
-  }
+final _privateConstructorUsedError = UnsupportedError(
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-  @override
-  int get hashCode => runtimeType.hashCode;
+/// @nodoc
+mixin _$AuthInitial {}
+
+/// @nodoc
+abstract class $AuthInitialCopyWith<$Res> {
+  factory $AuthInitialCopyWith(
+          AuthInitial value, $Res Function(AuthInitial) then) =
+      _$AuthInitialCopyWithImpl<$Res, AuthInitial>;
+}
+
+/// @nodoc
+class _$AuthInitialCopyWithImpl<$Res, $Val extends AuthInitial>
+    implements $AuthInitialCopyWith<$Res> {
+  _$AuthInitialCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of AuthInitial
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+abstract class _$$AuthInitialImplCopyWith<$Res> {
+  factory _$$AuthInitialImplCopyWith(
+          _$AuthInitialImpl value, $Res Function(_$AuthInitialImpl) then) =
+      __$$AuthInitialImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$AuthInitialImplCopyWithImpl<$Res>
+    extends _$AuthInitialCopyWithImpl<$Res, _$AuthInitialImpl>
+    implements _$$AuthInitialImplCopyWith<$Res> {
+  __$$AuthInitialImplCopyWithImpl(
+      _$AuthInitialImpl _value, $Res Function(_$AuthInitialImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of AuthInitial
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$AuthInitialImpl extends _AuthInitial {
+  const _$AuthInitialImpl() : super._();
 
   @override
   String toString() {
     return 'AuthInitial()';
   }
-}
-
-/// @nodoc
-class $AuthInitialCopyWith<$Res> {
-  $AuthInitialCopyWith(AuthInitial _, $Res Function(AuthInitial) __);
-}
-
-/// @nodoc
-
-class _AuthInitial extends AuthInitial {
-  const _AuthInitial() : super._();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _AuthInitial);
+        (other.runtimeType == runtimeType && other is _$AuthInitialImpl);
   }
 
   @override
   int get hashCode => runtimeType.hashCode;
+}
 
-  @override
-  String toString() {
-    return 'AuthInitial()';
-  }
+abstract class _AuthInitial extends AuthInitial {
+  const factory _AuthInitial() = _$AuthInitialImpl;
+  const _AuthInitial._() : super._();
 }
 
 /// @nodoc
-class _$AuthInitialCopyWith<$Res> implements $AuthInitialCopyWith<$Res> {
-  _$AuthInitialCopyWith(_AuthInitial _, $Res Function(_AuthInitial) __);
+mixin _$AuthLoading {}
+
+/// @nodoc
+abstract class $AuthLoadingCopyWith<$Res> {
+  factory $AuthLoadingCopyWith(
+          AuthLoading value, $Res Function(AuthLoading) then) =
+      _$AuthLoadingCopyWithImpl<$Res, AuthLoading>;
 }
 
 /// @nodoc
-class __$AuthInitialCopyWithImpl<$Res> implements _$AuthInitialCopyWith<$Res> {
-  __$AuthInitialCopyWithImpl(this._self, this._then);
+class _$AuthLoadingCopyWithImpl<$Res, $Val extends AuthLoading>
+    implements $AuthLoadingCopyWith<$Res> {
+  _$AuthLoadingCopyWithImpl(this._value, this._then);
 
-  final _AuthInitial _self;
-  final $Res Function(_AuthInitial) _then;
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of AuthLoading
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
-mixin _$AuthLoading {
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is AuthLoading);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  String toString() {
-    return 'AuthLoading()';
-  }
+abstract class _$$AuthLoadingImplCopyWith<$Res> {
+  factory _$$AuthLoadingImplCopyWith(
+          _$AuthLoadingImpl value, $Res Function(_$AuthLoadingImpl) then) =
+      __$$AuthLoadingImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class $AuthLoadingCopyWith<$Res> {
-  $AuthLoadingCopyWith(AuthLoading _, $Res Function(AuthLoading) __);
+class __$$AuthLoadingImplCopyWithImpl<$Res>
+    extends _$AuthLoadingCopyWithImpl<$Res, _$AuthLoadingImpl>
+    implements _$$AuthLoadingImplCopyWith<$Res> {
+  __$$AuthLoadingImplCopyWithImpl(
+      _$AuthLoadingImpl _value, $Res Function(_$AuthLoadingImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of AuthLoading
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
 
-class _AuthLoading extends AuthLoading {
-  const _AuthLoading() : super._();
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _AuthLoading);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
+class _$AuthLoadingImpl extends _AuthLoading {
+  const _$AuthLoadingImpl() : super._();
 
   @override
   String toString() {
     return 'AuthLoading()';
   }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$AuthLoadingImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
 }
 
-/// @nodoc
-class _$AuthLoadingCopyWith<$Res> implements $AuthLoadingCopyWith<$Res> {
-  _$AuthLoadingCopyWith(_AuthLoading _, $Res Function(_AuthLoading) __);
-}
-
-/// @nodoc
-class __$AuthLoadingCopyWithImpl<$Res> implements _$AuthLoadingCopyWith<$Res> {
-  __$AuthLoadingCopyWithImpl(this._self, this._then);
-
-  final _AuthLoading _self;
-  final $Res Function(_AuthLoading) _then;
+abstract class _AuthLoading extends AuthLoading {
+  const factory _AuthLoading() = _$AuthLoadingImpl;
+  const _AuthLoading._() : super._();
 }
 
 /// @nodoc
 mixin _$AuthAuthenticated {
-  String get token;
-  String get userId;
-  String get email;
-  String get name;
-  String? get role;
-  bool get isEmailVerified;
+  String get token => throw _privateConstructorUsedError;
+  String get userId => throw _privateConstructorUsedError;
+  String get email => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  String? get role => throw _privateConstructorUsedError;
+  bool get isEmailVerified => throw _privateConstructorUsedError;
 
   /// Create a copy of AuthAuthenticated
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
   $AuthAuthenticatedCopyWith<AuthAuthenticated> get copyWith =>
-      _$AuthAuthenticatedCopyWithImpl<AuthAuthenticated>(
-          this as AuthAuthenticated, _$identity);
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is AuthAuthenticated &&
-            (identical(other.token, token) || other.token == token) &&
-            (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.email, email) || other.email == email) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.role, role) || other.role == role) &&
-            (identical(other.isEmailVerified, isEmailVerified) ||
-                other.isEmailVerified == isEmailVerified));
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      runtimeType, token, userId, email, name, role, isEmailVerified);
-
-  @override
-  String toString() {
-    return 'AuthAuthenticated(token: $token, userId: $userId, email: $email, name: $name, role: $role, isEmailVerified: $isEmailVerified)';
-  }
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract mixin class $AuthAuthenticatedCopyWith<$Res> {
+abstract class $AuthAuthenticatedCopyWith<$Res> {
   factory $AuthAuthenticatedCopyWith(
-          AuthAuthenticated value, $Res Function(AuthAuthenticated) _then) =
-      _$AuthAuthenticatedCopyWithImpl;
+          AuthAuthenticated value, $Res Function(AuthAuthenticated) then) =
+      _$AuthAuthenticatedCopyWithImpl<$Res, AuthAuthenticated>;
   @useResult
   $Res call(
       {String token,
@@ -180,12 +182,14 @@ abstract mixin class $AuthAuthenticatedCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$AuthAuthenticatedCopyWithImpl<$Res>
+class _$AuthAuthenticatedCopyWithImpl<$Res, $Val extends AuthAuthenticated>
     implements $AuthAuthenticatedCopyWith<$Res> {
-  _$AuthAuthenticatedCopyWithImpl(this._self, this._then);
+  _$AuthAuthenticatedCopyWithImpl(this._value, this._then);
 
-  final AuthAuthenticated _self;
-  final $Res Function(AuthAuthenticated) _then;
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
   /// Create a copy of AuthAuthenticated
   /// with the given fields replaced by the non-null parameter values.
@@ -199,29 +203,95 @@ class _$AuthAuthenticatedCopyWithImpl<$Res>
     Object? role = freezed,
     Object? isEmailVerified = null,
   }) {
-    return _then(_self.copyWith(
+    return _then(_value.copyWith(
       token: null == token
-          ? _self.token
+          ? _value.token
           : token // ignore: cast_nullable_to_non_nullable
               as String,
       userId: null == userId
-          ? _self.userId
+          ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
               as String,
       email: null == email
-          ? _self.email
+          ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
       name: null == name
-          ? _self.name
+          ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
       role: freezed == role
-          ? _self.role
+          ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
               as String?,
       isEmailVerified: null == isEmailVerified
-          ? _self.isEmailVerified
+          ? _value.isEmailVerified
+          : isEmailVerified // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$AuthAuthenticatedImplCopyWith<$Res>
+    implements $AuthAuthenticatedCopyWith<$Res> {
+  factory _$$AuthAuthenticatedImplCopyWith(_$AuthAuthenticatedImpl value,
+          $Res Function(_$AuthAuthenticatedImpl) then) =
+      __$$AuthAuthenticatedImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {String token,
+      String userId,
+      String email,
+      String name,
+      String? role,
+      bool isEmailVerified});
+}
+
+/// @nodoc
+class __$$AuthAuthenticatedImplCopyWithImpl<$Res>
+    extends _$AuthAuthenticatedCopyWithImpl<$Res, _$AuthAuthenticatedImpl>
+    implements _$$AuthAuthenticatedImplCopyWith<$Res> {
+  __$$AuthAuthenticatedImplCopyWithImpl(_$AuthAuthenticatedImpl _value,
+      $Res Function(_$AuthAuthenticatedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of AuthAuthenticated
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? token = null,
+    Object? userId = null,
+    Object? email = null,
+    Object? name = null,
+    Object? role = freezed,
+    Object? isEmailVerified = null,
+  }) {
+    return _then(_$AuthAuthenticatedImpl(
+      token: null == token
+          ? _value.token
+          : token // ignore: cast_nullable_to_non_nullable
+              as String,
+      userId: null == userId
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as String,
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      role: freezed == role
+          ? _value.role
+          : role // ignore: cast_nullable_to_non_nullable
+              as String?,
+      isEmailVerified: null == isEmailVerified
+          ? _value.isEmailVerified
           : isEmailVerified // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
@@ -230,8 +300,8 @@ class _$AuthAuthenticatedCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _AuthAuthenticated extends AuthAuthenticated {
-  const _AuthAuthenticated(
+class _$AuthAuthenticatedImpl extends _AuthAuthenticated {
+  const _$AuthAuthenticatedImpl(
       {required this.token,
       required this.userId,
       required this.email,
@@ -254,19 +324,16 @@ class _AuthAuthenticated extends AuthAuthenticated {
   @JsonKey()
   final bool isEmailVerified;
 
-  /// Create a copy of AuthAuthenticated
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$AuthAuthenticatedCopyWith<_AuthAuthenticated> get copyWith =>
-      __$AuthAuthenticatedCopyWithImpl<_AuthAuthenticated>(this, _$identity);
+  String toString() {
+    return 'AuthAuthenticated(token: $token, userId: $userId, email: $email, name: $name, role: $role, isEmailVerified: $isEmailVerified)';
+  }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _AuthAuthenticated &&
+            other is _$AuthAuthenticatedImpl &&
             (identical(other.token, token) || other.token == token) &&
             (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.email, email) || other.email == email) &&
@@ -280,179 +347,144 @@ class _AuthAuthenticated extends AuthAuthenticated {
   int get hashCode => Object.hash(
       runtimeType, token, userId, email, name, role, isEmailVerified);
 
+  /// Create a copy of AuthAuthenticated
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  String toString() {
-    return 'AuthAuthenticated(token: $token, userId: $userId, email: $email, name: $name, role: $role, isEmailVerified: $isEmailVerified)';
-  }
+  @pragma('vm:prefer-inline')
+  _$$AuthAuthenticatedImplCopyWith<_$AuthAuthenticatedImpl> get copyWith =>
+      __$$AuthAuthenticatedImplCopyWithImpl<_$AuthAuthenticatedImpl>(
+          this, _$identity);
 }
 
-/// @nodoc
-abstract mixin class _$AuthAuthenticatedCopyWith<$Res>
-    implements $AuthAuthenticatedCopyWith<$Res> {
-  factory _$AuthAuthenticatedCopyWith(
-          _AuthAuthenticated value, $Res Function(_AuthAuthenticated) _then) =
-      __$AuthAuthenticatedCopyWithImpl;
+abstract class _AuthAuthenticated extends AuthAuthenticated {
+  const factory _AuthAuthenticated(
+      {required final String token,
+      required final String userId,
+      required final String email,
+      required final String name,
+      final String? role,
+      final bool isEmailVerified}) = _$AuthAuthenticatedImpl;
+  const _AuthAuthenticated._() : super._();
+
   @override
-  @useResult
-  $Res call(
-      {String token,
-      String userId,
-      String email,
-      String name,
-      String? role,
-      bool isEmailVerified});
-}
-
-/// @nodoc
-class __$AuthAuthenticatedCopyWithImpl<$Res>
-    implements _$AuthAuthenticatedCopyWith<$Res> {
-  __$AuthAuthenticatedCopyWithImpl(this._self, this._then);
-
-  final _AuthAuthenticated _self;
-  final $Res Function(_AuthAuthenticated) _then;
+  String get token;
+  @override
+  String get userId;
+  @override
+  String get email;
+  @override
+  String get name;
+  @override
+  String? get role;
+  @override
+  bool get isEmailVerified;
 
   /// Create a copy of AuthAuthenticated
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @pragma('vm:prefer-inline')
-  $Res call({
-    Object? token = null,
-    Object? userId = null,
-    Object? email = null,
-    Object? name = null,
-    Object? role = freezed,
-    Object? isEmailVerified = null,
-  }) {
-    return _then(_AuthAuthenticated(
-      token: null == token
-          ? _self.token
-          : token // ignore: cast_nullable_to_non_nullable
-              as String,
-      userId: null == userId
-          ? _self.userId
-          : userId // ignore: cast_nullable_to_non_nullable
-              as String,
-      email: null == email
-          ? _self.email
-          : email // ignore: cast_nullable_to_non_nullable
-              as String,
-      name: null == name
-          ? _self.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      role: freezed == role
-          ? _self.role
-          : role // ignore: cast_nullable_to_non_nullable
-              as String?,
-      isEmailVerified: null == isEmailVerified
-          ? _self.isEmailVerified
-          : isEmailVerified // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$AuthAuthenticatedImplCopyWith<_$AuthAuthenticatedImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-mixin _$AuthUnauthenticated {
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is AuthUnauthenticated);
-  }
+mixin _$AuthUnauthenticated {}
 
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  String toString() {
-    return 'AuthUnauthenticated()';
-  }
+/// @nodoc
+abstract class $AuthUnauthenticatedCopyWith<$Res> {
+  factory $AuthUnauthenticatedCopyWith(
+          AuthUnauthenticated value, $Res Function(AuthUnauthenticated) then) =
+      _$AuthUnauthenticatedCopyWithImpl<$Res, AuthUnauthenticated>;
 }
 
 /// @nodoc
-class $AuthUnauthenticatedCopyWith<$Res> {
-  $AuthUnauthenticatedCopyWith(
-      AuthUnauthenticated _, $Res Function(AuthUnauthenticated) __);
-}
-
-/// @nodoc
-
-class _AuthUnauthenticated extends AuthUnauthenticated {
-  const _AuthUnauthenticated() : super._();
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _AuthUnauthenticated);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  String toString() {
-    return 'AuthUnauthenticated()';
-  }
-}
-
-/// @nodoc
-class _$AuthUnauthenticatedCopyWith<$Res>
+class _$AuthUnauthenticatedCopyWithImpl<$Res, $Val extends AuthUnauthenticated>
     implements $AuthUnauthenticatedCopyWith<$Res> {
-  _$AuthUnauthenticatedCopyWith(
-      _AuthUnauthenticated _, $Res Function(_AuthUnauthenticated) __);
+  _$AuthUnauthenticatedCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of AuthUnauthenticated
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
-class __$AuthUnauthenticatedCopyWithImpl<$Res>
-    implements _$AuthUnauthenticatedCopyWith<$Res> {
-  __$AuthUnauthenticatedCopyWithImpl(this._self, this._then);
+abstract class _$$AuthUnauthenticatedImplCopyWith<$Res> {
+  factory _$$AuthUnauthenticatedImplCopyWith(_$AuthUnauthenticatedImpl value,
+          $Res Function(_$AuthUnauthenticatedImpl) then) =
+      __$$AuthUnauthenticatedImplCopyWithImpl<$Res>;
+}
 
-  final _AuthUnauthenticated _self;
-  final $Res Function(_AuthUnauthenticated) _then;
+/// @nodoc
+class __$$AuthUnauthenticatedImplCopyWithImpl<$Res>
+    extends _$AuthUnauthenticatedCopyWithImpl<$Res, _$AuthUnauthenticatedImpl>
+    implements _$$AuthUnauthenticatedImplCopyWith<$Res> {
+  __$$AuthUnauthenticatedImplCopyWithImpl(_$AuthUnauthenticatedImpl _value,
+      $Res Function(_$AuthUnauthenticatedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of AuthUnauthenticated
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$AuthUnauthenticatedImpl extends _AuthUnauthenticated {
+  const _$AuthUnauthenticatedImpl() : super._();
+
+  @override
+  String toString() {
+    return 'AuthUnauthenticated()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$AuthUnauthenticatedImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+}
+
+abstract class _AuthUnauthenticated extends AuthUnauthenticated {
+  const factory _AuthUnauthenticated() = _$AuthUnauthenticatedImpl;
+  const _AuthUnauthenticated._() : super._();
 }
 
 /// @nodoc
 mixin _$AuthError {
-  String get message;
+  String get message => throw _privateConstructorUsedError;
 
   /// Create a copy of AuthError
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
   $AuthErrorCopyWith<AuthError> get copyWith =>
-      _$AuthErrorCopyWithImpl<AuthError>(this as AuthError, _$identity);
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is AuthError &&
-            (identical(other.message, message) || other.message == message));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, message);
-
-  @override
-  String toString() {
-    return 'AuthError(message: $message)';
-  }
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract mixin class $AuthErrorCopyWith<$Res> {
-  factory $AuthErrorCopyWith(AuthError value, $Res Function(AuthError) _then) =
-      _$AuthErrorCopyWithImpl;
+abstract class $AuthErrorCopyWith<$Res> {
+  factory $AuthErrorCopyWith(AuthError value, $Res Function(AuthError) then) =
+      _$AuthErrorCopyWithImpl<$Res, AuthError>;
   @useResult
   $Res call({String message});
 }
 
 /// @nodoc
-class _$AuthErrorCopyWithImpl<$Res> implements $AuthErrorCopyWith<$Res> {
-  _$AuthErrorCopyWithImpl(this._self, this._then);
+class _$AuthErrorCopyWithImpl<$Res, $Val extends AuthError>
+    implements $AuthErrorCopyWith<$Res> {
+  _$AuthErrorCopyWithImpl(this._value, this._then);
 
-  final AuthError _self;
-  final $Res Function(AuthError) _then;
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
   /// Create a copy of AuthError
   /// with the given fields replaced by the non-null parameter values.
@@ -461,9 +493,44 @@ class _$AuthErrorCopyWithImpl<$Res> implements $AuthErrorCopyWith<$Res> {
   $Res call({
     Object? message = null,
   }) {
-    return _then(_self.copyWith(
+    return _then(_value.copyWith(
       message: null == message
-          ? _self.message
+          ? _value.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$AuthErrorImplCopyWith<$Res>
+    implements $AuthErrorCopyWith<$Res> {
+  factory _$$AuthErrorImplCopyWith(
+          _$AuthErrorImpl value, $Res Function(_$AuthErrorImpl) then) =
+      __$$AuthErrorImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String message});
+}
+
+/// @nodoc
+class __$$AuthErrorImplCopyWithImpl<$Res>
+    extends _$AuthErrorCopyWithImpl<$Res, _$AuthErrorImpl>
+    implements _$$AuthErrorImplCopyWith<$Res> {
+  __$$AuthErrorImplCopyWithImpl(
+      _$AuthErrorImpl _value, $Res Function(_$AuthErrorImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of AuthError
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? message = null,
+  }) {
+    return _then(_$AuthErrorImpl(
+      null == message
+          ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -472,128 +539,116 @@ class _$AuthErrorCopyWithImpl<$Res> implements $AuthErrorCopyWith<$Res> {
 
 /// @nodoc
 
-class _AuthError extends AuthError {
-  const _AuthError(this.message) : super._();
+class _$AuthErrorImpl extends _AuthError {
+  const _$AuthErrorImpl(this.message) : super._();
 
   @override
   final String message;
 
-  /// Create a copy of AuthError
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$AuthErrorCopyWith<_AuthError> get copyWith =>
-      __$AuthErrorCopyWithImpl<_AuthError>(this, _$identity);
+  String toString() {
+    return 'AuthError(message: $message)';
+  }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _AuthError &&
+            other is _$AuthErrorImpl &&
             (identical(other.message, message) || other.message == message));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, message);
 
+  /// Create a copy of AuthError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  String toString() {
-    return 'AuthError(message: $message)';
-  }
+  @pragma('vm:prefer-inline')
+  _$$AuthErrorImplCopyWith<_$AuthErrorImpl> get copyWith =>
+      __$$AuthErrorImplCopyWithImpl<_$AuthErrorImpl>(this, _$identity);
 }
 
-/// @nodoc
-abstract mixin class _$AuthErrorCopyWith<$Res>
-    implements $AuthErrorCopyWith<$Res> {
-  factory _$AuthErrorCopyWith(
-          _AuthError value, $Res Function(_AuthError) _then) =
-      __$AuthErrorCopyWithImpl;
+abstract class _AuthError extends AuthError {
+  const factory _AuthError(final String message) = _$AuthErrorImpl;
+  const _AuthError._() : super._();
+
   @override
-  @useResult
-  $Res call({String message});
-}
-
-/// @nodoc
-class __$AuthErrorCopyWithImpl<$Res> implements _$AuthErrorCopyWith<$Res> {
-  __$AuthErrorCopyWithImpl(this._self, this._then);
-
-  final _AuthError _self;
-  final $Res Function(_AuthError) _then;
+  String get message;
 
   /// Create a copy of AuthError
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @pragma('vm:prefer-inline')
-  $Res call({
-    Object? message = null,
-  }) {
-    return _then(_AuthError(
-      null == message
-          ? _self.message
-          : message // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$AuthErrorImplCopyWith<_$AuthErrorImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-mixin _$AuthSessionExpired {
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is AuthSessionExpired);
-  }
+mixin _$AuthSessionExpired {}
 
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  String toString() {
-    return 'AuthSessionExpired()';
-  }
+/// @nodoc
+abstract class $AuthSessionExpiredCopyWith<$Res> {
+  factory $AuthSessionExpiredCopyWith(
+          AuthSessionExpired value, $Res Function(AuthSessionExpired) then) =
+      _$AuthSessionExpiredCopyWithImpl<$Res, AuthSessionExpired>;
 }
 
 /// @nodoc
-class $AuthSessionExpiredCopyWith<$Res> {
-  $AuthSessionExpiredCopyWith(
-      AuthSessionExpired _, $Res Function(AuthSessionExpired) __);
-}
-
-/// @nodoc
-
-class _AuthSessionExpired extends AuthSessionExpired {
-  const _AuthSessionExpired() : super._();
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _AuthSessionExpired);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  String toString() {
-    return 'AuthSessionExpired()';
-  }
-}
-
-/// @nodoc
-class _$AuthSessionExpiredCopyWith<$Res>
+class _$AuthSessionExpiredCopyWithImpl<$Res, $Val extends AuthSessionExpired>
     implements $AuthSessionExpiredCopyWith<$Res> {
-  _$AuthSessionExpiredCopyWith(
-      _AuthSessionExpired _, $Res Function(_AuthSessionExpired) __);
+  _$AuthSessionExpiredCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of AuthSessionExpired
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
-class __$AuthSessionExpiredCopyWithImpl<$Res>
-    implements _$AuthSessionExpiredCopyWith<$Res> {
-  __$AuthSessionExpiredCopyWithImpl(this._self, this._then);
-
-  final _AuthSessionExpired _self;
-  final $Res Function(_AuthSessionExpired) _then;
+abstract class _$$AuthSessionExpiredImplCopyWith<$Res> {
+  factory _$$AuthSessionExpiredImplCopyWith(_$AuthSessionExpiredImpl value,
+          $Res Function(_$AuthSessionExpiredImpl) then) =
+      __$$AuthSessionExpiredImplCopyWithImpl<$Res>;
 }
 
-// dart format on
+/// @nodoc
+class __$$AuthSessionExpiredImplCopyWithImpl<$Res>
+    extends _$AuthSessionExpiredCopyWithImpl<$Res, _$AuthSessionExpiredImpl>
+    implements _$$AuthSessionExpiredImplCopyWith<$Res> {
+  __$$AuthSessionExpiredImplCopyWithImpl(_$AuthSessionExpiredImpl _value,
+      $Res Function(_$AuthSessionExpiredImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of AuthSessionExpired
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$AuthSessionExpiredImpl extends _AuthSessionExpired {
+  const _$AuthSessionExpiredImpl() : super._();
+
+  @override
+  String toString() {
+    return 'AuthSessionExpired()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$AuthSessionExpiredImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+}
+
+abstract class _AuthSessionExpired extends AuthSessionExpired {
+  const factory _AuthSessionExpired() = _$AuthSessionExpiredImpl;
+  const _AuthSessionExpired._() : super._();
+}

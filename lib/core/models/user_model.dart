@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
@@ -7,14 +6,12 @@ part 'user_model.g.dart';
 enum UserRole {
   @JsonValue('student')
   student,
-  @JsonValue('admin')
-  admin,
-  @JsonValue('teacher')
-  teacher,
+  @JsonValue('cr')
+  cr,
 }
 
 @freezed
-class UserModel with _$UserModel {
+abstract class UserModel with _$UserModel {
   const factory UserModel({
     required String id,
     required String name,

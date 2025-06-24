@@ -19,7 +19,7 @@ class AdminPanelScreen extends StatelessWidget {
       ],
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Admin Panel'),
+          title: const Text('CR Panel'),
           backgroundColor: Colors.blue,
           foregroundColor: Colors.white,
         ),
@@ -27,11 +27,11 @@ class AdminPanelScreen extends StatelessWidget {
           builder: (context, authState) {
             if (authState is! AuthAuthenticated) {
               return const Center(
-                child: Text('You must be logged in to access the admin panel'),
+                child: Text('You must be logged in to access the CR panel'),
               );
             }
 
-            if (authState.role != 'admin') {
+            if (authState.role != 'cr') {
               return const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -51,7 +51,7 @@ class AdminPanelScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      'You need admin privileges to access this page.',
+                      'You need CR privileges to access this page.',
                       style: TextStyle(color: Colors.grey),
                     ),
                   ],

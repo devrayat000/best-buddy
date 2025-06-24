@@ -6,7 +6,7 @@ import '../data/class_tests_firebase_service.dart';
 part 'class_tests_cubit.freezed.dart';
 
 @freezed
-class ClassTestsState with _$ClassTestsState {
+abstract class ClassTestsState with _$ClassTestsState {
   const factory ClassTestsState.initial() = _Initial;
   const factory ClassTestsState.loading() = _Loading;
   const factory ClassTestsState.loaded(List<ClassTestModel> classTests) = _Loaded;
@@ -81,8 +81,8 @@ class ClassTestsCubit extends Cubit<ClassTestsState> {
     }
   }
 
-  Future<bool> isCurrentUserAdmin() async {
-    return await _classTestsService.isCurrentUserAdmin();
+  Future<bool> isCurrentUserCR() async {
+    return await _classTestsService.isCurrentUserCR();
   }
 
   Future<List<String>> getSubjects() async {

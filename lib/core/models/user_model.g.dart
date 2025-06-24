@@ -6,7 +6,8 @@ part of 'user_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
+_$UserModelImpl _$$UserModelImplFromJson(Map<String, dynamic> json) =>
+    _$UserModelImpl(
       id: json['id'] as String,
       name: json['name'] as String,
       email: json['email'] as String,
@@ -16,7 +17,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
       updatedAt: const TimestampConverter().fromJson(json['updated_at']),
     );
 
-Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
+Map<String, dynamic> _$$UserModelImplToJson(_$UserModelImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
@@ -32,6 +33,5 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
 
 const _$UserRoleEnumMap = {
   UserRole.student: 'student',
-  UserRole.admin: 'admin',
-  UserRole.teacher: 'teacher',
+  UserRole.cr: 'cr',
 };
