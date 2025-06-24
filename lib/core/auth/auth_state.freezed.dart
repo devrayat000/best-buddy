@@ -130,6 +130,7 @@ mixin _$AuthAuthenticated {
   String get email;
   String get name;
   String? get role;
+  bool get isEmailVerified;
 
   /// Create a copy of AuthAuthenticated
   /// with the given fields replaced by the non-null parameter values.
@@ -148,16 +149,18 @@ mixin _$AuthAuthenticated {
             (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.role, role) || other.role == role));
+            (identical(other.role, role) || other.role == role) &&
+            (identical(other.isEmailVerified, isEmailVerified) ||
+                other.isEmailVerified == isEmailVerified));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, token, userId, email, name, role);
+  int get hashCode => Object.hash(
+      runtimeType, token, userId, email, name, role, isEmailVerified);
 
   @override
   String toString() {
-    return 'AuthAuthenticated(token: $token, userId: $userId, email: $email, name: $name, role: $role)';
+    return 'AuthAuthenticated(token: $token, userId: $userId, email: $email, name: $name, role: $role, isEmailVerified: $isEmailVerified)';
   }
 }
 
@@ -168,7 +171,12 @@ abstract mixin class $AuthAuthenticatedCopyWith<$Res> {
       _$AuthAuthenticatedCopyWithImpl;
   @useResult
   $Res call(
-      {String token, String userId, String email, String name, String? role});
+      {String token,
+      String userId,
+      String email,
+      String name,
+      String? role,
+      bool isEmailVerified});
 }
 
 /// @nodoc
@@ -189,6 +197,7 @@ class _$AuthAuthenticatedCopyWithImpl<$Res>
     Object? email = null,
     Object? name = null,
     Object? role = freezed,
+    Object? isEmailVerified = null,
   }) {
     return _then(_self.copyWith(
       token: null == token
@@ -211,6 +220,10 @@ class _$AuthAuthenticatedCopyWithImpl<$Res>
           ? _self.role
           : role // ignore: cast_nullable_to_non_nullable
               as String?,
+      isEmailVerified: null == isEmailVerified
+          ? _self.isEmailVerified
+          : isEmailVerified // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -223,7 +236,8 @@ class _AuthAuthenticated extends AuthAuthenticated {
       required this.userId,
       required this.email,
       required this.name,
-      this.role})
+      this.role,
+      this.isEmailVerified = false})
       : super._();
 
   @override
@@ -236,6 +250,9 @@ class _AuthAuthenticated extends AuthAuthenticated {
   final String name;
   @override
   final String? role;
+  @override
+  @JsonKey()
+  final bool isEmailVerified;
 
   /// Create a copy of AuthAuthenticated
   /// with the given fields replaced by the non-null parameter values.
@@ -254,16 +271,18 @@ class _AuthAuthenticated extends AuthAuthenticated {
             (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.role, role) || other.role == role));
+            (identical(other.role, role) || other.role == role) &&
+            (identical(other.isEmailVerified, isEmailVerified) ||
+                other.isEmailVerified == isEmailVerified));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, token, userId, email, name, role);
+  int get hashCode => Object.hash(
+      runtimeType, token, userId, email, name, role, isEmailVerified);
 
   @override
   String toString() {
-    return 'AuthAuthenticated(token: $token, userId: $userId, email: $email, name: $name, role: $role)';
+    return 'AuthAuthenticated(token: $token, userId: $userId, email: $email, name: $name, role: $role, isEmailVerified: $isEmailVerified)';
   }
 }
 
@@ -276,7 +295,12 @@ abstract mixin class _$AuthAuthenticatedCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String token, String userId, String email, String name, String? role});
+      {String token,
+      String userId,
+      String email,
+      String name,
+      String? role,
+      bool isEmailVerified});
 }
 
 /// @nodoc
@@ -297,6 +321,7 @@ class __$AuthAuthenticatedCopyWithImpl<$Res>
     Object? email = null,
     Object? name = null,
     Object? role = freezed,
+    Object? isEmailVerified = null,
   }) {
     return _then(_AuthAuthenticated(
       token: null == token
@@ -319,6 +344,10 @@ class __$AuthAuthenticatedCopyWithImpl<$Res>
           ? _self.role
           : role // ignore: cast_nullable_to_non_nullable
               as String?,
+      isEmailVerified: null == isEmailVerified
+          ? _self.isEmailVerified
+          : isEmailVerified // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }

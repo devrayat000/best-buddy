@@ -27,6 +27,7 @@ sealed class AuthAuthenticated extends AuthState with _$AuthAuthenticated {
     required String email,
     required String name,
     final String? role,
+    @Default(false) bool isEmailVerified,
   }) = _AuthAuthenticated;
 }
 
