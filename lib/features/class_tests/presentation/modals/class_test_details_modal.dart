@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/auth/auth_service.dart';
 import '../../../../core/models/class_test_model.dart';
 import '../../../../core/services/analytics_service.dart';
-import '../../data/class_tests_firebase_service.dart';
 
 class ClassTestDetailsModal extends StatefulWidget {
   final String classTestId;
@@ -36,12 +34,11 @@ class _ClassTestDetailsModalState extends State<ClassTestDetailsModal> {
 
   Future<void> _loadClassTestDetails() async {
     try {
-      final classTestsService = GetIt.I<ClassTestsFirebaseService>();
-      final classTest = await classTestsService.getClassTestById(widget.classTestId);
+      final classTestDoc = await classTestsRef.doc(widget.classTestId).get();
       
       if (mounted) {
         setState(() {
-          _classTest = classTest;
+          _classTest = classTestDoc.data;
           _isLoading = false;
         });
       }
@@ -497,7 +494,7 @@ class _ClassTestDetailsModalState extends State<ClassTestDetailsModal> {
           ElevatedButton(
             onPressed: () async {
               try {
-                await GetIt.I<ClassTestsFirebaseService>().deleteClassTest(_classTest!.id!);
+                await classTestsRef.doc(_classTest!.id!).delete();
                 
                 if (!dialogContext.mounted) return;
                 Navigator.pop(dialogContext);

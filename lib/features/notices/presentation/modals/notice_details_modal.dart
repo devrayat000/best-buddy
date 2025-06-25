@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/auth/auth_service.dart';
 import '../../../../core/models/notice_model.dart';
-import '../../data/notices_firebase_service.dart';
 
 class NoticeDetailsModal extends StatefulWidget {
   final String noticeId;
@@ -32,12 +30,11 @@ class _NoticeDetailsModalState extends State<NoticeDetailsModal> {
 
   Future<void> _loadNoticeDetails() async {
     try {
-      final noticesService = GetIt.I<NoticesFirebaseService>();
-      final notice = await noticesService.getNoticeById(widget.noticeId);
+      final noticeDoc = await noticesRef.doc(widget.noticeId).get();
       
       if (mounted) {
         setState(() {
-          _notice = notice;
+          _notice = noticeDoc.data;
           _isLoading = false;
         });
       }
@@ -329,7 +326,7 @@ class _NoticeDetailsModalState extends State<NoticeDetailsModal> {
           ElevatedButton(
             onPressed: () async {
               try {
-                await GetIt.I<NoticesFirebaseService>().deleteNotice(_notice!.id!);
+                await noticesRef.doc(_notice!.id!).delete();
                 
                 if (!dialogContext.mounted) return;
                 Navigator.pop(dialogContext);
