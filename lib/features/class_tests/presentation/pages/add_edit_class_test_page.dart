@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/auth/auth_service.dart';
 import '../../../../core/models/class_test_model.dart';
+import '../../../../core/models/user_model.dart';
 import '../../../../core/services/analytics_service.dart';
-import '../../data/class_tests_firebase_service.dart';
 import '../widgets/class_test_form_field.dart';
 import '../widgets/date_time_selector.dart';
 import '../widgets/form_action_buttons.dart';
@@ -29,7 +29,6 @@ class _AddEditClassTestPageState extends State<AddEditClassTestPage> {
   final _locationController = TextEditingController();
   final _instructionsController = TextEditingController();
   
-  late final ClassTestsFirebaseService _classTestsService;
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
   bool _isLoading = false;
@@ -39,7 +38,6 @@ class _AddEditClassTestPageState extends State<AddEditClassTestPage> {
   @override
   void initState() {
     super.initState();
-    _classTestsService = GetIt.I<ClassTestsFirebaseService>();
     
     // Log screen visit
     AnalyticsService.logScreenView(_isEditing ? 'edit_class_test_screen' : 'add_class_test_screen');
@@ -295,9 +293,8 @@ class _AddEditClassTestPageState extends State<AddEditClassTestPage> {
 
     try {
       if (_isEditing) {
-        await _classTestsService.updateClassTest(
-          widget.classTest!.id!,
-          UpdateClassTestModel(
+        await classTestsRef.doc(widget.classTest!.id!).set(
+          widget.classTest!.copyWith(
             title: _titleController.text.trim(),
             subject: _subjectController.text.trim(),
             description: _descriptionController.text.trim(),
@@ -308,6 +305,7 @@ class _AddEditClassTestPageState extends State<AddEditClassTestPage> {
             instructions: _instructionsController.text.trim().isEmpty 
                 ? null 
                 : _instructionsController.text.trim(),
+            updatedAt: DateTime.now(),
           ),
         );
         
@@ -318,20 +316,27 @@ class _AddEditClassTestPageState extends State<AddEditClassTestPage> {
           'title': _titleController.text.trim(),
         });
       } else {
-        await _classTestsService.createClassTest(
-          CreateClassTestModel(
-            title: _titleController.text.trim(),
-            subject: _subjectController.text.trim(),
-            description: _descriptionController.text.trim(),
-            testDate: testDateTime,
-            location: _locationController.text.trim().isEmpty 
-                ? null 
-                : _locationController.text.trim(),
-            instructions: _instructionsController.text.trim().isEmpty 
-                ? null 
-                : _instructionsController.text.trim(),
-          ),
-        );
+        final authService = AuthService();
+        final user = authService.currentUser;
+        final userRole = await authService.getCurrentUserRole();
+        
+        await classTestsRef.add(ClassTestModel(
+          title: _titleController.text.trim(),
+          subject: _subjectController.text.trim(),
+          description: _descriptionController.text.trim(),
+          testDate: testDateTime,
+          createdById: user?.uid ?? '',
+          createdByName: user?.displayName ?? user?.email ?? '',
+          createdByRole: userRole == 'CR' ? UserRole.cr : UserRole.student,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          location: _locationController.text.trim().isEmpty 
+              ? null 
+              : _locationController.text.trim(),
+          instructions: _instructionsController.text.trim().isEmpty 
+              ? null 
+              : _instructionsController.text.trim(),
+        ));
         
         // Track successful creation
         AnalyticsService.logCustomEvent('class_test_created', {

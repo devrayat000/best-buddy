@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/auth/auth_service.dart';
 import '../../../../core/models/notice_model.dart';
+import '../../../../core/models/user_model.dart';
 import '../../../../core/services/analytics_service.dart';
-import '../../data/notices_firebase_service.dart';
 
 class AddEditNoticePage extends StatefulWidget {
   final NoticeModel? existingNotice;
@@ -21,7 +21,6 @@ class _AddEditNoticePageState extends State<AddEditNoticePage> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
-  late final NoticesFirebaseService _noticesService;
   bool _isLoading = false;
 
   bool get _isEditing => widget.existingNotice != null;
@@ -29,7 +28,6 @@ class _AddEditNoticePageState extends State<AddEditNoticePage> {
   @override
   void initState() {
     super.initState();
-    _noticesService = GetIt.I<NoticesFirebaseService>();
     
     // Log screen visit
     AnalyticsService.logScreenView(_isEditing ? 'edit_notice_screen' : 'add_notice_screen');
@@ -201,11 +199,11 @@ class _AddEditNoticePageState extends State<AddEditNoticePage> {
 
     try {
       if (_isEditing) {
-        await _noticesService.updateNotice(
-          widget.existingNotice!.id!,
-          UpdateNoticeModel(
+        await noticesRef.doc(widget.existingNotice!.id!).set(
+          widget.existingNotice!.copyWith(
             title: _titleController.text.trim(),
             content: _contentController.text.trim(),
+            updatedAt: DateTime.now(),
           ),
         );
         
@@ -215,12 +213,19 @@ class _AddEditNoticePageState extends State<AddEditNoticePage> {
           'title': _titleController.text.trim(),
         });
       } else {
-        await _noticesService.createNotice(
-          CreateNoticeModel(
-            title: _titleController.text.trim(),
-            content: _contentController.text.trim(),
-          ),
-        );
+        final authService = AuthService();
+        final user = authService.currentUser;
+        final userRole = await authService.getCurrentUserRole();
+        
+        await noticesRef.add(NoticeModel(
+          title: _titleController.text.trim(),
+          content: _contentController.text.trim(),
+          createdById: user?.uid ?? '',
+          createdByName: user?.displayName ?? user?.email ?? '',
+          createdByRole: userRole == 'CR' ? UserRole.cr : UserRole.student,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        ));
         
         // Track successful creation
         AnalyticsService.logCustomEvent('notice_created', {

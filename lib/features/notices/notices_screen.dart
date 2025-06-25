@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cloud_firestore_odm/cloud_firestore_odm.dart';
 import '../../core/auth/auth_service.dart';
 import '../../core/models/notice_model.dart';
 import '../../core/services/analytics_service.dart';
-import 'data/notices_firebase_service.dart';
 
 class NoticesScreen extends StatefulWidget {
   const NoticesScreen({super.key});
@@ -13,8 +13,6 @@ class NoticesScreen extends StatefulWidget {
 }
 
 class _NoticesScreenState extends State<NoticesScreen> {
-  final NoticesFirebaseService _noticesService = NoticesFirebaseService();
-
   @override
   void initState() {
     super.initState();
@@ -30,9 +28,9 @@ class _NoticesScreenState extends State<NoticesScreen> {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
       ),
-      body: StreamBuilder<List<NoticeModel>>(
-        stream: _noticesService.getNotices(),
-        builder: (context, snapshot) {
+      body: FirestoreBuilder<NoticeModelQuerySnapshot>(
+        ref: noticesRef,
+        builder: (context, AsyncSnapshot<NoticeModelQuerySnapshot?> snapshot, Widget? child) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -66,7 +64,8 @@ class _NoticesScreenState extends State<NoticesScreen> {
             );
           }
 
-          final notices = snapshot.data ?? [];
+          final querySnapshot = snapshot.data;
+          final notices = querySnapshot?.docs.map((doc) => doc.data).toList() ?? [];
           
           if (notices.isEmpty) {
             return const Center(
@@ -280,7 +279,7 @@ class _NoticesScreenState extends State<NoticesScreen> {
           ElevatedButton(
             onPressed: () async {
               try {
-                await _noticesService.deleteNotice(notice.id!);
+                await noticesRef.doc(notice.id!).delete();
                 
                 AnalyticsService.logCustomEvent('notice_deleted', {
                   'notice_id': notice.id ?? 'unknown',

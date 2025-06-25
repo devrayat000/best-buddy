@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cloud_firestore_odm/cloud_firestore_odm.dart';
 import '../../core/auth/auth_service.dart';
 import '../../core/models/class_test_model.dart';
 import '../../core/services/analytics_service.dart';
-import 'data/class_tests_firebase_service.dart';
 import 'presentation/widgets/class_tests_calendar.dart';
 
 class ClassTestsScreen extends StatefulWidget {
@@ -19,7 +18,6 @@ class _ClassTestsScreenState extends State<ClassTestsScreen>
   late TabController _tabController;
   String _currentView = 'list';
   String _currentFilter = 'upcoming';
-  final ClassTestsFirebaseService _classTestsService = GetIt.I<ClassTestsFirebaseService>();
 
   @override
   void initState() {
@@ -46,10 +44,11 @@ class _ClassTestsScreenState extends State<ClassTestsScreen>
     super.dispose();
   }
 
-  Stream<List<ClassTestModel>> _getClassTestsStream() {
-    return _currentFilter == 'upcoming'
-        ? _classTestsService.getUpcomingClassTests()
-        : _classTestsService.getClassTests();
+  ClassTestModelQuery _getClassTestsQuery() {
+    if (_currentFilter == 'upcoming') {
+      return classTestsRef.whereTestDate(isGreaterThan: DateTime.now());
+    }
+    return classTestsRef;
   }
 
   @override
@@ -126,9 +125,9 @@ class _ClassTestsScreenState extends State<ClassTestsScreen>
   }
 
   Widget _buildListView() {
-    return StreamBuilder<List<ClassTestModel>>(
-      stream: _getClassTestsStream(),
-      builder: (context, snapshot) {
+    return FirestoreBuilder<ClassTestModelQuerySnapshot>(
+      ref: _getClassTestsQuery(),
+      builder: (context, AsyncSnapshot<ClassTestModelQuerySnapshot?> snapshot, Widget? child) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -165,7 +164,7 @@ class _ClassTestsScreenState extends State<ClassTestsScreen>
           );
         }
 
-        final classTests = snapshot.data ?? [];
+        final classTests = snapshot.data?.docs.map((doc) => doc.data).toList() ?? [];
         if (classTests.isEmpty) {
           return const Center(
             child: Column(
@@ -202,9 +201,9 @@ class _ClassTestsScreenState extends State<ClassTestsScreen>
   }
 
   Widget _buildCalendarView() {
-    return StreamBuilder<List<ClassTestModel>>(
-      stream: _getClassTestsStream(),
-      builder: (context, snapshot) {
+    return FirestoreBuilder<ClassTestModelQuerySnapshot>(
+      ref: _getClassTestsQuery(),
+      builder: (context, AsyncSnapshot<ClassTestModelQuerySnapshot?> snapshot, Widget? child) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -241,7 +240,7 @@ class _ClassTestsScreenState extends State<ClassTestsScreen>
           );
         }
 
-        final classTests = snapshot.data ?? [];
+        final classTests = snapshot.data?.docs.map((doc) => doc.data).toList() ?? [];
         return ClassTestsCalendar(classTests: classTests);
       },
     );
@@ -442,7 +441,7 @@ class _ClassTestsScreenState extends State<ClassTestsScreen>
           ElevatedButton(
             onPressed: () async {
               try {
-                await _classTestsService.deleteClassTest(classTest.id!);
+                await classTestsRef.doc(classTest.id!).delete();
                 
                 Navigator.pop(dialogContext);
                 

@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:cloud_firestore_odm/cloud_firestore_odm.dart';
 
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
@@ -61,3 +62,7 @@ class TimestampConverter implements JsonConverter<DateTime?, Object?> {
     return date?.toIso8601String();
   }
 }
+
+// Collection reference using Firestore ODM
+@Collection<UserModel>('users')
+final usersRef = UserModelCollectionReference();
