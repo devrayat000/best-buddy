@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/models/notice_model.dart';
-import '../../cubit/notices_cubit.dart';
+import '../../../../core/services/analytics_service.dart';
+import '../../data/notices_firebase_service.dart';
 
 class AddEditNoticePage extends StatefulWidget {
   final NoticeModel? existingNotice;
@@ -20,7 +21,7 @@ class _AddEditNoticePageState extends State<AddEditNoticePage> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
-  late final NoticesCubit _noticesCubit;
+  late final NoticesFirebaseService _noticesService;
   bool _isLoading = false;
 
   bool get _isEditing => widget.existingNotice != null;
@@ -28,7 +29,10 @@ class _AddEditNoticePageState extends State<AddEditNoticePage> {
   @override
   void initState() {
     super.initState();
-    _noticesCubit = GetIt.I<NoticesCubit>();
+    _noticesService = GetIt.I<NoticesFirebaseService>();
+    
+    // Log screen visit
+    AnalyticsService.logScreenView(_isEditing ? 'edit_notice_screen' : 'add_notice_screen');
     
     if (_isEditing) {
       _titleController.text = widget.existingNotice!.title;
@@ -197,20 +201,31 @@ class _AddEditNoticePageState extends State<AddEditNoticePage> {
 
     try {
       if (_isEditing) {
-        await _noticesCubit.updateNotice(
+        await _noticesService.updateNotice(
           widget.existingNotice!.id!,
           UpdateNoticeModel(
             title: _titleController.text.trim(),
             content: _contentController.text.trim(),
           ),
         );
+        
+        // Track successful update
+        AnalyticsService.logCustomEvent('notice_updated', {
+          'notice_id': widget.existingNotice!.id!,
+          'title': _titleController.text.trim(),
+        });
       } else {
-        await _noticesCubit.createNotice(
+        await _noticesService.createNotice(
           CreateNoticeModel(
             title: _titleController.text.trim(),
             content: _contentController.text.trim(),
           ),
         );
+        
+        // Track successful creation
+        AnalyticsService.logCustomEvent('notice_created', {
+          'title': _titleController.text.trim(),
+        });
       }
 
       if (mounted) {

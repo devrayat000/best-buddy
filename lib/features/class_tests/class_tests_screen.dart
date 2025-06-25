@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/auth/auth_service.dart';
 import '../../core/models/class_test_model.dart';
 import '../../core/services/analytics_service.dart';
-import 'cubit/class_tests_cubit.dart';
+import 'data/class_tests_firebase_service.dart';
 import 'presentation/widgets/class_tests_calendar.dart';
 
 class ClassTestsScreen extends StatefulWidget {
@@ -19,6 +18,8 @@ class _ClassTestsScreenState extends State<ClassTestsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   String _currentView = 'list';
+  String _currentFilter = 'upcoming';
+  final ClassTestsFirebaseService _classTestsService = GetIt.I<ClassTestsFirebaseService>();
 
   @override
   void initState() {
@@ -45,132 +46,95 @@ class _ClassTestsScreenState extends State<ClassTestsScreen>
     super.dispose();
   }
 
+  Stream<List<ClassTestModel>> _getClassTestsStream() {
+    return _currentFilter == 'upcoming'
+        ? _classTestsService.getUpcomingClassTests()
+        : _classTestsService.getClassTests();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => GetIt.I<ClassTestsCubit>()..loadUpcomingClassTests(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Class Tests'),
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
-          bottom: TabBar(
-            controller: _tabController,
-            indicatorColor: Colors.white,
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.white70,
-            tabs: const [
-              Tab(
-                icon: Icon(Icons.list),
-                text: 'List',
-              ),
-              Tab(
-                icon: Icon(Icons.calendar_month),
-                text: 'Calendar',
-              ),
-            ],
-          ),
-          actions: [
-            PopupMenuButton<String>(
-              onSelected: (value) {
-                final cubit = context.read<ClassTestsCubit>();
-                switch (value) {
-                  case 'all':
-                    cubit.loadClassTests();
-                    AnalyticsService.logCustomEvent('class_tests_filter', {
-                      'filter_type': 'all',
-                      'view': _currentView,
-                    });
-                    break;
-                  case 'upcoming':
-                    cubit.loadUpcomingClassTests();
-                    AnalyticsService.logCustomEvent('class_tests_filter', {
-                      'filter_type': 'upcoming',
-                      'view': _currentView,
-                    });
-                    break;
-                }
-              },
-              itemBuilder: (context) => [
-                const PopupMenuItem(
-                  value: 'upcoming',
-                  child: Text('Upcoming Tests'),
-                ),
-                const PopupMenuItem(
-                  value: 'all',
-                  child: Text('All Tests'),
-                ),
-              ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Class Tests'),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+        bottom: TabBar(
+          controller: _tabController,
+          indicatorColor: Colors.white,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
+          tabs: const [
+            Tab(
+              icon: Icon(Icons.list),
+              text: 'List',
+            ),
+            Tab(
+              icon: Icon(Icons.calendar_month),
+              text: 'Calendar',
             ),
           ],
         ),
-        body: TabBarView(
-          controller: _tabController,
-          children: [
-            _buildListView(),
-            _buildCalendarView(),
-          ],
-        ),
-        floatingActionButton: FutureBuilder<bool>(
-          future: AuthService().isCurrentUserCR(),
-          builder: (context, snapshot) {
-            if (snapshot.data == true) {
-              return FloatingActionButton(
-                onPressed: () {
-                  AnalyticsService.logCustomEvent('add_class_test_button_tapped', {});
-                  context.go('/class-tests/add');
-                },
-                backgroundColor: Colors.blue,
-                child: const Icon(Icons.add, color: Colors.white),
-              );
-            }
-            return const SizedBox.shrink();
-          },
-        ),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              setState(() {
+                _currentFilter = value;
+              });
+              AnalyticsService.logCustomEvent('class_tests_filter', {
+                'filter_type': value,
+                'view': _currentView,
+              });
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'upcoming',
+                child: Text('Upcoming Tests'),
+              ),
+              const PopupMenuItem(
+                value: 'all',
+                child: Text('All Tests'),
+              ),
+            ],
+          ),
+        ],
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildListView(),
+          _buildCalendarView(),
+        ],
+      ),
+      floatingActionButton: FutureBuilder<bool>(
+        future: AuthService().isCurrentUserCR(),
+        builder: (context, snapshot) {
+          if (snapshot.data == true) {
+            return FloatingActionButton(
+              onPressed: () {
+                AnalyticsService.logCustomEvent('add_class_test_button_tapped', {});
+                context.go('/class-tests/add');
+              },
+              backgroundColor: Colors.blue,
+              child: const Icon(Icons.add, color: Colors.white),
+            );
+          }
+          return const SizedBox.shrink();
+        },
       ),
     );
   }
 
   Widget _buildListView() {
-    return BlocBuilder<ClassTestsCubit, ClassTestsState>(
-      builder: (context, state) {
-        return state.when(
-          initial: () => const Center(child: Text('Loading...')),
-          loading: () => const Center(child: CircularProgressIndicator()),
-          loaded: (classTests) {
-            if (classTests.isEmpty) {
-              return const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.quiz_outlined,
-                      size: 64,
-                      color: Colors.grey,
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      'No class tests available',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }
+    return StreamBuilder<List<ClassTestModel>>(
+      stream: _getClassTestsStream(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-            return ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: classTests.length,
-              itemBuilder: (context, index) {
-                final classTest = classTests[index];
-                return _buildClassTestCard(classTest);
-              },
-            );
-          },
-          error: (message) => Center(
+        if (snapshot.hasError) {
+          return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -181,37 +145,72 @@ class _ClassTestsScreenState extends State<ClassTestsScreen>
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Error: $message',
+                  'Error: ${snapshot.error}',
                   style: const TextStyle(color: Colors.red),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
-                    context.read<ClassTestsCubit>().loadUpcomingClassTests();
+                    setState(() {});
                     AnalyticsService.logCustomEvent('class_tests_retry', {
                       'view': 'list',
-                      'error_message': message,
+                      'error_message': snapshot.error.toString(),
                     });
                   },
                   child: const Text('Retry'),
                 ),
               ],
             ),
-          ),
+          );
+        }
+
+        final classTests = snapshot.data ?? [];
+        if (classTests.isEmpty) {
+          return const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.quiz_outlined,
+                  size: 64,
+                  color: Colors.grey,
+                ),
+                SizedBox(height: 16),
+                Text(
+                  'No class tests available',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: classTests.length,
+          itemBuilder: (context, index) {
+            final classTest = classTests[index];
+            return _buildClassTestCard(classTest);
+          },
         );
       },
     );
   }
 
   Widget _buildCalendarView() {
-    return BlocBuilder<ClassTestsCubit, ClassTestsState>(
-      builder: (context, state) {
-        return state.when(
-          initial: () => const Center(child: Text('Loading...')),
-          loading: () => const Center(child: CircularProgressIndicator()),
-          loaded: (classTests) => ClassTestsCalendar(classTests: classTests),
-          error: (message) => Center(
+    return StreamBuilder<List<ClassTestModel>>(
+      stream: _getClassTestsStream(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -222,25 +221,28 @@ class _ClassTestsScreenState extends State<ClassTestsScreen>
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Error: $message',
+                  'Error: ${snapshot.error}',
                   style: const TextStyle(color: Colors.red),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
-                    context.read<ClassTestsCubit>().loadClassTests();
+                    setState(() {});
                     AnalyticsService.logCustomEvent('class_tests_retry', {
                       'view': 'calendar',
-                      'error_message': message,
+                      'error_message': snapshot.error.toString(),
                     });
                   },
                   child: const Text('Retry'),
                 ),
               ],
             ),
-          ),
-        );
+          );
+        }
+
+        final classTests = snapshot.data ?? [];
+        return ClassTestsCalendar(classTests: classTests);
       },
     );
   }
@@ -440,7 +442,7 @@ class _ClassTestsScreenState extends State<ClassTestsScreen>
           ElevatedButton(
             onPressed: () async {
               try {
-                await context.read<ClassTestsCubit>().deleteClassTest(classTest.id!);
+                await _classTestsService.deleteClassTest(classTest.id!);
                 
                 Navigator.pop(dialogContext);
                 

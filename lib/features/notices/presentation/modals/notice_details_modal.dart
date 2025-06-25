@@ -3,7 +3,6 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/auth/auth_service.dart';
 import '../../../../core/models/notice_model.dart';
-import '../../cubit/notices_cubit.dart';
 import '../../data/notices_firebase_service.dart';
 
 class NoticeDetailsModal extends StatefulWidget {
@@ -330,7 +329,7 @@ class _NoticeDetailsModalState extends State<NoticeDetailsModal> {
           ElevatedButton(
             onPressed: () async {
               try {
-                await GetIt.I<NoticesCubit>().deleteNotice(_notice!.id!);
+                await GetIt.I<NoticesFirebaseService>().deleteNotice(_notice!.id!);
                 
                 if (!dialogContext.mounted) return;
                 Navigator.pop(dialogContext);

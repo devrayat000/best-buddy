@@ -3,7 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/auth/auth_service.dart';
 import '../../../../core/models/class_test_model.dart';
-import '../../cubit/class_tests_cubit.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../data/class_tests_firebase_service.dart';
 
 class ClassTestDetailsModal extends StatefulWidget {
@@ -29,6 +29,9 @@ class _ClassTestDetailsModalState extends State<ClassTestDetailsModal> {
     super.initState();
     _loadClassTestDetails();
     _checkUserRole();
+    
+    // Log screen visit
+    AnalyticsService.logScreenView('class_test_details_screen');
   }
 
   Future<void> _loadClassTestDetails() async {
@@ -494,12 +497,20 @@ class _ClassTestDetailsModalState extends State<ClassTestDetailsModal> {
           ElevatedButton(
             onPressed: () async {
               try {
-                await GetIt.I<ClassTestsCubit>().deleteClassTest(_classTest!.id!);
+                await GetIt.I<ClassTestsFirebaseService>().deleteClassTest(_classTest!.id!);
                 
                 if (!dialogContext.mounted) return;
                 Navigator.pop(dialogContext);
                 if (!context.mounted) return;
                 context.pop(); // Close the details modal
+                
+                // Track successful deletion
+                AnalyticsService.logCustomEvent('class_test_deleted', {
+                  'class_test_id': _classTest!.id ?? 'unknown',
+                  'subject': _classTest!.subject,
+                  'title': _classTest!.title,
+                  'source': 'details_modal',
+                });
                 
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
