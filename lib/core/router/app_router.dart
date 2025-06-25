@@ -32,6 +32,7 @@ import '../../features/profile/presentation/dialogs/theme_dialog_page.dart';
 import '../../features/profile/presentation/dialogs/language_dialog_page.dart';
 import '../../features/profile/presentation/dialogs/logout_dialog_page.dart';
 import '../../features/profile/presentation/dialogs/help_dialog_page.dart';
+import '../../features/admin/presentation/pages/users_list_page.dart';
 import '../widgets/main_shell.dart';
 import '../splash/splash_screen.dart';
 
@@ -369,6 +370,11 @@ class AppRouter {
                       path: '/licenses',
                       name: 'licenses',
                       builder: (context, state) => const LicensesPage(),
+                    ),
+                    GoRoute(
+                      path: '/users',
+                      name: 'users-list',
+                      builder: (context, state) => const UsersListPage(),
                     ),
                     // Dialog routes
                     GoRoute(

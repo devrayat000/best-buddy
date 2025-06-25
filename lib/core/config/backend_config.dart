@@ -10,8 +10,7 @@ class BackendConfig {
     return _defaultBaseUrl;
   }
 
-  /// Get the GraphQL API endpoint
-  static String get graphqlEndpoint => '$baseUrl/api/graphql';
+
 
   /// Get the privacy policy URL
   static String get privacyPolicyUrl => '$baseUrl/privacy';

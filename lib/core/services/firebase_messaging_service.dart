@@ -357,7 +357,7 @@ class FirebaseMessagingService {
     await _showNotification(message,
         localNotificationsInstance: _localNotifications);
 
-    // Refresh GraphQL cache based on notification type
+    // Process notification data
     await _refreshCacheForNotification(message);
   }
 

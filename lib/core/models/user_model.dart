@@ -13,7 +13,7 @@ enum UserRole {
 @freezed
 abstract class UserModel with _$UserModel {
   const factory UserModel({
-    required String id,
+    required String id, 
     required String name,
     required String email,
     @Default(UserRole.student) UserRole role,

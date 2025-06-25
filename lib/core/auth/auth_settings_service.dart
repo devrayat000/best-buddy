@@ -2,30 +2,8 @@ import 'package:get_it/get_it.dart';
 import '../storage/storage_service.dart';
 
 class AuthSettingsService {
-  static const String _biometricEnabledKey = 'biometric_enabled';
   static const String _autoLoginKey = 'auto_login_enabled';
   static const String _sessionValidationKey = 'session_validation_enabled';
-
-  /// Get biometric authentication preference
-  static Future<bool> isBiometricEnabled() async {
-    try {
-      final storageService = GetIt.instance<StorageService>();
-      final value = await storageService.getString(_biometricEnabledKey);
-      return value == 'true';
-    } catch (e) {
-      return false;
-    }
-  }
-
-  /// Set biometric authentication preference
-  static Future<void> setBiometricEnabled(bool enabled) async {
-    try {
-      final storageService = GetIt.instance<StorageService>();
-      await storageService.setString(_biometricEnabledKey, enabled.toString());
-    } catch (e) {
-      // Handle error silently
-    }
-  }
 
   /// Get auto login preference
   static Future<bool> isAutoLoginEnabled() async {
