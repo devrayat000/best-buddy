@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/auth/auth_service.dart';
 
 class ProfileAccountSection extends StatelessWidget {
   const ProfileAccountSection({super.key});
@@ -56,6 +57,28 @@ class ProfileAppSection extends StatelessWidget {
             title: 'About',
             subtitle: 'App version and information',
             onTap: () => context.push('/profile/about'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ProfileCRSection extends StatelessWidget {
+  const ProfileCRSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: _ProfileMenuCard(
+        title: 'CR Management',
+        items: [
+          ProfileMenuItem(
+            icon: Icons.people_outlined,
+            title: 'View All Users',
+            subtitle: 'See all registered students and CRs',
+            onTap: () => context.push('/profile/users'),
           ),
         ],
       ),

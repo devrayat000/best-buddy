@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../auth/data/graphql/auth_queries.graphql.dart';
+import '../../../../core/auth/auth_service.dart';
+import '../../../../core/models/user_model.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/profile_stats_card.dart';
 import '../widgets/profile_menu_section.dart';
@@ -14,31 +15,22 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Query$AuthenticatedItem$Widget(
-        options: Options$Query$AuthenticatedItem(),
-        builder: (result, {fetchMore, refetch}) {
-          if (result.isLoading) {
+      body: StreamBuilder(
+        stream: AuthService().authStateChanges,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return LoadingView.page();
           }
-          if (result.hasException) {
-            return ErrorView(
-              message: result.exception.toString(),
-              title: 'Error loading profile',
-              onRetry: () => refetch?.call(),
+          
+          final user = snapshot.data;
+          if (user == null) {
+            return const ErrorView(
+              message: 'User not authenticated',
+              title: 'Authentication Error',
             );
           }
-
-          final user = result.parsedData?.profile;
-
-          if (user is Query$AuthenticatedItem$profile$$User) {
-            return _buildProfileContent(context, user);
-          }
-
-          return ErrorView(
-            message: 'Unexpected user type',
-            title: 'Error loading profile',
-            onRetry: () => refetch?.call(),
-          );
+          
+          return _buildProfileContent(context, user);
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -53,15 +45,15 @@ class ProfilePage extends StatelessWidget {
 
   Widget _buildProfileContent(
     BuildContext context,
-    Query$AuthenticatedItem$profile$$User user,
+    dynamic user, // Firebase User
   ) {
     return CustomScrollView(
       slivers: [
         // Profile Header
         SliverToBoxAdapter(
           child: ProfileHeader(
-            name: user.name,
-            email: user.email,
+            name: user.displayName ?? user.email?.split('@')[0] ?? 'User',
+            email: user.email ?? '',
           ),
         ),
 
@@ -72,8 +64,8 @@ class ProfilePage extends StatelessWidget {
         // Stats Card
         SliverToBoxAdapter(
           child: ProfileStatsCard(
-            role: user.role?.name ?? 'Student',
-            memberSince: user.createdAt,
+            role: 'Student', // Default role, can be enhanced later
+            memberSince: user.metadata?.creationTime,
           ),
         ),
 

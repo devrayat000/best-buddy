@@ -1,16 +1,16 @@
-import 'package:best_buddy_flutter/core/auth/session_service.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
-import 'package:graphql/client.dart';
 
-import '../auth/auth_cubit.dart';
+import '../auth/firebase_auth_service.dart';
 import '../cubits/reload_cubit.dart';
-import '../graphql/graphql_client.dart';
 import '../services/connectivity_service.dart';
-import '../services/firebase_messaging_service.dart';
+import '../services/firebase_notification_service.dart';
 import '../services/notification_navigation_service.dart';
 import '../settings/settings_cubit.dart';
 import '../storage/storage_service.dart';
+import '../../features/notices/data/notices_firebase_service.dart';
+import '../../features/notices/cubit/notices_cubit.dart';
+import '../../features/class_tests/data/class_tests_firebase_service.dart';
+import '../../features/class_tests/cubit/class_tests_cubit.dart';
 
 final GetIt sl = GetIt.instance;
 
@@ -18,6 +18,7 @@ Future<void> setupServiceLocator() async {
   // Core
   sl.registerLazySingleton<StorageService>(() => HiveStorageService());
   await sl<StorageService>().init();
+  
   // Connectivity
   sl.registerLazySingleton<ConnectivityService>(() => ConnectivityService());
   await sl<ConnectivityService>().initialize();
@@ -26,34 +27,25 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<NotificationNavigationService>(
       () => NotificationNavigationService());
 
-  // GraphQL
-  sl.registerLazySingleton<ValueNotifier<GraphQLClient>>(
-      () => createGraphQLClient(sl<StorageService>()));
+  // Firebase Auth Service
+  sl.registerLazySingleton<FirebaseAuthService>(() => FirebaseAuthService());
 
-  sl.registerLazySingleton(() => SessionService(
-        sl<ValueNotifier<GraphQLClient>>().value,
-        sl<StorageService>(),
-      ));
+  // Firebase Notification Service
+  sl.registerLazySingleton<FirebaseNotificationService>(
+      () => FirebaseNotificationService());
 
-  // Auth
-  sl.registerLazySingleton(() => AuthCubit(
-        sl<SessionService>(),
-        sl<StorageService>(),
-      ));
-  await sl<AuthCubit>().init(); // Initialize auth state
+  // Firebase Data Services
+  sl.registerLazySingleton<NoticesFirebaseService>(
+      () => NoticesFirebaseService());
+  sl.registerLazySingleton<ClassTestsFirebaseService>(
+      () => ClassTestsFirebaseService());
+
+  // Feature Cubits
+  sl.registerFactory(() => NoticesCubit(sl<NoticesFirebaseService>()));
+  sl.registerFactory(() => ClassTestsCubit(sl<ClassTestsFirebaseService>()));
 
   // Reload Cubit for notifications
   sl.registerLazySingleton(() => ReloadCubit());
-
-  // Firebase Messaging
-  sl.registerLazySingleton<FirebaseMessagingService>(
-      () => FirebaseMessagingService(
-            sl<ValueNotifier<GraphQLClient>>().value,
-            sl<StorageService>(),
-            sl<NotificationNavigationService>(),
-            sl<ReloadCubit>(),
-          ));
-  await sl<FirebaseMessagingService>().initialize();
 
   // Settings
   sl.registerLazySingleton(() => SettingsCubit());

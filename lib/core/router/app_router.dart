@@ -7,17 +7,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 
-import '../auth/auth_cubit.dart';
+import '../auth/auth_service.dart';
 import '../settings/settings_cubit.dart';
+import '../models/notice_model.dart';
+import '../models/class_test_model.dart';
 import '../services/analytics_service.dart';
 import '../../features/auth/presentation/pages/get_started_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
 import '../../features/auth/presentation/pages/grant_access_page.dart';
-import '../../features/notices/presentation/pages/notices_page.dart';
-import '../../features/class_tests/presentation/pages/class_tests_page.dart';
+import '../../features/notices/notices_screen.dart';
+import '../../features/notices/presentation/pages/add_edit_notice_page.dart';
+import '../../features/notices/presentation/modals/notice_details_modal.dart';
+import '../../features/class_tests/class_tests_screen.dart';
+import '../../features/class_tests/presentation/pages/add_edit_class_test_page.dart';
+import '../../features/class_tests/presentation/modals/class_test_details_modal.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/profile/presentation/pages/personal_info_page.dart';
 import '../../features/profile/presentation/pages/settings_page.dart';
@@ -28,8 +33,7 @@ import '../../features/profile/presentation/dialogs/theme_dialog_page.dart';
 import '../../features/profile/presentation/dialogs/language_dialog_page.dart';
 import '../../features/profile/presentation/dialogs/logout_dialog_page.dart';
 import '../../features/profile/presentation/dialogs/help_dialog_page.dart';
-import '../../features/notices/presentation/modals/notice_details_modal.dart';
-import '../../features/class_tests/presentation/modals/class_test_details_modal.dart';
+import '../../features/admin/presentation/pages/users_list_page.dart';
 import '../widgets/main_shell.dart';
 import '../splash/splash_screen.dart';
 
@@ -118,9 +122,6 @@ class AppRouter {
           builder: (context, state, child) {
             return MultiBlocProvider(
               providers: [
-                BlocProvider<AuthCubit>(
-                  create: (_) => GetIt.instance.get<AuthCubit>(),
-                ),
                 BlocProvider<SettingsCubit>(
                   create: (_) => GetIt.instance.get<SettingsCubit>(),
                 ),
@@ -128,10 +129,7 @@ class AppRouter {
                   create: (_) => GetIt.instance.get<ReloadCubit>(),
                 ),
               ],
-              child: GraphQLProvider(
-                client: GetIt.instance.get<ValueNotifier<GraphQLClient>>(),
-                child: child,
-              ),
+              child: child,
             );
           },
           routes: [
@@ -178,7 +176,7 @@ class AppRouter {
                     return CustomTransitionPage(
                       name: state.name,
                       key: state.pageKey,
-                      child: const NoticesPage(),
+                      child: const NoticesScreen(),
                       transitionDuration: const Duration(milliseconds: 300),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
@@ -205,6 +203,31 @@ class AppRouter {
                     );
                   },
                   routes: [
+                    // Add notice page
+                    GoRoute(
+                      path: 'add',
+                      name: 'add-notice',
+                      pageBuilder: (context, state) {
+                        return DialogPage(
+                          key: state.pageKey,
+                          barrierDismissible: false,
+                          builder: (_) => const AddEditNoticePage(),
+                        );
+                      },
+                    ),
+                    // Edit notice page
+                    GoRoute(
+                      path: 'edit/:noticeId',
+                      name: 'edit-notice',
+                      pageBuilder: (context, state) {
+                        final notice = state.extra as NoticeModel?;
+                        return DialogPage(
+                          key: state.pageKey,
+                          barrierDismissible: false,
+                          builder: (_) => AddEditNoticePage(existingNotice: notice),
+                        );
+                      },
+                    ),
                     // Notice detail modal
                     GoRoute(
                       path: ':id',
@@ -231,7 +254,7 @@ class AppRouter {
                     return CustomTransitionPage(
                       name: state.name,
                       key: state.pageKey,
-                      child: const ClassTestsPage(),
+                      child: const ClassTestsScreen(),
                       transitionDuration: const Duration(milliseconds: 300),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
@@ -259,9 +282,34 @@ class AppRouter {
                     );
                   },
                   routes: [
+                    // Add class test page
+                    GoRoute(
+                      path: 'add',
+                      name: 'add-class-test',
+                      pageBuilder: (context, state) {
+                        return DialogPage(
+                          key: state.pageKey,
+                          barrierDismissible: false,
+                          builder: (_) => const AddEditClassTestPage(),
+                        );
+                      },
+                    ),
+                    // Edit class test page
+                    GoRoute(
+                      path: 'edit/:classTestId',
+                      name: 'edit-class-test',
+                      pageBuilder: (context, state) {
+                        final classTest = state.extra as ClassTestModel?;
+                        return DialogPage(
+                          key: state.pageKey,
+                          barrierDismissible: false,
+                          builder: (_) => AddEditClassTestPage(classTest: classTest),
+                        );
+                      },
+                    ),
                     // Class test detail modal
                     GoRoute(
-                      path: '/:id',
+                      path: ':id',
                       name: 'class-test-detail',
                       pageBuilder: (context, state) {
                         final classTestId = state.pathParameters['id']!;
@@ -327,6 +375,11 @@ class AppRouter {
                       name: 'licenses',
                       builder: (context, state) => const LicensesPage(),
                     ),
+                    GoRoute(
+                      path: '/users',
+                      name: 'users-list',
+                      builder: (context, state) => const UsersListPage(),
+                    ),
                     // Dialog routes
                     GoRoute(
                       path: '/about',
@@ -380,38 +433,34 @@ class AppRouter {
   String? _redirect(BuildContext context, GoRouterState state) {
     final isOnSplashPage = state.matchedLocation == '/splash';
 
-    // Check if services are initialized by checking if AuthCubit is registered
+    // Check if services are initialized by checking Firebase Auth
     try {
-      final authCubit = GetIt.instance<AuthCubit>();
-      final authState = authCubit.state;
-      // return '/notices';
-
+      final authService = AuthService();
+      final isAuthenticated = authService.isAuthenticated;
+      
       final isOnGetStartedPage = state.matchedLocation == '/';
       final isOnAuthPage = ['/login', '/register', '/grant-access']
           .contains(state.matchedLocation);
 
       // If still on splash after initialization, redirect based on auth state
       if (isOnSplashPage) {
-        log('🔄 Redirecting from splash page with: $authState');
-        return authState is AuthAuthenticated ? '/notices' : '/';
+        log('🔄 Redirecting from splash page, authenticated: $isAuthenticated');
+        return isAuthenticated ? '/notices' : '/';
       }
 
       // If authenticated and on get-started or auth pages, redirect to notices
-      if (authState is AuthAuthenticated &&
-          (isOnGetStartedPage || isOnAuthPage)) {
-        log('Redirecting authenticated user from $state to /notices');
+      if (isAuthenticated && (isOnGetStartedPage || isOnAuthPage)) {
+        log('Redirecting authenticated user from ${state.matchedLocation} to /notices');
         return '/notices';
       }
 
       // If unauthenticated and not on get-started or auth pages, redirect to get-started
-      if (authState is AuthUnauthenticated &&
-          !isOnGetStartedPage &&
-          !isOnAuthPage) {
-        log('Redirecting unauthenticated user from $state to /');
+      if (!isAuthenticated && !isOnGetStartedPage && !isOnAuthPage) {
+        log('Redirecting unauthenticated user from ${state.matchedLocation} to /');
         return '/';
       }
 
-      log('No redirect needed for state: ${state.fullPath} with authState: $authState');
+      log('No redirect needed for state: ${state.fullPath}, authenticated: $isAuthenticated');
       return null;
     } catch (e) {
       log('❌ Error checking auth state: $e');
