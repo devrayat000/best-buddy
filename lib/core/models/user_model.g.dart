@@ -1922,8 +1922,10 @@ _$UserModelImpl _$$UserModelImplFromJson(Map<String, dynamic> json) =>
       email: json['email'] as String,
       role: $enumDecodeNullable(_$UserRoleEnumMap, json['role']) ??
           UserRole.student,
-      createdAt: const TimestampConverter().fromJson(json['created_at']),
-      updatedAt: const TimestampConverter().fromJson(json['updated_at']),
+      createdAt:
+          const TimestampConverter().fromJson(json['created_at'] as Timestamp?),
+      updatedAt:
+          const TimestampConverter().fromJson(json['updated_at'] as Timestamp?),
     );
 
 Map<String, dynamic> _$$UserModelImplToJson(_$UserModelImpl instance) =>

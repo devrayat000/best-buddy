@@ -4,6 +4,12 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'user_model.dart';
 
+// Explicitly import Firestore types for generated code
+// ignore: unused_import
+import 'package:cloud_firestore/cloud_firestore.dart' 
+    show DocumentSnapshot, SetOptions, SnapshotOptions, CollectionReference, 
+         DocumentReference, GetOptions, FieldValue, Transaction, WriteBatch;
+
 part 'notice_model.freezed.dart';
 part 'notice_model.g.dart';
 

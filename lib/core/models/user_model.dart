@@ -1,8 +1,31 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore_odm/cloud_firestore_odm.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+// Explicitly import Firestore types for generated code
+// ignore: unused_import
+import 'package:cloud_firestore/cloud_firestore.dart' 
+    show DocumentSnapshot, SetOptions, SnapshotOptions, CollectionReference, 
+         DocumentReference, GetOptions, FieldValue, Transaction, WriteBatch;
 
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
+
+// Custom converter for Firestore Timestamps
+class TimestampConverter implements JsonConverter<DateTime?, Timestamp?> {
+  const TimestampConverter();
+
+  @override
+  DateTime? fromJson(Timestamp? timestamp) {
+    return timestamp?.toDate();
+  }
+
+  @override
+  Timestamp? toJson(DateTime? dateTime) {
+    return dateTime != null ? Timestamp.fromDate(dateTime) : null;
+  }
+}
 
 enum UserRole {
   @JsonValue('student')
@@ -23,44 +46,6 @@ abstract class UserModel with _$UserModel {
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
-}
-
-// Custom converter for Firestore timestamp
-class TimestampConverter implements JsonConverter<DateTime?, Object?> {
-  const TimestampConverter();
-
-  @override
-  DateTime? fromJson(Object? timestamp) {
-    if (timestamp == null) return null;
-    
-    // Handle Firestore Timestamp objects
-    if (timestamp is Map<String, dynamic>) {
-      final seconds = timestamp['_seconds'] as int?;
-      final nanoseconds = timestamp['_nanoseconds'] as int?;
-      if (seconds != null) {
-        return DateTime.fromMillisecondsSinceEpoch(
-          seconds * 1000 + (nanoseconds ?? 0) ~/ 1000000,
-        );
-      }
-    }
-    
-    // Handle ISO string
-    if (timestamp is String) {
-      return DateTime.parse(timestamp);
-    }
-    
-    // Handle milliseconds since epoch
-    if (timestamp is int) {
-      return DateTime.fromMillisecondsSinceEpoch(timestamp);
-    }
-    
-    return null;
-  }
-
-  @override
-  Object? toJson(DateTime? date) {
-    return date?.toIso8601String();
-  }
 }
 
 // Collection reference using Firestore ODM
