@@ -3,12 +3,9 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/auth/auth_service.dart';
-import '../../../../core/auth/biometric_service.dart';
 import '../forms/login_form.dart';
 import '../widgets/auth_form_field.dart';
 import '../widgets/auth_button.dart';
-import '../widgets/biometric_login_widget.dart';
-import '../dialogs/biometric_setup_dialog.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -32,7 +29,6 @@ class _LoginPageState extends State<LoginPage> {
     _authService.authStateChanges.listen((user) {
       if (user != null && mounted) {
         context.go('/notices');
-        _checkBiometricSetup();
       }
     });
   }
@@ -41,22 +37,6 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     _loginForm.dispose();
     super.dispose();
-  }
-
-  Future<void> _checkBiometricSetup() async {
-    // Small delay to allow navigation to complete
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    if (!mounted) return;
-
-    final shouldPrompt = await BiometricService.shouldPromptForBiometricSetup();
-    if (shouldPrompt && mounted) {
-      showDialog<bool>(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => const BiometricSetupDialog(),
-      );
-    }
   }
 
   Future<void> _signIn() async {
@@ -174,10 +154,7 @@ class _LoginPageState extends State<LoginPage> {
                   isLoading: _isLoading,
                   onPressed: _signIn,
                 ),
-                const SizedBox(height: 16),
-
-                // Biometric Login Option
-                const BiometricLoginWidget(),
+                const SizedBox(height: 24),
 
                 // Register Link
                 TextButton(

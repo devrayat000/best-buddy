@@ -9,9 +9,9 @@ import 'package:get_it/get_it.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'core/router/app_router.dart';
 import 'core/theme/theme_cubit.dart';
@@ -36,6 +36,9 @@ Future<void> _initializeApp() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Enable Firestore offline persistence
+  await _enableFirestoreOffline();
 
   // Initialize Auth Service
   await AuthService().initialize();
@@ -69,9 +72,8 @@ Future<void> _initializeApp() async {
 
 Future<void> _initializeHive() async {
   try {
-    // Initialize Hive for GraphQL cache store
+    // Initialize Hive storage
     await Hive.initFlutter();
-    await initHiveForFlutter();
 
     // Initialize Hydrated Storage
     HydratedBloc.storage = await HydratedStorage.build(
@@ -83,6 +85,19 @@ Future<void> _initializeHive() async {
   } catch (e) {
     log('Failed to initialize Hive storage: $e');
     // Continue with app startup even if storage fails
+  }
+}
+
+Future<void> _enableFirestoreOffline() async {
+  try {
+    // Enable Firestore offline persistence
+    FirebaseFirestore.instance.settings = const Settings(
+      persistenceEnabled: true,
+    );
+    log('Firestore offline persistence enabled');
+  } catch (e) {
+    log('Failed to enable Firestore persistence: $e');
+    // Continue without offline persistence
   }
 }
 

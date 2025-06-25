@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
 
-import '../auth/auth_cubit.dart';
 import '../services/firebase_messaging_service.dart';
 import '../services/notification_navigation_service.dart';
 import 'network_status_banner.dart';
@@ -33,11 +31,8 @@ class _MainShellState extends State<MainShell> {
   }
 
   void _initializeNotifications() {
-    final authState = context.read<AuthCubit>().state;
-    if (authState is AuthAuthenticated) {
-      // Initialize Firebase Messaging Service if user is authenticated
-      GetIt.instance<FirebaseMessagingService>().initialize();
-    }
+    // Initialize Firebase Messaging Service for authenticated users
+    GetIt.instance<FirebaseMessagingService>().initialize();
   }
 
   void _initializeNavigationService() {

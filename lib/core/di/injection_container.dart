@@ -1,7 +1,6 @@
 import 'package:get_it/get_it.dart';
 
 import '../auth/firebase_auth_service.dart';
-import '../auth/biometric_service.dart';
 import '../cubits/reload_cubit.dart';
 import '../services/connectivity_service.dart';
 import '../services/firebase_notification_service.dart';
@@ -30,9 +29,6 @@ Future<void> setupServiceLocator() async {
 
   // Firebase Auth Service
   sl.registerLazySingleton<FirebaseAuthService>(() => FirebaseAuthService());
-
-  // Biometric Service
-  sl.registerLazySingleton<BiometricService>(() => BiometricService());
 
   // Firebase Notification Service
   sl.registerLazySingleton<FirebaseNotificationService>(

@@ -5,10 +5,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:get_it/get_it.dart';
 
 import '../di/injection_container.dart';
-import '../auth/auth_cubit.dart';
+import '../auth/auth_service.dart';
 
 /// App initialization states
 enum AppInitState {
@@ -76,11 +75,11 @@ class _SplashScreenState extends State<SplashScreen> {
 
         if (mounted) {
           // Get auth state to determine where to navigate
-          final authCubit = GetIt.instance<AuthCubit>();
-          final authState = authCubit.state;
+          final authService = AuthService();
+          final isAuthenticated = authService.isAuthenticated;
 
           // Navigate based on auth state
-          if (authState is AuthAuthenticated) {
+          if (isAuthenticated) {
             context.go('/notices');
           } else {
             context.go('/');

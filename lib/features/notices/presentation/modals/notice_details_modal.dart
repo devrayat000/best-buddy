@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:graphql/client.dart';
-import 'package:intl/intl.dart';
-import '../../data/graphql/notices_queries.graphql.dart';
-import '../../../../core/widgets/rich_text_utils.dart';
-import '../../../../core/widgets/error_view.dart';
-import '../../../../core/widgets/loading_view.dart';
+import '../../../../core/auth/auth_service.dart';
+import '../../../../core/models/notice_model.dart';
+import '../../cubit/notices_cubit.dart';
+import '../../data/notices_firebase_service.dart';
 
-class NoticeDetailsModal extends StatelessWidget {
+class NoticeDetailsModal extends StatefulWidget {
   final String noticeId;
 
   const NoticeDetailsModal({
@@ -16,121 +15,296 @@ class NoticeDetailsModal extends StatelessWidget {
   });
 
   @override
+  State<NoticeDetailsModal> createState() => _NoticeDetailsModalState();
+}
+
+class _NoticeDetailsModalState extends State<NoticeDetailsModal> {
+  NoticeModel? _notice;
+  bool _isLoading = true;
+  String? _error;
+  bool _isCurrentUserCR = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadNoticeDetails();
+    _checkUserRole();
+  }
+
+  Future<void> _loadNoticeDetails() async {
+    try {
+      final noticesService = GetIt.I<NoticesFirebaseService>();
+      final notice = await noticesService.getNoticeById(widget.noticeId);
+      
+      if (mounted) {
+        setState(() {
+          _notice = notice;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = e.toString();
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _checkUserRole() async {
+    try {
+      final isCurrentUserCR = await AuthService().isCurrentUserCR();
+      if (mounted) {
+        setState(() {
+          _isCurrentUserCR = isCurrentUserCR;
+        });
+      }
+    } catch (e) {
+      // Ignore error, default to false
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Dialog.fullscreen(
+    return Dialog(
       child: Container(
-        width: double.maxFinite,
-        // height: MediaQuery.of(context).size.height * 0.6,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(16),
+        width: MediaQuery.of(context).size.width * 0.9,
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.8,
+          maxWidth: 600,
         ),
-        child: Query$Notice$Widget(
-          options: Options$Query$Notice(
-            variables: Variables$Query$Notice(id: noticeId),
-            fetchPolicy: FetchPolicy
-                .cacheAndNetwork, // Use cache-first for offline support
-          ),
-          builder: (result, {fetchMore, refetch}) {
-            if (result.hasException) {
-              return Column(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Header
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: const BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
+                ),
+              ),
+              child: Row(
                 children: [
-                  _buildHeader(context, 'Error'),
-                  Expanded(
-                    child: ErrorView(
-                      message: result.exception.toString(),
-                      title: 'Failed to load notice',
-                      onRetry: () => refetch?.call(),
+                  const Expanded(
+                    child: Text(
+                      'Notice Details',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  if (_notice != null && _isCurrentUserCR) ...[
+                    IconButton(
+                      onPressed: () {
+                        context.pop();
+                        context.go('/notices/edit/${_notice!.id}', extra: _notice);
+                      },
+                      icon: const Icon(
+                        Icons.edit,
+                        color: Colors.white,
+                      ),
+                      tooltip: 'Edit Notice',
+                    ),
+                    IconButton(
+                      onPressed: () => _showDeleteDialog(),
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.white,
+                      ),
+                      tooltip: 'Delete Notice',
+                    ),
+                  ],
+                  IconButton(
+                    onPressed: () => context.pop(),
+                    icon: const Icon(
+                      Icons.close,
+                      color: Colors.white,
                     ),
                   ),
                 ],
-              );
-            }
-
-            if (result.isLoading) {
-              return _buildLoading(context);
-            }
-            final notice = result.parsedData?.notice;
-            if (notice == null) {
-              return Column(
-                children: [
-                  _buildHeader(context, 'Error'),
-                  Expanded(
-                    child: ErrorView.notFound(
-                      resourceName: 'Notice',
-                    ),
-                  ),
-                ],
-              );
-            }
-
-            return _buildContent(context, notice);
-          },
+              ),
+            ),
+            
+            // Content
+            Flexible(
+              child: _buildContent(),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildLoading(BuildContext context) {
-    return Column(
-      children: [
-        _buildHeader(context, 'Loading...'),
-        Expanded(
-          child: LoadingView.modal(),
+  Widget _buildContent() {
+    if (_isLoading) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(32),
+          child: CircularProgressIndicator(),
         ),
-      ],
-    );
-  }
+      );
+    }
 
-  Widget _buildContent(BuildContext context, Query$Notice$notice notice) {
-    return Column(
-      children: [
-        _buildHeader(context, notice.title ?? 'Notice'),
-        const Divider(height: 1),
-        Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Notice content
-                if (notice.content?.document != null) ...[
-                  StyledRichText(document: notice.content!.document),
-                  const SizedBox(height: 24),
-                ],
-
-                // Metadata
-                _buildMetadata(context, notice),
-              ],
-            ),
+    if (_error != null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.error_outline,
+                size: 64,
+                color: Colors.red,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Error loading notice: $_error',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _isLoading = true;
+                    _error = null;
+                  });
+                  _loadNoticeDetails();
+                },
+                child: const Text('Retry'),
+              ),
+            ],
           ),
         ),
-      ],
-    );
-  }
+      );
+    }
 
-  Widget _buildHeader(BuildContext context, String title) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
+    if (_notice == null) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(32),
+          child: Text(
+            'Notice not found',
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+      );
+    }
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+          // Title
+          Text(
+            _notice!.title,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(width: 8),
-          IconButton(
-            onPressed: () => context.pop(),
-            icon: const Icon(Icons.close),
-            style: IconButton.styleFrom(
-              backgroundColor:
-                  Theme.of(context).colorScheme.surfaceContainerHighest,
+          
+          const SizedBox(height: 16),
+          
+          // Meta information
+          Card(
+            color: Colors.grey[50],
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.person,
+                        size: 16,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Created by: ${_notice!.createdByName ?? 'Unknown'}',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (_notice!.createdAt != null) ...[
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.access_time,
+                          size: 16,
+                          color: Colors.grey,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Created: ${_formatDate(_notice!.createdAt!)}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                  if (_notice!.updatedAt != null && 
+                      _notice!.updatedAt != _notice!.createdAt) ...[
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.edit,
+                          size: 16,
+                          color: Colors.grey,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Updated: ${_formatDate(_notice!.updatedAt!)}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+          
+          const SizedBox(height: 16),
+          
+          // Content
+          const Text(
+            'Content',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey[300]!),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              _notice!.content,
+              style: const TextStyle(fontSize: 16),
             ),
           ),
         ],
@@ -138,61 +312,53 @@ class NoticeDetailsModal extends StatelessWidget {
     );
   }
 
-  Widget _buildMetadata(BuildContext context, Query$Notice$notice notice) {
-    final createdAt = notice.createdAt != null
-        ? DateFormat('MMM dd, yyyy • hh:mm a').format(notice.createdAt!)
-        : null;
+  String _formatDate(DateTime date) {
+    return '${date.day}/${date.month}/${date.year} at ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
+  }
 
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Theme.of(context)
-            .colorScheme
-            .surfaceContainerHighest
-            .withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (notice.createdBy?.name != null) ...[
-            Row(
-              children: [
-                Icon(
-                  Icons.person_outline,
-                  size: 18,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  notice.createdBy!.name,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                ),
-              ],
+  void _showDeleteDialog() {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Delete Notice'),
+        content: Text('Are you sure you want to delete "${_notice!.title}"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              try {
+                await GetIt.I<NoticesCubit>().deleteNotice(_notice!.id!);
+                
+                if (!dialogContext.mounted) return;
+                Navigator.pop(dialogContext);
+                if (!context.mounted) return;
+                context.pop(); // Close the details modal
+                
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Notice deleted successfully!'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              } catch (e) {
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Error: $e'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
             ),
-          ],
-          if (createdAt != null) ...[
-            if (notice.createdBy?.name != null) const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(
-                  Icons.access_time,
-                  size: 18,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  createdAt,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                ),
-              ],
-            ),
-          ],
+            child: const Text('Delete'),
+          ),
         ],
       ),
     );

@@ -1,73 +1,40 @@
-import 'package:graphql/client.dart';
-
 /// Utility class for handling and categorizing different types of errors
 class ErrorUtils {
   /// Check if an error is network/connectivity related
   static bool isNetworkError(dynamic error) {
-    if (error is OperationException) {
-      // Check GraphQL context for connectivity error marker
-      if (error.graphqlErrors
-          .any((e) => e.extensions?['type'] == 'connectivity')) {
-        return true;
-      }
-
-      // Check link exceptions for network errors
-      if (error.linkException != null) {
-        final linkException = error.linkException!;
-        return linkException is HttpLinkServerException ||
-            linkException is NetworkException ||
-            _containsNetworkKeywords(linkException.toString());
-      }
-    }
-
     // Check raw error messages for network keywords
     return _containsNetworkKeywords(error.toString());
   }
 
   /// Check if an error is a server error (5xx status codes)
   static bool isServerError(dynamic error) {
-    if (error is OperationException && error.linkException != null) {
-      final linkException = error.linkException!;
-      if (linkException is HttpLinkServerException) {
-        final statusCode = linkException.response.statusCode;
-        return statusCode >= 500 && statusCode < 600;
-      }
-    }
-    return false;
+    return false; // No longer using HTTP status codes
   }
 
   /// Check if an error is a client error (4xx status codes)
   static bool isClientError(dynamic error) {
-    if (error is OperationException && error.linkException != null) {
-      final linkException = error.linkException!;
-      if (linkException is HttpLinkServerException) {
-        final statusCode = linkException.response.statusCode;
-        return statusCode >= 400 && statusCode < 500;
-      }
-    }
-    return false;
+    return false; // No longer using HTTP status codes
   }
 
-  /// Check if an error is an authentication error (401, 403)
+  /// Check if an error is an authentication error
   static bool isAuthError(dynamic error) {
-    if (error is OperationException && error.linkException != null) {
-      final linkException = error.linkException!;
-      if (linkException is HttpLinkServerException) {
-        final statusCode = linkException.response.statusCode;
-        return statusCode == 401 || statusCode == 403;
-      }
-    }
+    return _containsAuthKeywords(error.toString());
+  }
 
-    // Check GraphQL errors for auth-related messages
-    if (error is OperationException) {
-      return error.graphqlErrors.any((e) =>
-          e.message.toLowerCase().contains('unauthorized') ||
-          e.message.toLowerCase().contains('forbidden') ||
-          e.message.toLowerCase().contains('authentication') ||
-          e.extensions?['code'] == 'UNAUTHENTICATED');
+  /// Extract user-friendly error message from exception
+  static String getErrorMessage(dynamic error) {
+    if (error == null) return 'An unknown error occurred';
+    
+    if (isNetworkError(error)) {
+      return 'No internet connection. Please check your network settings.';
     }
-
-    return false;
+    
+    if (isAuthError(error)) {
+      return 'Authentication failed. Please check your credentials.';
+    }
+    
+    // Default fallback
+    return 'Something went wrong. Please try again.';
   }
 
   /// Get a user-friendly error message without exposing technical details
@@ -80,25 +47,6 @@ class ErrorUtils {
       return 'Your session has expired. Please log in again.';
     }
 
-    if (isServerError(error)) {
-      return 'Our servers are experiencing issues. Please try again later.';
-    }
-
-    if (isClientError(error)) {
-      return 'There was a problem with your request. Please try again.';
-    }
-
-    // For GraphQL errors, check if there's a user-friendly message
-    if (error is OperationException && error.graphqlErrors.isNotEmpty) {
-      final firstError = error.graphqlErrors.first;
-      final message = firstError.message;
-
-      // Only show the message if it doesn't contain technical details
-      if (!_containsTechnicalKeywords(message)) {
-        return message;
-      }
-    }
-
     return 'Something went wrong. Please try again.';
   }
 
@@ -106,37 +54,50 @@ class ErrorUtils {
   static String getErrorType(dynamic error) {
     if (isNetworkError(error)) return 'network';
     if (isAuthError(error)) return 'auth';
-    if (isServerError(error)) return 'server';
-    if (isClientError(error)) return 'client';
     return 'unknown';
   }
 
-  /// Check if a string contains network-related keywords
-  static bool _containsNetworkKeywords(String text) {
-    final lowerText = text.toLowerCase();
-    return lowerText.contains('network') ||
-        lowerText.contains('connection') ||
-        lowerText.contains('timeout') ||
-        lowerText.contains('unreachable') ||
-        lowerText.contains('socket') ||
-        lowerText.contains('host') ||
-        lowerText.contains('dns') ||
-        lowerText.contains('connectivity');
+  /// Check if error message contains network-related keywords
+  static bool _containsNetworkKeywords(String message) {
+    final lowerMessage = message.toLowerCase();
+    const networkKeywords = [
+      'network',
+      'connection',
+      'internet',
+      'offline',
+      'timeout',
+      'unreachable',
+      'failed to connect',
+      'no connection',
+      'disconnected',
+      'connection refused',
+      'connection reset',
+      'connection timeout',
+      'host unreachable',
+      'network unreachable',
+    ];
+
+    return networkKeywords.any((keyword) => lowerMessage.contains(keyword));
   }
 
-  /// Check if a string contains technical keywords that shouldn't be shown to users
-  static bool _containsTechnicalKeywords(String text) {
-    final lowerText = text.toLowerCase();
-    return lowerText.contains('stack trace') ||
-        lowerText.contains('exception') ||
-        lowerText.contains('null pointer') ||
-        lowerText.contains('graphql') ||
-        lowerText.contains('resolver') ||
-        lowerText.contains('query') ||
-        lowerText.contains('mutation') ||
-        lowerText.contains('subscription') ||
-        lowerText.contains('variable') ||
-        lowerText.contains('field') ||
-        lowerText.contains('schema');
+  /// Check if error message contains auth-related keywords
+  static bool _containsAuthKeywords(String message) {
+    final lowerMessage = message.toLowerCase();
+    const authKeywords = [
+      'unauthorized',
+      'authentication',
+      'permission denied',
+      'access denied',
+      'invalid credentials',
+      'token expired',
+      'session expired',
+      'forbidden',
+      'invalid token',
+      'user not found',
+      'wrong password',
+      'invalid password',
+    ];
+
+    return authKeywords.any((keyword) => lowerMessage.contains(keyword));
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../../auth/data/graphql/auth_queries.graphql.dart';
+import '../../../../core/auth/auth_service.dart';
 import '../widgets/info_card.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/loading_view.dart';
@@ -15,31 +15,22 @@ class PersonalInfoPage extends StatelessWidget {
         title: const Text('Personal Information'),
         elevation: 0,
       ),
-      body: Query$AuthenticatedItem$Widget(
-        options: Options$Query$AuthenticatedItem(),
-        builder: (result, {refetch, fetchMore}) {
-          if (result.isLoading) {
+      body: StreamBuilder(
+        stream: AuthService().authStateChanges,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return LoadingView.page();
           }
-          if (result.hasException) {
-            return ErrorView(
-              message: result.exception.toString(),
-              title: 'Error loading profile',
-              onRetry: () => refetch?.call(),
+          
+          final user = snapshot.data;
+          if (user == null) {
+            return const ErrorView(
+              message: 'User not authenticated',
+              title: 'Authentication Error',
             );
           }
 
-          final user = result.parsedData?.profile;
-
-          if (user is Query$AuthenticatedItem$profile$$User) {
-            return _buildPersonalInfoContent(context, user);
-          }
-
-          return ErrorView(
-            message: 'No profile data available',
-            title: 'Error loading profile',
-            onRetry: () => refetch?.call(),
-          );
+          return _buildPersonalInfoContent(context, user);
         },
       ),
     );
@@ -47,9 +38,9 @@ class PersonalInfoPage extends StatelessWidget {
 
   Widget _buildPersonalInfoContent(
     BuildContext context,
-    Query$AuthenticatedItem$profile$$User user,
+    dynamic user, // Firebase User
   ) {
-    final studentId = user.email.split('@').first;
+    final studentId = user.email?.split('@').first ?? 'N/A';
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -82,7 +73,7 @@ class PersonalInfoPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          user.name,
+                          user.displayName ?? user.email?.split('@')[0] ?? 'User',
                           style: Theme.of(context)
                               .textTheme
                               .headlineSmall
@@ -92,7 +83,7 @@ class PersonalInfoPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          user.role?.name ?? 'Student',
+                          'Student', // Default role for Firebase users
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium
@@ -124,7 +115,7 @@ class PersonalInfoPage extends StatelessWidget {
           InfoCard(
             icon: Icons.email_outlined,
             title: 'Email Address',
-            value: user.email,
+            value: user.email ?? 'N/A',
             copyable: true,
           ),
 
@@ -152,15 +143,15 @@ class PersonalInfoPage extends StatelessWidget {
           InfoCard(
             icon: Icons.school_outlined,
             title: 'Role',
-            value: user.role?.name ?? 'Student',
+            value: 'Student', // Default role for Firebase users
           ),
 
-          if (user.createdAt != null) ...[
+          if (user.metadata?.creationTime != null) ...[
             const SizedBox(height: 8),
             InfoCard(
               icon: Icons.calendar_today_outlined,
               title: 'Member Since',
-              value: DateFormat.yMMMd().format(user.createdAt!),
+              value: DateFormat.yMMMd().format(user.metadata!.creationTime!),
             ),
           ],
 

@@ -343,8 +343,7 @@ class ClassTestsScreen extends StatelessWidget {
           ElevatedButton(
             onPressed: () async {
               try {
-                // Delete the class test (you'll need to add an ID field)
-                // await context.read<ClassTestsCubit>().deleteClassTest(classTest.id);
+                await context.read<ClassTestsCubit>().deleteClassTest(classTest.id!);
                 
                 Navigator.pop(dialogContext);
                 

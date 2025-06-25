@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../auth/auth_service.dart';
 import '../settings/settings_cubit.dart';
@@ -17,8 +16,12 @@ import '../../features/auth/presentation/pages/get_started_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
 import '../../features/auth/presentation/pages/grant_access_page.dart';
-import '../../features/notices/presentation/pages/notices_page.dart';
-import '../../features/class_tests/presentation/pages/class_tests_page.dart';
+import '../../features/notices/notices_screen.dart';
+import '../../features/notices/presentation/pages/add_edit_notice_page.dart';
+import '../../features/notices/presentation/modals/notice_details_modal.dart';
+import '../../features/class_tests/class_tests_screen.dart';
+import '../../features/class_tests/presentation/pages/add_edit_class_test_page.dart';
+import '../../features/class_tests/presentation/modals/class_test_details_modal.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/profile/presentation/pages/personal_info_page.dart';
 import '../../features/profile/presentation/pages/settings_page.dart';
@@ -29,12 +32,8 @@ import '../../features/profile/presentation/dialogs/theme_dialog_page.dart';
 import '../../features/profile/presentation/dialogs/language_dialog_page.dart';
 import '../../features/profile/presentation/dialogs/logout_dialog_page.dart';
 import '../../features/profile/presentation/dialogs/help_dialog_page.dart';
-import '../../features/notices/presentation/modals/notice_details_modal.dart';
-import '../../features/class_tests/presentation/modals/class_test_details_modal.dart';
 import '../widgets/main_shell.dart';
 import '../splash/splash_screen.dart';
-import '../../features/notices/presentation/pages/add_edit_notice_page.dart';
-import '../../features/class_tests/presentation/pages/add_edit_class_test_page.dart';
 
 /// A dialog page with Material entrance and exit animations, modal barrier color,
 /// and modal barrier behavior (dialog is dismissible with a tap on the barrier).
@@ -125,10 +124,7 @@ class AppRouter {
                   create: (_) => GetIt.instance.get<ReloadCubit>(),
                 ),
               ],
-              child: GraphQLProvider(
-                client: GetIt.instance.get<ValueNotifier<GraphQLClient>>(),
-                child: child,
-              ),
+              child: child,
             );
           },
           routes: [
@@ -175,7 +171,7 @@ class AppRouter {
                     return CustomTransitionPage(
                       name: state.name,
                       key: state.pageKey,
-                      child: const NoticesPage(),
+                      child: const NoticesScreen(),
                       transitionDuration: const Duration(milliseconds: 300),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
@@ -253,7 +249,7 @@ class AppRouter {
                     return CustomTransitionPage(
                       name: state.name,
                       key: state.pageKey,
-                      child: const ClassTestsPage(),
+                      child: const ClassTestsScreen(),
                       transitionDuration: const Duration(milliseconds: 300),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {

@@ -115,9 +115,24 @@ class NoticesScreen extends StatelessWidget {
                               ],
                             ),
                             const SizedBox(height: 8),
-                            Text(
-                              notice.content,
-                              style: const TextStyle(fontSize: 16),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  notice.content,
+                                  style: const TextStyle(fontSize: 16),
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 8),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: TextButton(
+                                    onPressed: () => context.go('/notices/${notice.id}'),
+                                    child: const Text('Read more'),
+                                  ),
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 12),
                             Row(
@@ -221,8 +236,7 @@ class NoticesScreen extends StatelessWidget {
           ElevatedButton(
             onPressed: () async {
               try {
-                // Delete the notice (you'll need to implement this in the cubit)
-                // await context.read<NoticesCubit>().deleteNotice(notice.id!);
+                await context.read<NoticesCubit>().deleteNotice(notice.id!);
                 
                 Navigator.pop(dialogContext);
                 

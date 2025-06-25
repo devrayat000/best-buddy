@@ -11,10 +11,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # GraphQL
-  graphql: ^5.2.1
-  graphql_flutter: ^5.2.0
-  
   # State Management
   bloc: ^9.0.0
   flutter_bloc: ^9.1.1  
@@ -49,7 +45,6 @@ dependencies:
   url_launcher: ^6.2.5
   package_info_plus: ^8.0.0
   connectivity_plus: ^6.1.4  
-  local_auth: ^2.3.0
   timezone: 0.10.1
   cloud_firestore: ^5.6.9
   cloud_firestore_odm: ^1.0.0-dev.88

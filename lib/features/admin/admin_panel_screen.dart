@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import '../../core/auth/auth_cubit.dart';
+import '../../core/auth/auth_service.dart';
 import '../../core/models/notice_model.dart';
 import '../../core/models/class_test_model.dart';
 import '../notices/cubit/notices_cubit.dart';
@@ -23,15 +23,14 @@ class AdminPanelScreen extends StatelessWidget {
           backgroundColor: Colors.blue,
           foregroundColor: Colors.white,
         ),
-        body: BlocBuilder<AuthCubit, AuthState>(
-          builder: (context, authState) {
-            if (authState is! AuthAuthenticated) {
-              return const Center(
-                child: Text('You must be logged in to access the CR panel'),
-              );
+        body: FutureBuilder<bool>(
+          future: AuthService().isCurrentUserCR(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
             }
-
-            if (authState.role != 'cr') {
+            
+            if (snapshot.data != true) {
               return const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
