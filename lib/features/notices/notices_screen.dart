@@ -4,10 +4,23 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/auth/auth_service.dart';
 import '../../core/models/notice_model.dart';
+import '../../core/services/analytics_service.dart';
 import 'cubit/notices_cubit.dart';
 
-class NoticesScreen extends StatelessWidget {
+class NoticesScreen extends StatefulWidget {
   const NoticesScreen({super.key});
+
+  @override
+  State<NoticesScreen> createState() => _NoticesScreenState();
+}
+
+class _NoticesScreenState extends State<NoticesScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Log screen visit
+    AnalyticsService.logScreenView('notices_screen');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,8 +92,16 @@ class NoticesScreen extends StatelessWidget {
                                       return PopupMenuButton<String>(
                                         onSelected: (value) {
                                           if (value == 'edit') {
+                                            AnalyticsService.logCustomEvent('notice_edit_tapped', {
+                                              'notice_id': notice.id ?? 'unknown',
+                                              'notice_title': notice.title,
+                                            });
                                             context.go('/notices/edit/${notice.id}', extra: notice);
                                           } else if (value == 'delete') {
+                                            AnalyticsService.logCustomEvent('notice_delete_tapped', {
+                                              'notice_id': notice.id ?? 'unknown',
+                                              'notice_title': notice.title,
+                                            });
                                             _showDeleteNoticeDialog(context, notice);
                                           }
                                         },
@@ -128,7 +149,13 @@ class NoticesScreen extends StatelessWidget {
                                 Align(
                                   alignment: Alignment.centerRight,
                                   child: TextButton(
-                                    onPressed: () => context.go('/notices/${notice.id}'),
+                                    onPressed: () {
+                                      AnalyticsService.logCustomEvent('notice_read_more_tapped', {
+                                        'notice_id': notice.id ?? 'unknown',
+                                        'notice_title': notice.title,
+                                      });
+                                      context.go('/notices/${notice.id}');
+                                    },
                                     child: const Text('Read more'),
                                   ),
                                 ),
@@ -206,7 +233,10 @@ class NoticesScreen extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.data == true) {
               return FloatingActionButton(
-                onPressed: () => context.go('/notices/add'),
+                onPressed: () {
+                  AnalyticsService.logCustomEvent('add_notice_button_tapped', {});
+                  context.go('/notices/add');
+                },
                 backgroundColor: Colors.blue,
                 child: const Icon(Icons.add, color: Colors.white),
               );
@@ -230,13 +260,24 @@ class NoticesScreen extends StatelessWidget {
         content: Text('Are you sure you want to delete "${notice.title}"?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
+            onPressed: () {
+              AnalyticsService.logCustomEvent('notice_delete_cancelled', {
+                'notice_id': notice.id ?? 'unknown',
+                'notice_title': notice.title,
+              });
+              Navigator.pop(dialogContext);
+            },
             child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () async {
               try {
                 await context.read<NoticesCubit>().deleteNotice(notice.id!);
+                
+                AnalyticsService.logCustomEvent('notice_deleted', {
+                  'notice_id': notice.id ?? 'unknown',
+                  'notice_title': notice.title,
+                });
                 
                 Navigator.pop(dialogContext);
                 
@@ -248,6 +289,7 @@ class NoticesScreen extends StatelessWidget {
                   ),
                 );
               } catch (e) {
+                AnalyticsService.logError('notice_delete_failed', e.toString());
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('Error: $e'),

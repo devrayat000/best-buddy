@@ -10,9 +10,9 @@ import 'package:get_it/get_it.dart';
 
 import '../auth/auth_service.dart';
 import '../settings/settings_cubit.dart';
+import '../services/analytics_service.dart';
 import '../models/notice_model.dart';
 import '../models/class_test_model.dart';
-import '../services/analytics_service.dart';
 import '../../features/auth/presentation/pages/get_started_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
