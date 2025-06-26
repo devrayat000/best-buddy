@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:cloud_firestore_odm/cloud_firestore_odm.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../core/auth/auth_service.dart';
 import '../../core/models/notice_model.dart';
 import '../../core/services/analytics_service.dart';
@@ -28,9 +28,9 @@ class _NoticesScreenState extends State<NoticesScreen> {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
       ),
-      body: FirestoreBuilder<NoticeModelQuerySnapshot>(
-        ref: noticesRef,
-        builder: (context, AsyncSnapshot<NoticeModelQuerySnapshot?> snapshot, Widget? child) {
+      body: StreamBuilder<QuerySnapshot<NoticeModel>>(
+        stream: noticesRef.orderBy('createdAt', descending: true).snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot<NoticeModel>?> snapshot, [Widget? child]) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -65,7 +65,7 @@ class _NoticesScreenState extends State<NoticesScreen> {
           }
 
           final querySnapshot = snapshot.data;
-          final notices = querySnapshot?.docs.map((doc) => doc.data).toList() ?? [];
+          final notices = querySnapshot?.docs.map((doc) => doc.data()).toList() ?? [];
           
           if (notices.isEmpty) {
             return const Center(

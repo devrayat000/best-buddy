@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../../core/auth/auth_service.dart';
 import '../../../../core/models/user_model.dart';
-import '../../../../core/services/user_service.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/loading_view.dart';
 import '../widgets/user_filter_chips.dart';
@@ -15,7 +16,6 @@ class UsersListPage extends StatefulWidget {
 }
 
 class _UsersListPageState extends State<UsersListPage> {
-  final UserService _userService = UserService();
   UserRole _selectedFilter = UserRole.student;
   Map<String, int>? _stats;
 
@@ -27,7 +27,15 @@ class _UsersListPageState extends State<UsersListPage> {
 
   Future<void> _loadStats() async {
     try {
-      final stats = await _userService.getUserRoleStats();
+      final usersSnapshot = await usersRef.get();
+      final users = usersSnapshot.docs.map((doc) => doc.data()).toList();
+      
+      final stats = <String, int>{};
+      for (final user in users) {
+        final roleKey = user.role.name;
+        stats[roleKey] = (stats[roleKey] ?? 0) + 1;
+      }
+      
       if (mounted) {
         setState(() {
           _stats = stats;
@@ -41,7 +49,7 @@ class _UsersListPageState extends State<UsersListPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
-      future: _userService.isCurrentUserCR(),
+      future: AuthService().isCurrentUserCR(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:cloud_firestore_odm/cloud_firestore_odm.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../core/auth/auth_service.dart';
 import '../../core/models/class_test_model.dart';
 import '../../core/services/analytics_service.dart';
@@ -44,9 +44,9 @@ class _ClassTestsScreenState extends State<ClassTestsScreen>
     super.dispose();
   }
 
-  ClassTestModelQuery _getClassTestsQuery() {
+  Query<ClassTestModel> _getClassTestsQuery() {
     if (_currentFilter == 'upcoming') {
-      return classTestsRef.whereTestDate(isGreaterThan: DateTime.now());
+      return classTestsRef.where('testDate', isGreaterThan: DateTime.now());
     }
     return classTestsRef;
   }
@@ -125,9 +125,9 @@ class _ClassTestsScreenState extends State<ClassTestsScreen>
   }
 
   Widget _buildListView() {
-    return FirestoreBuilder<ClassTestModelQuerySnapshot>(
-      ref: _getClassTestsQuery(),
-      builder: (context, AsyncSnapshot<ClassTestModelQuerySnapshot?> snapshot, Widget? child) {
+    return StreamBuilder<QuerySnapshot<ClassTestModel>>(
+      stream: _getClassTestsQuery().snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot<ClassTestModel>?> snapshot, [Widget? child]) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -164,7 +164,7 @@ class _ClassTestsScreenState extends State<ClassTestsScreen>
           );
         }
 
-        final classTests = snapshot.data?.docs.map((doc) => doc.data).toList() ?? [];
+        final classTests = snapshot.data?.docs.map((doc) => doc.data()).toList() ?? [];
         if (classTests.isEmpty) {
           return const Center(
             child: Column(
@@ -201,9 +201,9 @@ class _ClassTestsScreenState extends State<ClassTestsScreen>
   }
 
   Widget _buildCalendarView() {
-    return FirestoreBuilder<ClassTestModelQuerySnapshot>(
-      ref: _getClassTestsQuery(),
-      builder: (context, AsyncSnapshot<ClassTestModelQuerySnapshot?> snapshot, Widget? child) {
+    return StreamBuilder<QuerySnapshot<ClassTestModel>>(
+      stream: _getClassTestsQuery().snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot<ClassTestModel>?> snapshot, [Widget? child]) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -240,7 +240,7 @@ class _ClassTestsScreenState extends State<ClassTestsScreen>
           );
         }
 
-        final classTests = snapshot.data?.docs.map((doc) => doc.data).toList() ?? [];
+        final classTests = snapshot.data?.docs.map((doc) => doc.data()).toList() ?? [];
         return ClassTestsCalendar(classTests: classTests);
       },
     );

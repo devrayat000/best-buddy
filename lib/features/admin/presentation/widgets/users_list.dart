@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/models/user_model.dart';
-import '../../../../core/services/user_service.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/loading_view.dart';
 
@@ -14,8 +14,8 @@ class UsersList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<UserModel>>(
-      stream: UserService().getAllUsers(),
+    return StreamBuilder<QuerySnapshot<UserModel>>(
+      stream: usersRef.snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const LoadingView(message: 'Loading users...');
@@ -28,7 +28,7 @@ class UsersList extends StatelessWidget {
           );
         }
 
-        final allUsers = snapshot.data ?? [];
+        final allUsers = snapshot.data?.docs.map((doc) => doc.data()).toList() ?? [];
         final filteredUsers = _filterUsers(allUsers);
 
         if (filteredUsers.isEmpty) {

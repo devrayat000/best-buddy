@@ -1,14 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_firestore_odm/cloud_firestore_odm.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'user_model.dart';
-
-// Explicitly import Firestore types for generated code
-// ignore: unused_import
-import 'package:cloud_firestore/cloud_firestore.dart' 
-    show DocumentSnapshot, SetOptions, SnapshotOptions, CollectionReference, 
-         DocumentReference, GetOptions, FieldValue, Transaction, WriteBatch;
 
 part 'class_test_model.freezed.dart';
 part 'class_test_model.g.dart';
@@ -48,9 +41,11 @@ abstract class ClassTestModel with _$ClassTestModel {
   factory ClassTestModel.fromJson(Map<String, dynamic> json) => _$ClassTestModelFromJson(json);
 }
 
-// Collection reference using Firestore ODM
-@Collection<ClassTestModel>('class_tests')
-final classTestsRef = ClassTestModelCollectionReference();
+// Collection reference using regular Firestore
+final classTestsRef = FirebaseFirestore.instance.collection('class_tests').withConverter<ClassTestModel>(
+  fromFirestore: (snapshot, _) => ClassTestModel.fromJson(snapshot.data()!),
+  toFirestore: (classTest, _) => classTest.toJson(),
+);
 
 @freezed
 abstract class CreateClassTestModel with _$CreateClassTestModel {

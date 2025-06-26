@@ -34,7 +34,7 @@ class _NoticeDetailsModalState extends State<NoticeDetailsModal> {
       
       if (mounted) {
         setState(() {
-          _notice = noticeDoc.data;
+          _notice = noticeDoc.data();
           _isLoading = false;
         });
       }

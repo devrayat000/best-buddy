@@ -38,7 +38,7 @@ class _ClassTestDetailsModalState extends State<ClassTestDetailsModal> {
       
       if (mounted) {
         setState(() {
-          _classTest = classTestDoc.data;
+          _classTest = classTestDoc.data();
           _isLoading = false;
         });
       }
