@@ -190,6 +190,16 @@ class AnalyticsService {
     }
   }
 
+  // Screen View Events
+  static Future<void> logScreenView(String screenName) async {
+    try {
+      await _analytics.logScreenView(screenName: screenName);
+      log('📊 Analytics: Screen view - $screenName');
+    } catch (e) {
+      log('❌ Analytics ScreenView Error: $e');
+    }
+  }
+
   // Custom Events
   static Future<void> logCustomEvent(
       String eventName, Map<String, Object>? parameters) async {

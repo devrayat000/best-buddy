@@ -7,10 +7,6 @@ import '../services/firebase_notification_service.dart';
 import '../services/notification_navigation_service.dart';
 import '../settings/settings_cubit.dart';
 import '../storage/storage_service.dart';
-import '../../features/notices/data/notices_firebase_service.dart';
-import '../../features/notices/cubit/notices_cubit.dart';
-import '../../features/class_tests/data/class_tests_firebase_service.dart';
-import '../../features/class_tests/cubit/class_tests_cubit.dart';
 
 final GetIt sl = GetIt.instance;
 
@@ -33,16 +29,6 @@ Future<void> setupServiceLocator() async {
   // Firebase Notification Service
   sl.registerLazySingleton<FirebaseNotificationService>(
       () => FirebaseNotificationService());
-
-  // Firebase Data Services
-  sl.registerLazySingleton<NoticesFirebaseService>(
-      () => NoticesFirebaseService());
-  sl.registerLazySingleton<ClassTestsFirebaseService>(
-      () => ClassTestsFirebaseService());
-
-  // Feature Cubits
-  sl.registerFactory(() => NoticesCubit(sl<NoticesFirebaseService>()));
-  sl.registerFactory(() => ClassTestsCubit(sl<ClassTestsFirebaseService>()));
 
   // Reload Cubit for notifications
   sl.registerLazySingleton(() => ReloadCubit());

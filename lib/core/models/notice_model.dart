@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_firestore_odm/cloud_firestore_odm.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'user_model.dart';
@@ -38,9 +37,11 @@ abstract class NoticeModel with _$NoticeModel {
   factory NoticeModel.fromJson(Map<String, dynamic> json) => _$NoticeModelFromJson(json);
 }
 
-// Collection reference using Firestore ODM
-@Collection<NoticeModel>('notices')
-final noticesRef = NoticeModelCollectionReference();
+// Collection reference using regular Firestore
+final noticesRef = FirebaseFirestore.instance.collection('notices').withConverter<NoticeModel>(
+  fromFirestore: (snapshot, _) => NoticeModel.fromJson(snapshot.data()!),
+  toFirestore: (notice, _) => notice.toJson(),
+);
 
 @freezed
 abstract class CreateNoticeModel with _$CreateNoticeModel {

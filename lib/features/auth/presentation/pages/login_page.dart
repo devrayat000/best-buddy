@@ -3,6 +3,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/auth/auth_service.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../forms/login_form.dart';
 import '../widgets/auth_form_field.dart';
 import '../widgets/auth_button.dart';
@@ -24,6 +25,9 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     _loginForm = LoginForm();
+    
+    // Log screen visit
+    AnalyticsService.logScreenView('login_screen');
     
     // Listen to auth state changes
     _authService.authStateChanges.listen((user) {
@@ -52,8 +56,15 @@ class _LoginPageState extends State<LoginPage> {
         email: _loginForm.email!,
         password: _loginForm.password!,
       );
+      
+      // Log successful login
+      AnalyticsService.logLogin('email');
+      
       // Navigation will be handled by the auth state listener
     } catch (e) {
+      // Log login failure
+      AnalyticsService.logError('login_failed', e.toString());
+      
       if (mounted) {
         setState(() {
           _errorMessage = e.toString();

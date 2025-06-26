@@ -1,218 +1,255 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../core/auth/auth_service.dart';
 import '../../core/models/notice_model.dart';
-import 'cubit/notices_cubit.dart';
+import '../../core/services/analytics_service.dart';
 
-class NoticesScreen extends StatelessWidget {
+class NoticesScreen extends StatefulWidget {
   const NoticesScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => GetIt.I<NoticesCubit>()..loadNotices(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Notices'),
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
-        ),
-        body: BlocBuilder<NoticesCubit, NoticesState>(
-          builder: (context, state) {
-            return state.when(
-              initial: () => const Center(child: Text('Loading...')),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              loaded: (notices) {
-                if (notices.isEmpty) {
-                  return const Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.announcement_outlined,
-                          size: 64,
-                          color: Colors.grey,
-                        ),
-                        SizedBox(height: 16),
-                        Text(
-                          'No notices available',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
+  State<NoticesScreen> createState() => _NoticesScreenState();
+}
 
-                return ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: notices.length,
-                  itemBuilder: (context, index) {
-                    final notice = notices[index];
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      elevation: 2,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    notice.title,
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                FutureBuilder<bool>(
-                                  future: AuthService().isCurrentUserCR(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.data == true) {
-                                      return PopupMenuButton<String>(
-                                        onSelected: (value) {
-                                          if (value == 'edit') {
-                                            context.go('/notices/edit/${notice.id}', extra: notice);
-                                          } else if (value == 'delete') {
-                                            _showDeleteNoticeDialog(context, notice);
-                                          }
-                                        },
-                                        itemBuilder: (context) => [
-                                          const PopupMenuItem(
-                                            value: 'edit',
-                                            child: Row(
-                                              children: [
-                                                Icon(Icons.edit, size: 20),
-                                                SizedBox(width: 8),
-                                                Text('Edit'),
-                                              ],
-                                            ),
-                                          ),
-                                          const PopupMenuItem(
-                                            value: 'delete',
-                                            child: Row(
-                                              children: [
-                                                Icon(Icons.delete, 
-                                                     color: Colors.red, size: 20),
-                                                SizedBox(width: 8),
-                                                Text('Delete'),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    }
-                                    return const SizedBox.shrink();
-                                  },
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  notice.content,
-                                  style: const TextStyle(fontSize: 16),
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 8),
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: TextButton(
-                                    onPressed: () => context.go('/notices/${notice.id}'),
-                                    child: const Text('Read more'),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 12),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.person,
-                                  size: 16,
-                                  color: Colors.grey[600],
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  'By ${notice.createdByName ?? 'Unknown'}',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                                const Spacer(),
-                                if (notice.createdAt != null) ...[
-                                  Icon(
-                                    Icons.access_time,
-                                    size: 16,
-                                    color: Colors.grey[600],
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    _formatDate(notice.createdAt!),
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-              error: (message) => Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.error_outline,
-                      size: 64,
-                      color: Colors.red,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Error: $message',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () => context.read<NoticesCubit>().loadNotices(),
-                      child: const Text('Retry'),
-                    ),
-                  ],
-                ),
+class _NoticesScreenState extends State<NoticesScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Log screen visit
+    AnalyticsService.logScreenView('notices_screen');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Notices'),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+      ),
+      body: StreamBuilder<QuerySnapshot<NoticeModel>>(
+        stream: noticesRef.orderBy('createdAt', descending: true).snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot<NoticeModel>?> snapshot, [Widget? child]) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.error_outline,
+                    size: 64,
+                    color: Colors.red,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Error: ${snapshot.error}',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      AnalyticsService.logCustomEvent('notices_retry_tapped', {});
+                      setState(() {}); // Trigger rebuild to retry stream
+                    },
+                    child: const Text('Retry'),
+                  ),
+                ],
               ),
             );
-          },
-        ),
-        floatingActionButton: FutureBuilder<bool>(
-          future: AuthService().isCurrentUserCR(),
-          builder: (context, snapshot) {
-            if (snapshot.data == true) {
-              return FloatingActionButton(
-                onPressed: () => context.go('/notices/add'),
-                backgroundColor: Colors.blue,
-                child: const Icon(Icons.add, color: Colors.white),
-              );
-            }
-            return const SizedBox.shrink();
-          },
+          }
+
+          final querySnapshot = snapshot.data;
+          final notices = querySnapshot?.docs.map((doc) => doc.data()).toList() ?? [];
+          
+          if (notices.isEmpty) {
+            return const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.announcement_outlined,
+                    size: 64,
+                    color: Colors.grey,
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    'No notices available',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: notices.length,
+            itemBuilder: (context, index) {
+              final notice = notices[index];
+              return _buildNoticeCard(notice);
+            },
+          );
+        },
+      ),
+      floatingActionButton: FutureBuilder<bool>(
+        future: AuthService().isCurrentUserCR(),
+        builder: (context, snapshot) {
+          if (snapshot.data == true) {
+            return FloatingActionButton(
+              onPressed: () {
+                AnalyticsService.logCustomEvent('add_notice_button_tapped', {});
+                context.go('/notices/add');
+              },
+              backgroundColor: Colors.blue,
+              child: const Icon(Icons.add, color: Colors.white),
+            );
+          }
+          return const SizedBox.shrink();
+        },
+      ),
+    );
+  }
+
+  Widget _buildNoticeCard(NoticeModel notice) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    notice.title,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                FutureBuilder<bool>(
+                  future: AuthService().isCurrentUserCR(),
+                  builder: (context, snapshot) {
+                    if (snapshot.data == true) {
+                      return PopupMenuButton<String>(
+                        onSelected: (value) {
+                          if (value == 'edit') {
+                            AnalyticsService.logCustomEvent('notice_edit_tapped', {
+                              'notice_id': notice.id ?? 'unknown',
+                              'notice_title': notice.title,
+                            });
+                            context.go('/notices/edit/${notice.id}', extra: notice);
+                          } else if (value == 'delete') {
+                            AnalyticsService.logCustomEvent('notice_delete_tapped', {
+                              'notice_id': notice.id ?? 'unknown',
+                              'notice_title': notice.title,
+                            });
+                            _showDeleteNoticeDialog(context, notice);
+                          }
+                        },
+                        itemBuilder: (context) => [
+                          const PopupMenuItem(
+                            value: 'edit',
+                            child: Row(
+                              children: [
+                                Icon(Icons.edit, size: 20),
+                                SizedBox(width: 8),
+                                Text('Edit'),
+                              ],
+                            ),
+                          ),
+                          const PopupMenuItem(
+                            value: 'delete',
+                            child: Row(
+                              children: [
+                                Icon(Icons.delete, 
+                                     color: Colors.red, size: 20),
+                                SizedBox(width: 8),
+                                Text('Delete'),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  notice.content,
+                  style: const TextStyle(fontSize: 16),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      AnalyticsService.logCustomEvent('notice_read_more_tapped', {
+                        'notice_id': notice.id ?? 'unknown',
+                        'notice_title': notice.title,
+                      });
+                      context.go('/notices/${notice.id}');
+                    },
+                    child: const Text('Read more'),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Icon(
+                  Icons.person,
+                  size: 16,
+                  color: Colors.grey[600],
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  'By ${notice.createdByName ?? 'Unknown'}',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                const Spacer(),
+                if (notice.createdAt != null) ...[
+                  Icon(
+                    Icons.access_time,
+                    size: 16,
+                    color: Colors.grey[600],
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    _formatDate(notice.createdAt!),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -230,13 +267,24 @@ class NoticesScreen extends StatelessWidget {
         content: Text('Are you sure you want to delete "${notice.title}"?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
+            onPressed: () {
+              AnalyticsService.logCustomEvent('notice_delete_cancelled', {
+                'notice_id': notice.id ?? 'unknown',
+                'notice_title': notice.title,
+              });
+              Navigator.pop(dialogContext);
+            },
             child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () async {
               try {
-                await context.read<NoticesCubit>().deleteNotice(notice.id!);
+                await noticesRef.doc(notice.id!).delete();
+                
+                AnalyticsService.logCustomEvent('notice_deleted', {
+                  'notice_id': notice.id ?? 'unknown',
+                  'notice_title': notice.title,
+                });
                 
                 Navigator.pop(dialogContext);
                 
@@ -248,6 +296,7 @@ class NoticesScreen extends StatelessWidget {
                   ),
                 );
               } catch (e) {
+                AnalyticsService.logError('notice_delete_failed', e.toString());
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('Error: $e'),

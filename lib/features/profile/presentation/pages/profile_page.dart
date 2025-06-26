@@ -2,15 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/auth/auth_service.dart';
-import '../../../../core/models/user_model.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/profile_stats_card.dart';
 import '../widgets/profile_menu_section.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/loading_view.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  @override
+  void initState() {
+    super.initState();
+    // Log screen visit
+    AnalyticsService.logScreenView('profile_screen');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +46,10 @@ class ProfilePage extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/profile/logout'),
+        onPressed: () {
+          AnalyticsService.logCustomEvent('logout_button_tapped', {});
+          context.push('/profile/logout');
+        },
         icon: const Icon(Icons.logout),
         label: const Text('Logout'),
         backgroundColor: Theme.of(context).colorScheme.errorContainer,
