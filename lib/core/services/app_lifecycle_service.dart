@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import '../auth/auth_cubit.dart';
 
 class AppLifecycleService extends WidgetsBindingObserver {
   static AppLifecycleService? _instance;
@@ -40,10 +38,8 @@ class AppLifecycleService extends WidgetsBindingObserver {
 
   Future<void> _validateSessionOnResume() async {
     try {
-      final authCubit = GetIt.instance<AuthCubit>();
-      if (authCubit.state is AuthAuthenticated) {
-        await authCubit.validateSession();
-      }
+      // Firebase Auth handles session validation automatically
+      // No action needed
     } catch (e) {
       // Handle silently - services might not be initialized yet
     }

@@ -1,7 +1,7 @@
 name: best_buddy_flutter
 description: A Flutter app for study buddy - notices and class tests management
 publish_to: 'none'
-version: 1.0.0+1
+version: 2.0.0+1
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -11,10 +11,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # GraphQL
-  graphql: ^5.2.1
-  graphql_flutter: ^5.2.0
-  
   # State Management
   bloc: ^9.0.0
   flutter_bloc: ^9.1.1  
@@ -26,7 +22,6 @@ dependencies:
   flutter_local_notifications: ^19.2.1
 
   # Code Generation
-  freezed_annotation: ^3.0.0
   json_annotation: ^4.9.0
   reactive_forms_annotations: ^7.0.0
 
@@ -41,7 +36,7 @@ dependencies:
   hive_ce_flutter: ^2.3.1
 
   # Forms
-  reactive_forms: ^17.0.1
+  
 
   # Utilities
   intl: ^0.20.2
@@ -50,8 +45,12 @@ dependencies:
   url_launcher: ^6.2.5
   package_info_plus: ^8.0.0
   connectivity_plus: ^6.1.4  
-  local_auth: ^2.3.0
   timezone: 0.10.1
+  cloud_firestore: ^5.6.9
+  cloud_firestore_odm: ^1.0.0-dev.88
+  firebase_auth: ^5.6.0
+  reactive_forms: ^17.0.1
+  freezed_annotation: ^2.4.4
 
 dev_dependencies:
   flutter_lints: ^6.0.0
@@ -61,11 +60,12 @@ dev_dependencies:
   
   # Code Generation
   build_runner: ^2.4.15
-  freezed: ^3.0.6
-  graphql_codegen: ^1.2.3
-  hive_ce_generator: ^1.9.2
-  json_serializable: ^6.9.5
-  reactive_forms_generator: ^7.0.0
+  reactive_forms_generator: ^5.1.2
+  cloud_firestore_odm_generator: ^1.0.0-dev.90
+  freezed: ^2.5.7
+  hive_ce_generator: ^1.8.1
+  json_serializable: ^6.9.0
+  
 
 flutter:
   uses-material-design: true

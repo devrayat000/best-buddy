@@ -1,12 +1,9 @@
-import 'package:best_buddy_flutter/core/graphql/schema.graphql.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:go_router/go_router.dart';
-import 'package:get_it/get_it.dart';
 
-import '../../../../core/auth/auth_cubit.dart';
-import '../../data/graphql/auth_mutations.graphql.dart';
+import '../../../../core/auth/auth_service.dart';
+import '../../../../core/models/user_model.dart';
 import '../forms/register_form.dart';
 import '../widgets/auth_form_field.dart';
 import '../widgets/auth_button.dart';
@@ -20,11 +17,21 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   late final RegisterForm _registerForm;
+  final AuthService _authService = AuthService();
+  bool _isLoading = false;
+  String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
     _registerForm = RegisterForm();
+    
+    // Listen to auth state changes
+    _authService.authStateChanges.listen((user) {
+      if (user != null && mounted) {
+        context.go('/notices');
+      }
+    });
   }
 
   @override
@@ -33,173 +40,211 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
+  Future<void> _signUp() async {
+    if (!_registerForm.form.valid) return;
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      await _authService.signUpWithEmailAndPassword(
+        email: _registerForm.email!,
+        password: _registerForm.password!,
+        name: _registerForm.name!,
+        role: _registerForm.role == 'cr' ? UserRole.cr : UserRole.student,
+      );
+      // Navigation will be handled by the auth state listener
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = e.toString();
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => GetIt.instance<AuthCubit>(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Create Account'),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-        body: BlocListener<AuthCubit, AuthState>(
-          listener: (context, state) {
-            if (state is AuthAuthenticated) {
-              context.go('/notices');
-            } else if (state is AuthError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: Colors.red,
-                ),
-              );
-            }
-          },
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: ReactiveForm(
-                formGroup: _registerForm.form,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const SizedBox(height: 24),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Create Account'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: ReactiveForm(
+            formGroup: _registerForm.form,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 24),
 
-                      // Title
-                      Text(
-                        'Join Study Buddy',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Create your account to get started',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: Colors.grey[600],
-                            ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 32),
-
-                      // Name Field
-                      const AuthFormField(
-                        controlName: RegisterForm.nameControlName,
-                        labelText: 'Full Name',
-                        keyboardType: TextInputType.name,
-                        prefixIcon: Icons.person_outline,
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Email Field
-                      const AuthFormField(
-                        controlName: RegisterForm.emailControlName,
-                        labelText: 'Email',
-                        keyboardType: TextInputType.emailAddress,
-                        prefixIcon: Icons.email_outlined,
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Password Field
-                      const AuthFormField(
-                        controlName: RegisterForm.passwordControlName,
-                        labelText: 'Password',
-                        obscureText: true,
-                        prefixIcon: Icons.lock_outline,
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Confirm Password Field
-                      const AuthFormField(
-                        controlName: RegisterForm.confirmPasswordControlName,
-                        labelText: 'Confirm Password',
-                        obscureText: true,
-                        prefixIcon: Icons.lock_outline,
-                      ),
-                      const SizedBox(height: 32),
-
-                      // Register Button with GraphQL Mutation
-                      Mutation$CreateUser$Widget(
-                        options: WidgetOptions$Mutation$CreateUser(
-                          onCompleted: (data, result) {
-                            if (result?.createUser != null) {
-                              // After successful registration, automatically log in
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                      'Account created successfully! Please log in.'),
-                                  backgroundColor: Colors.green,
-                                ),
-                              );
-
-                              // Navigate to login page
-                              context.go('/login');
-                            }
-                          },
-                          onError: (error) {
-                            context.read<AuthCubit>().setError(
-                                error?.toString() ?? 'Registration failed');
-                          },
+                  // Title
+                  Text(
+                    'Join Study Buddy',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineMedium
+                        ?.copyWith(
+                          fontWeight: FontWeight.bold,
                         ),
-                        builder: (runMutation, result) {
-                          return BlocBuilder<AuthCubit, AuthState>(
-                            builder: (context, state) {
-                              final isLoading = state is AuthLoading ||
-                                  (result?.isLoading ?? false);
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Create your account to get started',
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Colors.grey[600],
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 32),
 
-                              return AuthButton(
-                                text: 'Create Account',
-                                isLoading: isLoading,
-                                onPressed: () {
-                                  if (_registerForm.form.valid) {
-                                    context.read<AuthCubit>().setLoading();
-                                    runMutation(
-                                      Variables$Mutation$CreateUser(
-                                        data: Input$UserCreateInput(
-                                          name: _registerForm.name!,
-                                          email: _registerForm.email!,
-                                          password: _registerForm.password!,
-                                          role: Enum$UserRoleType.user,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                              );
-                            },
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 16),
+                  // Name Field
+                  const AuthFormField(
+                    controlName: RegisterForm.nameControlName,
+                    labelText: 'Full Name',
+                    keyboardType: TextInputType.name,
+                    prefixIcon: Icons.person_outline,
+                  ),
+                  const SizedBox(height: 16),
 
-                      // Login Link
-                      TextButton(
-                        onPressed: () => context.pop(),
-                        child: RichText(
-                          text: TextSpan(
-                            style: Theme.of(context).textTheme.bodyMedium,
-                            children: [
-                              const TextSpan(text: 'Already have an account? '),
-                              TextSpan(
-                                text: 'Sign in',
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                  // Email Field
+                  const AuthFormField(
+                    controlName: RegisterForm.emailControlName,
+                    labelText: 'Email',
+                    keyboardType: TextInputType.emailAddress,
+                    prefixIcon: Icons.email_outlined,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Password Field
+                  const AuthFormField(
+                    controlName: RegisterForm.passwordControlName,
+                    labelText: 'Password',
+                    obscureText: true,
+                    prefixIcon: Icons.lock_outline,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Confirm Password Field
+                  const AuthFormField(
+                    controlName: RegisterForm.confirmPasswordControlName,
+                    labelText: 'Confirm Password',
+                    obscureText: true,
+                    prefixIcon: Icons.lock_outline,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Role Selection
+                  Card(
+                    elevation: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Select Your Role',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          ReactiveDropdownField<String>(
+                            formControlName: RegisterForm.roleControlName,
+                            decoration: const InputDecoration(
+                              hintText: 'Choose your role',
+                              border: OutlineInputBorder(),
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 12,
+                              ),
+                            ),
+                            items: const [
+                              DropdownMenuItem(
+                                value: 'student',
+                                child: Text('Student'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'cr',
+                                child: Text('Class Representative (CR)'),
                               ),
                             ],
                           ),
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 16),
+
+                  // Error message
+                  if (_errorMessage != null)
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.red[50],
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.red[200]!),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.error_outline, color: Colors.red[600], size: 20),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              _errorMessage!,
+                              style: TextStyle(color: Colors.red[800], fontSize: 14),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  const SizedBox(height: 16),
+
+                  // Register Button
+                  AuthButton(
+                    text: 'Create Account',
+                    isLoading: _isLoading,
+                    onPressed: _signUp,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Login Link
+                  TextButton(
+                    onPressed: () => context.pop(),
+                    child: RichText(
+                      text: TextSpan(
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        children: [
+                          const TextSpan(text: 'Already have an account? '),
+                          TextSpan(
+                            text: 'Sign in',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

@@ -1,4 +1,3 @@
-// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -10,53 +9,29 @@ part of 'settings_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
 T _$identity<T>(T value) => value;
+
+final _privateConstructorUsedError = UnsupportedError(
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$SettingsState {
-  bool get pushNotificationsEnabled;
-  bool get classTestRemindersEnabled;
-  String get language;
+  bool get pushNotificationsEnabled => throw _privateConstructorUsedError;
+  bool get classTestRemindersEnabled => throw _privateConstructorUsedError;
+  String get language => throw _privateConstructorUsedError;
 
   /// Create a copy of SettingsState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
   $SettingsStateCopyWith<SettingsState> get copyWith =>
-      _$SettingsStateCopyWithImpl<SettingsState>(
-          this as SettingsState, _$identity);
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is SettingsState &&
-            (identical(
-                    other.pushNotificationsEnabled, pushNotificationsEnabled) ||
-                other.pushNotificationsEnabled == pushNotificationsEnabled) &&
-            (identical(other.classTestRemindersEnabled,
-                    classTestRemindersEnabled) ||
-                other.classTestRemindersEnabled == classTestRemindersEnabled) &&
-            (identical(other.language, language) ||
-                other.language == language));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, pushNotificationsEnabled,
-      classTestRemindersEnabled, language);
-
-  @override
-  String toString() {
-    return 'SettingsState(pushNotificationsEnabled: $pushNotificationsEnabled, classTestRemindersEnabled: $classTestRemindersEnabled, language: $language)';
-  }
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract mixin class $SettingsStateCopyWith<$Res> {
+abstract class $SettingsStateCopyWith<$Res> {
   factory $SettingsStateCopyWith(
-          SettingsState value, $Res Function(SettingsState) _then) =
-      _$SettingsStateCopyWithImpl;
+          SettingsState value, $Res Function(SettingsState) then) =
+      _$SettingsStateCopyWithImpl<$Res, SettingsState>;
   @useResult
   $Res call(
       {bool pushNotificationsEnabled,
@@ -65,12 +40,14 @@ abstract mixin class $SettingsStateCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$SettingsStateCopyWithImpl<$Res>
+class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     implements $SettingsStateCopyWith<$Res> {
-  _$SettingsStateCopyWithImpl(this._self, this._then);
+  _$SettingsStateCopyWithImpl(this._value, this._then);
 
-  final SettingsState _self;
-  final $Res Function(SettingsState) _then;
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
   /// Create a copy of SettingsState
   /// with the given fields replaced by the non-null parameter values.
@@ -81,17 +58,65 @@ class _$SettingsStateCopyWithImpl<$Res>
     Object? classTestRemindersEnabled = null,
     Object? language = null,
   }) {
-    return _then(_self.copyWith(
+    return _then(_value.copyWith(
       pushNotificationsEnabled: null == pushNotificationsEnabled
-          ? _self.pushNotificationsEnabled
+          ? _value.pushNotificationsEnabled
           : pushNotificationsEnabled // ignore: cast_nullable_to_non_nullable
               as bool,
       classTestRemindersEnabled: null == classTestRemindersEnabled
-          ? _self.classTestRemindersEnabled
+          ? _value.classTestRemindersEnabled
           : classTestRemindersEnabled // ignore: cast_nullable_to_non_nullable
               as bool,
       language: null == language
-          ? _self.language
+          ? _value.language
+          : language // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$SettingsStateImplCopyWith<$Res>
+    implements $SettingsStateCopyWith<$Res> {
+  factory _$$SettingsStateImplCopyWith(
+          _$SettingsStateImpl value, $Res Function(_$SettingsStateImpl) then) =
+      __$$SettingsStateImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {bool pushNotificationsEnabled,
+      bool classTestRemindersEnabled,
+      String language});
+}
+
+/// @nodoc
+class __$$SettingsStateImplCopyWithImpl<$Res>
+    extends _$SettingsStateCopyWithImpl<$Res, _$SettingsStateImpl>
+    implements _$$SettingsStateImplCopyWith<$Res> {
+  __$$SettingsStateImplCopyWithImpl(
+      _$SettingsStateImpl _value, $Res Function(_$SettingsStateImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of SettingsState
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? pushNotificationsEnabled = null,
+    Object? classTestRemindersEnabled = null,
+    Object? language = null,
+  }) {
+    return _then(_$SettingsStateImpl(
+      pushNotificationsEnabled: null == pushNotificationsEnabled
+          ? _value.pushNotificationsEnabled
+          : pushNotificationsEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      classTestRemindersEnabled: null == classTestRemindersEnabled
+          ? _value.classTestRemindersEnabled
+          : classTestRemindersEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      language: null == language
+          ? _value.language
           : language // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -100,8 +125,8 @@ class _$SettingsStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _SettingsState implements SettingsState {
-  const _SettingsState(
+class _$SettingsStateImpl implements _SettingsState {
+  const _$SettingsStateImpl(
       {this.pushNotificationsEnabled = true,
       this.classTestRemindersEnabled = true,
       this.language = 'English'});
@@ -116,19 +141,16 @@ class _SettingsState implements SettingsState {
   @JsonKey()
   final String language;
 
-  /// Create a copy of SettingsState
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$SettingsStateCopyWith<_SettingsState> get copyWith =>
-      __$SettingsStateCopyWithImpl<_SettingsState>(this, _$identity);
+  String toString() {
+    return 'SettingsState(pushNotificationsEnabled: $pushNotificationsEnabled, classTestRemindersEnabled: $classTestRemindersEnabled, language: $language)';
+  }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _SettingsState &&
+            other is _$SettingsStateImpl &&
             (identical(
                     other.pushNotificationsEnabled, pushNotificationsEnabled) ||
                 other.pushNotificationsEnabled == pushNotificationsEnabled) &&
@@ -143,58 +165,32 @@ class _SettingsState implements SettingsState {
   int get hashCode => Object.hash(runtimeType, pushNotificationsEnabled,
       classTestRemindersEnabled, language);
 
+  /// Create a copy of SettingsState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  String toString() {
-    return 'SettingsState(pushNotificationsEnabled: $pushNotificationsEnabled, classTestRemindersEnabled: $classTestRemindersEnabled, language: $language)';
-  }
+  @pragma('vm:prefer-inline')
+  _$$SettingsStateImplCopyWith<_$SettingsStateImpl> get copyWith =>
+      __$$SettingsStateImplCopyWithImpl<_$SettingsStateImpl>(this, _$identity);
 }
 
-/// @nodoc
-abstract mixin class _$SettingsStateCopyWith<$Res>
-    implements $SettingsStateCopyWith<$Res> {
-  factory _$SettingsStateCopyWith(
-          _SettingsState value, $Res Function(_SettingsState) _then) =
-      __$SettingsStateCopyWithImpl;
+abstract class _SettingsState implements SettingsState {
+  const factory _SettingsState(
+      {final bool pushNotificationsEnabled,
+      final bool classTestRemindersEnabled,
+      final String language}) = _$SettingsStateImpl;
+
   @override
-  @useResult
-  $Res call(
-      {bool pushNotificationsEnabled,
-      bool classTestRemindersEnabled,
-      String language});
-}
-
-/// @nodoc
-class __$SettingsStateCopyWithImpl<$Res>
-    implements _$SettingsStateCopyWith<$Res> {
-  __$SettingsStateCopyWithImpl(this._self, this._then);
-
-  final _SettingsState _self;
-  final $Res Function(_SettingsState) _then;
+  bool get pushNotificationsEnabled;
+  @override
+  bool get classTestRemindersEnabled;
+  @override
+  String get language;
 
   /// Create a copy of SettingsState
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @pragma('vm:prefer-inline')
-  $Res call({
-    Object? pushNotificationsEnabled = null,
-    Object? classTestRemindersEnabled = null,
-    Object? language = null,
-  }) {
-    return _then(_SettingsState(
-      pushNotificationsEnabled: null == pushNotificationsEnabled
-          ? _self.pushNotificationsEnabled
-          : pushNotificationsEnabled // ignore: cast_nullable_to_non_nullable
-              as bool,
-      classTestRemindersEnabled: null == classTestRemindersEnabled
-          ? _self.classTestRemindersEnabled
-          : classTestRemindersEnabled // ignore: cast_nullable_to_non_nullable
-              as bool,
-      language: null == language
-          ? _self.language
-          : language // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SettingsStateImplCopyWith<_$SettingsStateImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
-
-// dart format on
