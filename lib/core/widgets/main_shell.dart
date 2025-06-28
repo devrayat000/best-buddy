@@ -115,20 +115,94 @@ class _MainShellState extends State<MainShell> {
     } else if (location.startsWith('/class-tests')) {
       _selectedIndex = 1;
     } else if (location.startsWith('/users-list')) {
-      _selectedIndex = _isUserCR ? 2 : _selectedIndex; // Only CRs have users tab
+      _selectedIndex =
+          _isUserCR ? 2 : _selectedIndex; // Only CRs have users tab
     } else if (location.startsWith('/profile')) {
-      _selectedIndex = _isUserCR ? 3 : 2; // Profile is index 3 for CRs, 2 for regular users
+      _selectedIndex =
+          _isUserCR ? 3 : 2; // Profile is index 3 for CRs, 2 for regular users
+      if (location.startsWith('/profile/settings')) {
+        _selectedIndex = 4;
+      } else if (location.startsWith('/profile/settings')) {
+        _selectedIndex = 5;
+      } else if (location.startsWith('/profile/about')) {
+        _selectedIndex = 6;
+      } else {
+        _selectedIndex = 2;
+      }
     }
+
     return NetworkStatusBanner(
-      child: Scaffold(
-        body: widget.child,
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          type: BottomNavigationBarType.fixed,
-          enableFeedback: true,
-          items: _buildNavigationItems(),
-        ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isWideScreen = constraints.maxWidth > 600;
+
+          if (isWideScreen) {
+            return Scaffold(
+              body: SafeArea(
+                child: Row(
+                  children: [
+                    NavigationRail(
+                      selectedIndex: _selectedIndex,
+                      onDestinationSelected: _onItemTapped,
+                      labelType: NavigationRailLabelType.all,
+                      destinations: const [
+                        NavigationRailDestination(
+                          icon: Icon(Icons.notifications_outlined),
+                          selectedIcon: Icon(Icons.notifications),
+                          label: Text('Notices'),
+                        ),
+                        NavigationRailDestination(
+                          icon: Icon(Icons.quiz_outlined),
+                          selectedIcon: Icon(Icons.quiz),
+                          label: Text('Class Tests'),
+                        ),
+                        NavigationRailDestination(
+                          icon: Icon(Icons.person_outline),
+                          selectedIcon: Icon(Icons.person),
+                          label: Text('Profile'),
+                        ),
+                        NavigationRailDestination(
+                          icon: SizedBox(height: 1), // dummy
+                          label: SizedBox.shrink(),
+                          disabled: true,
+                          padding: EdgeInsets.all(0),
+                        ),
+                        NavigationRailDestination(
+                          icon: Icon(Icons.settings_outlined),
+                          selectedIcon: Icon(Icons.settings),
+                          label: Text('Settings'),
+                        ),
+                        NavigationRailDestination(
+                          icon: Icon(Icons.notifications_outlined),
+                          selectedIcon: Icon(Icons.help),
+                          label: Text('Notifications'),
+                        ),
+                        NavigationRailDestination(
+                          icon: Icon(Icons.info_outline),
+                          selectedIcon: Icon(Icons.info),
+                          label: Text('About'),
+                        ),
+                      ],
+                    ),
+                    const VerticalDivider(thickness: 1, width: 1),
+                    Expanded(child: widget.child),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            return Scaffold(
+              body: widget.child,
+              bottomNavigationBar: BottomNavigationBar(
+                currentIndex: _selectedIndex,
+                onTap: _onItemTapped,
+                type: BottomNavigationBarType.fixed,
+                enableFeedback: true,
+                items: _buildNavigationItems(),
+              ),
+            );
+          }
+        },
       ),
     );
   }
