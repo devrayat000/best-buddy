@@ -1,24 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore_odm/cloud_firestore_odm.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
-
-// Custom converter for Firestore Timestamps
-class TimestampConverter implements JsonConverter<DateTime?, Timestamp?> {
-  const TimestampConverter();
-
-  @override
-  DateTime? fromJson(Timestamp? timestamp) {
-    return timestamp?.toDate();
-  }
-
-  @override
-  Timestamp? toJson(DateTime? dateTime) {
-    return dateTime != null ? Timestamp.fromDate(dateTime) : null;
-  }
-}
 
 enum UserRole {
   @JsonValue('student')
@@ -28,21 +13,22 @@ enum UserRole {
 }
 
 @freezed
-abstract class UserModel with _$UserModel {
+sealed class UserModel with _$UserModel {
+  @JsonSerializable(
+      explicitToJson: true, converters: [FirestoreDateTimeConverter()])
   const factory UserModel({
-    required String id, 
+    @Id() required String id,
     required String name,
     required String email,
     @Default(UserRole.student) UserRole role,
-    @TimestampConverter() DateTime? createdAt,
-    @TimestampConverter() DateTime? updatedAt,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) = _UserModel;
 
-  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
 }
 
 // Collection reference using regular Firestore
-final usersRef = FirebaseFirestore.instance.collection('users').withConverter<UserModel>(
-  fromFirestore: (snapshot, _) => UserModel.fromJson(snapshot.data()!),
-  toFirestore: (user, _) => user.toJson(),
-);
+@Collection<UserModel>('users')
+final usersRef = UserModelCollectionReference();

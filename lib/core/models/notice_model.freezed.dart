@@ -20,15 +20,14 @@ NoticeModel _$NoticeModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$NoticeModel {
-  String? get id => throw _privateConstructorUsedError;
+  @Id()
+  String get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get content => throw _privateConstructorUsedError;
-  String get createdById => throw _privateConstructorUsedError;
-  String? get createdByName => throw _privateConstructorUsedError;
-  UserRole? get createdByRole => throw _privateConstructorUsedError;
-  @TimestampConverter()
+  @JsonKey(includeToJson: false)
+  UserModelDocumentReference get createdBy =>
+      throw _privateConstructorUsedError;
   DateTime? get createdAt => throw _privateConstructorUsedError;
-  @TimestampConverter()
   DateTime? get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this NoticeModel to a JSON map.
@@ -48,14 +47,12 @@ abstract class $NoticeModelCopyWith<$Res> {
       _$NoticeModelCopyWithImpl<$Res, NoticeModel>;
   @useResult
   $Res call(
-      {String? id,
+      {@Id() String id,
       String title,
       String content,
-      String createdById,
-      String? createdByName,
-      UserRole? createdByRole,
-      @TimestampConverter() DateTime? createdAt,
-      @TimestampConverter() DateTime? updatedAt});
+      @JsonKey(includeToJson: false) UserModelDocumentReference createdBy,
+      DateTime? createdAt,
+      DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -73,20 +70,18 @@ class _$NoticeModelCopyWithImpl<$Res, $Val extends NoticeModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
+    Object? id = null,
     Object? title = null,
     Object? content = null,
-    Object? createdById = null,
-    Object? createdByName = freezed,
-    Object? createdByRole = freezed,
+    Object? createdBy = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
   }) {
     return _then(_value.copyWith(
-      id: freezed == id
+      id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -95,18 +90,10 @@ class _$NoticeModelCopyWithImpl<$Res, $Val extends NoticeModel>
           ? _value.content
           : content // ignore: cast_nullable_to_non_nullable
               as String,
-      createdById: null == createdById
-          ? _value.createdById
-          : createdById // ignore: cast_nullable_to_non_nullable
-              as String,
-      createdByName: freezed == createdByName
-          ? _value.createdByName
-          : createdByName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      createdByRole: freezed == createdByRole
-          ? _value.createdByRole
-          : createdByRole // ignore: cast_nullable_to_non_nullable
-              as UserRole?,
+      createdBy: freezed == createdBy
+          ? _value.createdBy
+          : createdBy // ignore: cast_nullable_to_non_nullable
+              as UserModelDocumentReference,
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -128,14 +115,12 @@ abstract class _$$NoticeModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String? id,
+      {@Id() String id,
       String title,
       String content,
-      String createdById,
-      String? createdByName,
-      UserRole? createdByRole,
-      @TimestampConverter() DateTime? createdAt,
-      @TimestampConverter() DateTime? updatedAt});
+      @JsonKey(includeToJson: false) UserModelDocumentReference createdBy,
+      DateTime? createdAt,
+      DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -151,20 +136,18 @@ class __$$NoticeModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
+    Object? id = null,
     Object? title = null,
     Object? content = null,
-    Object? createdById = null,
-    Object? createdByName = freezed,
-    Object? createdByRole = freezed,
+    Object? createdBy = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
   }) {
     return _then(_$NoticeModelImpl(
-      id: freezed == id
+      id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -173,18 +156,10 @@ class __$$NoticeModelImplCopyWithImpl<$Res>
           ? _value.content
           : content // ignore: cast_nullable_to_non_nullable
               as String,
-      createdById: null == createdById
-          ? _value.createdById
-          : createdById // ignore: cast_nullable_to_non_nullable
-              as String,
-      createdByName: freezed == createdByName
-          ? _value.createdByName
-          : createdByName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      createdByRole: freezed == createdByRole
-          ? _value.createdByRole
-          : createdByRole // ignore: cast_nullable_to_non_nullable
-              as UserRole?,
+      createdBy: freezed == createdBy
+          ? _value.createdBy
+          : createdBy // ignore: cast_nullable_to_non_nullable
+              as UserModelDocumentReference,
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -198,43 +173,41 @@ class __$$NoticeModelImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true, converters: [
+  FirestoreDateTimeConverter(),
+  UserModelDocumentReferenceConverter()
+])
 class _$NoticeModelImpl implements _NoticeModel {
   const _$NoticeModelImpl(
-      {this.id,
+      {@Id() required this.id,
       required this.title,
       required this.content,
-      required this.createdById,
-      this.createdByName,
-      this.createdByRole,
-      @TimestampConverter() this.createdAt,
-      @TimestampConverter() this.updatedAt});
+      @JsonKey(includeToJson: false) required this.createdBy,
+      this.createdAt,
+      this.updatedAt});
 
   factory _$NoticeModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$NoticeModelImplFromJson(json);
 
   @override
-  final String? id;
+  @Id()
+  final String id;
   @override
   final String title;
   @override
   final String content;
   @override
-  final String createdById;
+  @JsonKey(includeToJson: false)
+  final UserModelDocumentReference createdBy;
   @override
-  final String? createdByName;
-  @override
-  final UserRole? createdByRole;
-  @override
-  @TimestampConverter()
   final DateTime? createdAt;
   @override
-  @TimestampConverter()
   final DateTime? updatedAt;
 
   @override
   String toString() {
-    return 'NoticeModel(id: $id, title: $title, content: $content, createdById: $createdById, createdByName: $createdByName, createdByRole: $createdByRole, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'NoticeModel(id: $id, title: $title, content: $content, createdBy: $createdBy, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -245,12 +218,7 @@ class _$NoticeModelImpl implements _NoticeModel {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.content, content) || other.content == content) &&
-            (identical(other.createdById, createdById) ||
-                other.createdById == createdById) &&
-            (identical(other.createdByName, createdByName) ||
-                other.createdByName == createdByName) &&
-            (identical(other.createdByRole, createdByRole) ||
-                other.createdByRole == createdByRole) &&
+            const DeepCollectionEquality().equals(other.createdBy, createdBy) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -259,8 +227,8 @@ class _$NoticeModelImpl implements _NoticeModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, title, content, createdById,
-      createdByName, createdByRole, createdAt, updatedAt);
+  int get hashCode => Object.hash(runtimeType, id, title, content,
+      const DeepCollectionEquality().hash(createdBy), createdAt, updatedAt);
 
   /// Create a copy of NoticeModel
   /// with the given fields replaced by the non-null parameter values.
@@ -280,35 +248,30 @@ class _$NoticeModelImpl implements _NoticeModel {
 
 abstract class _NoticeModel implements NoticeModel {
   const factory _NoticeModel(
-      {final String? id,
+      {@Id() required final String id,
       required final String title,
       required final String content,
-      required final String createdById,
-      final String? createdByName,
-      final UserRole? createdByRole,
-      @TimestampConverter() final DateTime? createdAt,
-      @TimestampConverter() final DateTime? updatedAt}) = _$NoticeModelImpl;
+      @JsonKey(includeToJson: false)
+      required final UserModelDocumentReference createdBy,
+      final DateTime? createdAt,
+      final DateTime? updatedAt}) = _$NoticeModelImpl;
 
   factory _NoticeModel.fromJson(Map<String, dynamic> json) =
       _$NoticeModelImpl.fromJson;
 
   @override
-  String? get id;
+  @Id()
+  String get id;
   @override
   String get title;
   @override
   String get content;
   @override
-  String get createdById;
+  @JsonKey(includeToJson: false)
+  UserModelDocumentReference get createdBy;
   @override
-  String? get createdByName;
-  @override
-  UserRole? get createdByRole;
-  @override
-  @TimestampConverter()
   DateTime? get createdAt;
   @override
-  @TimestampConverter()
   DateTime? get updatedAt;
 
   /// Create a copy of NoticeModel

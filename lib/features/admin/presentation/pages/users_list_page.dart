@@ -28,14 +28,14 @@ class _UsersListPageState extends State<UsersListPage> {
   Future<void> _loadStats() async {
     try {
       final usersSnapshot = await usersRef.get();
-      final users = usersSnapshot.docs.map((doc) => doc.data()).toList();
-      
+      final users = usersSnapshot.docs.map((doc) => doc.data).toList();
+
       final stats = <String, int>{};
       for (final user in users) {
         final roleKey = user.role.name;
         stats[roleKey] = (stats[roleKey] ?? 0) + 1;
       }
-      
+
       if (mounted) {
         setState(() {
           _stats = stats;
@@ -56,18 +56,19 @@ class _UsersListPageState extends State<UsersListPage> {
             body: LoadingView(message: 'Checking permissions...'),
           );
         }
-        
+
         if (snapshot.hasError || !snapshot.hasData || !snapshot.data!) {
           return Scaffold(
             appBar: AppBar(
               title: const Text('Unauthorized'),
             ),
             body: const ErrorView(
-              message: 'You do not have permission to access this page. CR role required.',
+              message:
+                  'You do not have permission to access this page. CR role required.',
             ),
           );
         }
-        
+
         return _buildUsersPage();
       },
     );
@@ -101,5 +102,5 @@ class _UsersListPageState extends State<UsersListPage> {
         ],
       ),
     );
-}
+  }
 }

@@ -1,6 +1,8 @@
+import 'package:cloud_firestore_odm/cloud_firestore_odm.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import '../../core/auth/auth_service.dart';
 import '../../core/models/notice_model.dart';
 import '../../core/services/analytics_service.dart';
@@ -23,14 +25,10 @@ class _NoticesScreenState extends State<NoticesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Notices'),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-      ),
-      body: StreamBuilder<QuerySnapshot<NoticeModel>>(
-        stream: noticesRef.orderBy('createdAt', descending: true).snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot<NoticeModel>?> snapshot, [Widget? child]) {
+      appBar: AppBar(title: const Text('Notices')),
+      body: FirestoreBuilder<NoticeModelQuerySnapshot>(
+        ref: noticeRef.orderByCreatedAt(descending: true),
+        builder: (context, snapshot, child) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -54,7 +52,8 @@ class _NoticesScreenState extends State<NoticesScreen> {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
-                      AnalyticsService.logCustomEvent('notices_retry_tapped', {});
+                      AnalyticsService.logCustomEvent(
+                          'notices_retry_tapped', {});
                       setState(() {}); // Trigger rebuild to retry stream
                     },
                     child: const Text('Retry'),
@@ -64,10 +63,9 @@ class _NoticesScreenState extends State<NoticesScreen> {
             );
           }
 
-          final querySnapshot = snapshot.data;
-          final notices = querySnapshot?.docs.map((doc) => doc.data()).toList() ?? [];
-          
-          if (notices.isEmpty) {
+          final querySnapshot = snapshot.requireData;
+
+          if (querySnapshot.docs.isEmpty) {
             return const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -92,9 +90,9 @@ class _NoticesScreenState extends State<NoticesScreen> {
 
           return ListView.builder(
             padding: const EdgeInsets.all(16),
-            itemCount: notices.length,
+            itemCount: querySnapshot.docs.length,
             itemBuilder: (context, index) {
-              final notice = notices[index];
+              final notice = querySnapshot.docs[index].data;
               return _buildNoticeCard(notice);
             },
           );
@@ -120,138 +118,83 @@ class _NoticesScreenState extends State<NoticesScreen> {
   }
 
   Widget _buildNoticeCard(NoticeModel notice) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    notice.title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                FutureBuilder<bool>(
-                  future: AuthService().isCurrentUserCR(),
-                  builder: (context, snapshot) {
-                    if (snapshot.data == true) {
-                      return PopupMenuButton<String>(
-                        onSelected: (value) {
-                          if (value == 'edit') {
-                            AnalyticsService.logCustomEvent('notice_edit_tapped', {
-                              'notice_id': notice.id ?? 'unknown',
-                              'notice_title': notice.title,
-                            });
-                            context.go('/notices/edit/${notice.id}', extra: notice);
-                          } else if (value == 'delete') {
-                            AnalyticsService.logCustomEvent('notice_delete_tapped', {
-                              'notice_id': notice.id ?? 'unknown',
-                              'notice_title': notice.title,
-                            });
-                            _showDeleteNoticeDialog(context, notice);
-                          }
-                        },
-                        itemBuilder: (context) => [
-                          const PopupMenuItem(
-                            value: 'edit',
-                            child: Row(
-                              children: [
-                                Icon(Icons.edit, size: 20),
-                                SizedBox(width: 8),
-                                Text('Edit'),
-                              ],
-                            ),
-                          ),
-                          const PopupMenuItem(
-                            value: 'delete',
-                            child: Row(
-                              children: [
-                                Icon(Icons.delete, 
-                                     color: Colors.red, size: 20),
-                                SizedBox(width: 8),
-                                Text('Delete'),
-                              ],
-                            ),
-                          ),
-                        ],
-                      );
-                    }
-                    return const SizedBox.shrink();
-                  },
-                ),
-              ],
+    return ListTile(
+      title: Text(
+        notice.title,
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (notice.content.isNotEmpty)
+            Text(
+              notice.content,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 8),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  notice.content,
-                  style: const TextStyle(fontSize: 16),
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 8),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {
-                      AnalyticsService.logCustomEvent('notice_read_more_tapped', {
-                        'notice_id': notice.id ?? 'unknown',
-                        'notice_title': notice.title,
-                      });
-                      context.go('/notices/${notice.id}');
-                    },
-                    child: const Text('Read more'),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Icon(
-                  Icons.person,
-                  size: 16,
-                  color: Colors.grey[600],
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  'By ${notice.createdByName ?? 'Unknown'}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                const Spacer(),
-                if (notice.createdAt != null) ...[
-                  Icon(
-                    Icons.access_time,
-                    size: 16,
-                    color: Colors.grey[600],
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    _formatDate(notice.createdAt!),
-                    style: TextStyle(
-                      fontSize: 12,
+          const SizedBox(height: 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              FirestoreBuilder(
+                ref: notice.createdBy,
+                builder: (context, snapshot, child) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  }
+                  if (snapshot.hasError) {
+                    return const Text('Error loading user');
+                  }
+                  final user = snapshot.requireData.data;
+
+                  return Row(
+                    children: [
+                      Icon(
+                        Icons.person,
+                        size: 16,
+                        color: Colors.grey[600],
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        user!.name,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              if (notice.createdAt != null)
+                Row(
+                  children: [
+                    Icon(
+                      Icons.access_time,
+                      size: 16,
                       color: Colors.grey[600],
                     ),
-                  ),
-                ],
-              ],
-            ),
-          ],
-        ),
+                    const SizedBox(width: 4),
+                    Text(
+                      DateFormat.yMMMd().format(notice.createdAt!),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ],
+                ),
+            ],
+          ),
+        ],
       ),
+      onTap: () {
+        context.goNamed(
+          'notice-detail',
+          pathParameters: {'id': notice.id!},
+        );
+      },
+      isThreeLine: true,
     );
   }
 
@@ -279,15 +222,15 @@ class _NoticesScreenState extends State<NoticesScreen> {
           ElevatedButton(
             onPressed: () async {
               try {
-                await noticesRef.doc(notice.id!).delete();
-                
+                await noticeRef.doc(notice.id!).delete();
+
                 AnalyticsService.logCustomEvent('notice_deleted', {
                   'notice_id': notice.id ?? 'unknown',
                   'notice_title': notice.title,
                 });
-                
+
                 Navigator.pop(dialogContext);
-                
+
                 // Show success message
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(

@@ -12,14 +12,15 @@ class AuthService {
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseNotificationService _notificationService = FirebaseNotificationService();
+  final FirebaseNotificationService _notificationService =
+      FirebaseNotificationService();
 
   // Stream of auth state changes
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
-  
+
   // Current user
   User? get currentUser => _firebaseAuth.currentUser;
-  
+
   // Check if user is authenticated
   bool get isAuthenticated => currentUser != null;
 
@@ -48,6 +49,7 @@ class AuthService {
       final doc = await _firestore.collection('users').doc(user.uid).get();
       if (doc.exists) {
         final data = doc.data()!;
+        print('User data: ${doc.id}');
         return UserModel.fromJson({
           ...data,
           'id': doc.id,
@@ -139,10 +141,7 @@ class AuthService {
         updatedAt: DateTime.now(),
       );
 
-      await _firestore
-          .collection('users')
-          .doc(user.uid)
-          .set(userData.toJson());
+      await _firestore.collection('users').doc(user.uid).set(userData.toJson());
 
       // Update display name
       await user.updateDisplayName(name);

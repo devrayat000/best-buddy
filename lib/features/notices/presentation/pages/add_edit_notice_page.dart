@@ -28,10 +28,11 @@ class _AddEditNoticePageState extends State<AddEditNoticePage> {
   @override
   void initState() {
     super.initState();
-    
+
     // Log screen visit
-    AnalyticsService.logScreenView(_isEditing ? 'edit_notice_screen' : 'add_notice_screen');
-    
+    AnalyticsService.logScreenView(
+        _isEditing ? 'edit_notice_screen' : 'add_notice_screen');
+
     if (_isEditing) {
       _titleController.text = widget.existingNotice!.title;
       _contentController.text = widget.existingNotice!.content;
@@ -89,7 +90,7 @@ class _AddEditNoticePageState extends State<AddEditNoticePage> {
                 ],
               ),
             ),
-            
+
             // Form content
             Flexible(
               child: SingleChildScrollView(
@@ -119,9 +120,9 @@ class _AddEditNoticePageState extends State<AddEditNoticePage> {
                         },
                         enabled: !_isLoading,
                       ),
-                      
+
                       const SizedBox(height: 16),
-                      
+
                       // Content field
                       TextFormField(
                         controller: _contentController,
@@ -143,15 +144,16 @@ class _AddEditNoticePageState extends State<AddEditNoticePage> {
                         },
                         enabled: !_isLoading,
                       ),
-                      
+
                       const SizedBox(height: 24),
-                      
+
                       // Action buttons
                       Row(
                         children: [
                           Expanded(
                             child: OutlinedButton(
-                              onPressed: _isLoading ? null : () => context.pop(),
+                              onPressed:
+                                  _isLoading ? null : () => context.pop(),
                               child: const Text('Cancel'),
                             ),
                           ),
@@ -169,7 +171,9 @@ class _AddEditNoticePageState extends State<AddEditNoticePage> {
                                       width: 16,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2,
-                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
                                       ),
                                     )
                                   : Text(_isEditing ? 'Update' : 'Create'),
@@ -199,14 +203,14 @@ class _AddEditNoticePageState extends State<AddEditNoticePage> {
 
     try {
       if (_isEditing) {
-        await noticesRef.doc(widget.existingNotice!.id!).set(
-          widget.existingNotice!.copyWith(
-            title: _titleController.text.trim(),
-            content: _contentController.text.trim(),
-            updatedAt: DateTime.now(),
-          ),
-        );
-        
+        // await noticesRef.doc(widget.existingNotice!.id!).set(
+        //   widget.existingNotice!.copyWith(
+        //     title: _titleController.text.trim(),
+        //     content: _contentController.text.trim(),
+        //     updatedAt: DateTime.now(),
+        //   ),
+        // );
+
         // Track successful update
         AnalyticsService.logCustomEvent('notice_updated', {
           'notice_id': widget.existingNotice!.id!,
@@ -216,17 +220,17 @@ class _AddEditNoticePageState extends State<AddEditNoticePage> {
         final authService = AuthService();
         final user = authService.currentUser;
         final userRole = await authService.getCurrentUserRole();
-        
-        await noticesRef.add(NoticeModel(
-          title: _titleController.text.trim(),
-          content: _contentController.text.trim(),
-          createdById: user?.uid ?? '',
-          createdByName: user?.displayName ?? user?.email ?? '',
-          createdByRole: userRole == 'CR' ? UserRole.cr : UserRole.student,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        ));
-        
+
+        // await noticesRef.add(NoticeModel(
+        //   title: _titleController.text.trim(),
+        //   content: _contentController.text.trim(),
+        //   createdById: user?.uid ?? '',
+        //   createdByName: user?.displayName ?? user?.email ?? '',
+        //   createdByRole: userRole == 'CR' ? UserRole.cr : UserRole.student,
+        //   createdAt: DateTime.now(),
+        //   updatedAt: DateTime.now(),
+        // ));
+
         // Track successful creation
         AnalyticsService.logCustomEvent('notice_created', {
           'title': _titleController.text.trim(),

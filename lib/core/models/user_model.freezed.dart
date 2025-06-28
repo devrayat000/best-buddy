@@ -20,13 +20,12 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$UserModel {
+  @Id()
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   UserRole get role => throw _privateConstructorUsedError;
-  @TimestampConverter()
   DateTime? get createdAt => throw _privateConstructorUsedError;
-  @TimestampConverter()
   DateTime? get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this UserModel to a JSON map.
@@ -45,12 +44,12 @@ abstract class $UserModelCopyWith<$Res> {
       _$UserModelCopyWithImpl<$Res, UserModel>;
   @useResult
   $Res call(
-      {String id,
+      {@Id() String id,
       String name,
       String email,
       UserRole role,
-      @TimestampConverter() DateTime? createdAt,
-      @TimestampConverter() DateTime? updatedAt});
+      DateTime? createdAt,
+      DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -113,12 +112,12 @@ abstract class _$$UserModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
+      {@Id() String id,
       String name,
       String email,
       UserRole role,
-      @TimestampConverter() DateTime? createdAt,
-      @TimestampConverter() DateTime? updatedAt});
+      DateTime? createdAt,
+      DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -171,20 +170,23 @@ class __$$UserModelImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(
+    explicitToJson: true, converters: [FirestoreDateTimeConverter()])
 class _$UserModelImpl implements _UserModel {
   const _$UserModelImpl(
-      {required this.id,
+      {@Id() required this.id,
       required this.name,
       required this.email,
       this.role = UserRole.student,
-      @TimestampConverter() this.createdAt,
-      @TimestampConverter() this.updatedAt});
+      this.createdAt,
+      this.updatedAt});
 
   factory _$UserModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserModelImplFromJson(json);
 
   @override
+  @Id()
   final String id;
   @override
   final String name;
@@ -194,10 +196,8 @@ class _$UserModelImpl implements _UserModel {
   @JsonKey()
   final UserRole role;
   @override
-  @TimestampConverter()
   final DateTime? createdAt;
   @override
-  @TimestampConverter()
   final DateTime? updatedAt;
 
   @override
@@ -243,17 +243,18 @@ class _$UserModelImpl implements _UserModel {
 
 abstract class _UserModel implements UserModel {
   const factory _UserModel(
-      {required final String id,
+      {@Id() required final String id,
       required final String name,
       required final String email,
       final UserRole role,
-      @TimestampConverter() final DateTime? createdAt,
-      @TimestampConverter() final DateTime? updatedAt}) = _$UserModelImpl;
+      final DateTime? createdAt,
+      final DateTime? updatedAt}) = _$UserModelImpl;
 
   factory _UserModel.fromJson(Map<String, dynamic> json) =
       _$UserModelImpl.fromJson;
 
   @override
+  @Id()
   String get id;
   @override
   String get name;
@@ -262,10 +263,8 @@ abstract class _UserModel implements UserModel {
   @override
   UserRole get role;
   @override
-  @TimestampConverter()
   DateTime? get createdAt;
   @override
-  @TimestampConverter()
   DateTime? get updatedAt;
 
   /// Create a copy of UserModel

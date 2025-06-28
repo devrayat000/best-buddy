@@ -1,3 +1,4 @@
+import 'package:cloud_firestore_odm/cloud_firestore_odm.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/models/user_model.dart';
@@ -14,9 +15,9 @@ class UsersList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot<UserModel>>(
-      stream: usersRef.snapshots(),
-      builder: (context, snapshot) {
+    return FirestoreBuilder(
+      ref: usersRef,
+      builder: (context, snapshot, child) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const LoadingView(message: 'Loading users...');
         }
@@ -28,7 +29,8 @@ class UsersList extends StatelessWidget {
           );
         }
 
-        final allUsers = snapshot.data?.docs.map((doc) => doc.data()).toList() ?? [];
+        final allUsers =
+            snapshot.data?.docs.map((doc) => doc.data).toList() ?? [];
         final filteredUsers = _filterUsers(allUsers);
 
         if (filteredUsers.isEmpty) {
@@ -95,9 +97,8 @@ class UsersList extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: user.role == UserRole.cr
-              ? Colors.orange[100]
-              : Colors.blue[100],
+          backgroundColor:
+              user.role == UserRole.cr ? Colors.orange[100] : Colors.blue[100],
           child: Icon(
             user.role == UserRole.cr
                 ? Icons.admin_panel_settings
@@ -128,7 +129,8 @@ class UsersList extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
                     color: user.role == UserRole.cr
                         ? Colors.orange[100]

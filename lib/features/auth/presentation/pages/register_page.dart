@@ -26,10 +26,10 @@ class _RegisterPageState extends State<RegisterPage> {
   void initState() {
     super.initState();
     _registerForm = RegisterForm();
-    
+
     // Log screen visit
     AnalyticsService.logScreenView('register_screen');
-    
+
     // Listen to auth state changes
     _authService.authStateChanges.listen((user) {
       if (user != null && mounted) {
@@ -59,18 +59,18 @@ class _RegisterPageState extends State<RegisterPage> {
         name: _registerForm.name!,
         role: _registerForm.role == 'cr' ? UserRole.cr : UserRole.student,
       );
-      
+
       // Log successful registration
       AnalyticsService.logSignUp('email');
       AnalyticsService.logCustomEvent('user_registered', {
         'role': _registerForm.role ?? 'unknown',
       });
-      
+
       // Navigation will be handled by the auth state listener
     } catch (e) {
       // Log registration failure
       AnalyticsService.logError('registration_failed', e.toString());
-      
+
       if (mounted) {
         setState(() {
           _errorMessage = e.toString();
@@ -107,10 +107,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   // Title
                   Text(
                     'Join Study Buddy',
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineMedium
-                        ?.copyWith(
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                     textAlign: TextAlign.center,
@@ -161,50 +158,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Role Selection
-                  Card(
-                    elevation: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Select Your Role',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          ReactiveDropdownField<String>(
-                            formControlName: RegisterForm.roleControlName,
-                            decoration: const InputDecoration(
-                              hintText: 'Choose your role',
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 12,
-                              ),
-                            ),
-                            items: const [
-                              DropdownMenuItem(
-                                value: 'student',
-                                child: Text('Student'),
-                              ),
-                              DropdownMenuItem(
-                                value: 'cr',
-                                child: Text('Class Representative (CR)'),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
                   // Error message
                   if (_errorMessage != null)
                     Container(
@@ -217,12 +170,14 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.error_outline, color: Colors.red[600], size: 20),
+                          Icon(Icons.error_outline,
+                              color: Colors.red[600], size: 20),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
                               _errorMessage!,
-                              style: TextStyle(color: Colors.red[800], fontSize: 14),
+                              style: TextStyle(
+                                  color: Colors.red[800], fontSize: 14),
                             ),
                           ),
                         ],

@@ -12,6 +12,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'core/router/app_router.dart';
 import 'core/theme/theme_cubit.dart';
@@ -35,10 +36,16 @@ void main() {
 Future<void> _initializeApp() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Initialize Hive storage
+  await _initializeHive();
+
   // Initialize Firebase first
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+      name: 'app',
+    );
+  }
 
   // Enable Firestore offline persistence
   await _enableFirestoreOffline();
@@ -51,9 +58,6 @@ Future<void> _initializeApp() async {
 
   // Initialize timezone data
   tz.initializeTimeZones();
-
-  // Initialize Hive storage
-  await _initializeHive();
   // Initialize and register ThemeCubit immediately after Hive
   GetIt.instance.registerLazySingleton<ThemeCubit>(() => ThemeCubit());
   GetIt.instance.registerLazySingleton<AppRouter>(() => AppRouter());
