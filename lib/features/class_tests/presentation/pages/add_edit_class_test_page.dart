@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/auth/auth_service.dart';
 import '../../../../core/models/class_test_model.dart';
-import '../../cubit/class_tests_cubit.dart';
+import '../../../../core/models/user_model.dart';
+import '../../../../core/services/analytics_service.dart';
+import '../widgets/class_test_form_field.dart';
+import '../widgets/date_time_selector.dart';
+import '../widgets/form_action_buttons.dart';
+import '../widgets/dialog_header.dart';
 
 class AddEditClassTestPage extends StatefulWidget {
   final ClassTestModel? classTest;
@@ -24,7 +29,6 @@ class _AddEditClassTestPageState extends State<AddEditClassTestPage> {
   final _locationController = TextEditingController();
   final _instructionsController = TextEditingController();
   
-  late final ClassTestsCubit _classTestsCubit;
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
   bool _isLoading = false;
@@ -34,7 +38,9 @@ class _AddEditClassTestPageState extends State<AddEditClassTestPage> {
   @override
   void initState() {
     super.initState();
-    _classTestsCubit = GetIt.I<ClassTestsCubit>();
+    
+    // Log screen visit
+    AnalyticsService.logScreenView(_isEditing ? 'edit_class_test_screen' : 'add_class_test_screen');
     
     if (_isEditing) {
       final classTest = widget.classTest!;
@@ -89,250 +95,135 @@ class _AddEditClassTestPageState extends State<AddEditClassTestPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             // Header
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      _isEditing ? 'Edit Class Test' : 'Add Class Test',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: _isLoading ? null : () => context.pop(),
-                    icon: const Icon(
-                      Icons.close,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
+            DialogHeader(
+              title: _isEditing ? 'Edit Class Test' : 'Add Class Test',
+              isLoading: _isLoading,
+              onClose: () => context.pop(),
             ),
             
             // Form content
             Flexible(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Title field
-                      TextFormField(
-                        controller: _titleController,
-                        decoration: const InputDecoration(
-                          labelText: 'Title *',
-                          hintText: 'Enter test title',
-                          border: OutlineInputBorder(),
-                        ),
-                        maxLines: 1,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'Title is required';
-                          }
-                          if (value.trim().length < 3) {
-                            return 'Title must be at least 3 characters';
-                          }
-                          return null;
-                        },
-                        enabled: !_isLoading,
-                      ),
-                      
-                      const SizedBox(height: 16),
-                      
-                      // Subject field
-                      TextFormField(
-                        controller: _subjectController,
-                        decoration: const InputDecoration(
-                          labelText: 'Subject *',
-                          hintText: 'Enter subject name',
-                          border: OutlineInputBorder(),
-                        ),
-                        maxLines: 1,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'Subject is required';
-                          }
-                          return null;
-                        },
-                        enabled: !_isLoading,
-                      ),
-                      
-                      const SizedBox(height: 16),
-                      
-                      // Test Date and Time
-                      Row(
-                        children: [
-                          Expanded(
-                            child: InkWell(
-                              onTap: _isLoading ? null : _selectDate,
-                              child: InputDecorator(
-                                decoration: InputDecoration(
-                                  labelText: 'Test Date *',
-                                  border: const OutlineInputBorder(),
-                                  errorText: _selectedDate == null && _isLoading == false 
-                                      ? 'Date is required' 
-                                      : null,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      _selectedDate != null
-                                          ? '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
-                                          : 'Select date',
-                                      style: TextStyle(
-                                        color: _selectedDate != null
-                                            ? null
-                                            : Colors.grey[600],
-                                      ),
-                                    ),
-                                    const Icon(Icons.calendar_today),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: InkWell(
-                              onTap: _isLoading ? null : _selectTime,
-                              child: InputDecorator(
-                                decoration: InputDecoration(
-                                  labelText: 'Test Time *',
-                                  border: const OutlineInputBorder(),
-                                  errorText: _selectedTime == null && _isLoading == false 
-                                      ? 'Time is required' 
-                                      : null,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      _selectedTime != null
-                                          ? _selectedTime!.format(context)
-                                          : 'Select time',
-                                      style: TextStyle(
-                                        color: _selectedTime != null
-                                            ? null
-                                            : Colors.grey[600],
-                                      ),
-                                    ),
-                                    const Icon(Icons.access_time),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      
-                      const SizedBox(height: 16),
-                      
-                      // Location field (optional)
-                      TextFormField(
-                        controller: _locationController,
-                        decoration: const InputDecoration(
-                          labelText: 'Location',
-                          hintText: 'Enter test location (optional)',
-                          border: OutlineInputBorder(),
-                        ),
-                        maxLines: 1,
-                        enabled: !_isLoading,
-                      ),
-                      
-                      const SizedBox(height: 16),
-                      
-                      // Description field
-                      TextFormField(
-                        controller: _descriptionController,
-                        decoration: const InputDecoration(
-                          labelText: 'Description *',
-                          hintText: 'Enter test description',
-                          border: OutlineInputBorder(),
-                          alignLabelWithHint: true,
-                        ),
-                        maxLines: 4,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'Description is required';
-                          }
-                          if (value.trim().length < 10) {
-                            return 'Description must be at least 10 characters';
-                          }
-                          return null;
-                        },
-                        enabled: !_isLoading,
-                      ),
-                      
-                      const SizedBox(height: 16),
-                      
-                      // Instructions field (optional)
-                      TextFormField(
-                        controller: _instructionsController,
-                        decoration: const InputDecoration(
-                          labelText: 'Instructions',
-                          hintText: 'Enter test instructions (optional)',
-                          border: OutlineInputBorder(),
-                          alignLabelWithHint: true,
-                        ),
-                        maxLines: 3,
-                        enabled: !_isLoading,
-                      ),
-                      
-                      const SizedBox(height: 24),
-                      
-                      // Action buttons
-                      Row(
-                        children: [
-                          Expanded(
-                            child: OutlinedButton(
-                              onPressed: _isLoading ? null : () => context.pop(),
-                              child: const Text('Cancel'),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: _isLoading ? null : _submitForm,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue,
-                                foregroundColor: Colors.white,
-                              ),
-                              child: _isLoading
-                                  ? const SizedBox(
-                                      height: 16,
-                                      width: 16,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                      ),
-                                    )
-                                  : Text(_isEditing ? 'Update' : 'Create'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                child: _buildForm(),
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildForm() {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Title field
+          ClassTestFormField(
+            controller: _titleController,
+            label: 'Title',
+            hint: 'Enter test title',
+            required: true,
+            enabled: !_isLoading,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Title is required';
+              }
+              if (value.trim().length < 3) {
+                return 'Title must be at least 3 characters';
+              }
+              return null;
+            },
+          ),
+          
+          const SizedBox(height: 16),
+          
+          // Subject field
+          ClassTestFormField(
+            controller: _subjectController,
+            label: 'Subject',
+            hint: 'Enter subject name',
+            required: true,
+            enabled: !_isLoading,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Subject is required';
+              }
+              return null;
+            },
+          ),
+          
+          const SizedBox(height: 16),
+          
+          // Test Date and Time
+          DateTimeSelector(
+            selectedDate: _selectedDate,
+            selectedTime: _selectedTime,
+            onDateTap: _selectDate,
+            onTimeTap: _selectTime,
+            enabled: !_isLoading,
+            dateError: _selectedDate == null && _isLoading == false 
+                ? 'Date is required' 
+                : null,
+            timeError: _selectedTime == null && _isLoading == false 
+                ? 'Time is required' 
+                : null,
+          ),
+          
+          const SizedBox(height: 16),
+          
+          // Location field (optional)
+          ClassTestFormField(
+            controller: _locationController,
+            label: 'Location',
+            hint: 'Enter test location (optional)',
+            enabled: !_isLoading,
+          ),
+          
+          const SizedBox(height: 16),
+          
+          // Description field
+          ClassTestFormField(
+            controller: _descriptionController,
+            label: 'Description',
+            hint: 'Enter test description',
+            maxLines: 4,
+            required: true,
+            enabled: !_isLoading,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Description is required';
+              }
+              if (value.trim().length < 10) {
+                return 'Description must be at least 10 characters';
+              }
+              return null;
+            },
+          ),
+          
+          const SizedBox(height: 16),
+          
+          // Instructions field (optional)
+          ClassTestFormField(
+            controller: _instructionsController,
+            label: 'Instructions',
+            hint: 'Enter test instructions (optional)',
+            maxLines: 3,
+            enabled: !_isLoading,
+          ),
+          
+          const SizedBox(height: 24),
+          
+          // Action buttons
+          FormActionButtons(
+            isLoading: _isLoading,
+            isEditing: _isEditing,
+            onCancel: () => context.pop(),
+            onSubmit: _submitForm,
+          ),
+        ],
       ),
     );
   }
@@ -402,9 +293,8 @@ class _AddEditClassTestPageState extends State<AddEditClassTestPage> {
 
     try {
       if (_isEditing) {
-        await _classTestsCubit.updateClassTest(
-          widget.classTest!.id!,
-          UpdateClassTestModel(
+        await classTestsRef.doc(widget.classTest!.id!).set(
+          widget.classTest!.copyWith(
             title: _titleController.text.trim(),
             subject: _subjectController.text.trim(),
             description: _descriptionController.text.trim(),
@@ -415,23 +305,45 @@ class _AddEditClassTestPageState extends State<AddEditClassTestPage> {
             instructions: _instructionsController.text.trim().isEmpty 
                 ? null 
                 : _instructionsController.text.trim(),
+            updatedAt: DateTime.now(),
           ),
         );
+        
+        // Track successful update
+        AnalyticsService.logCustomEvent('class_test_updated', {
+          'class_test_id': widget.classTest!.id ?? 'unknown',
+          'subject': _subjectController.text.trim(),
+          'title': _titleController.text.trim(),
+        });
       } else {
-        await _classTestsCubit.createClassTest(
-          CreateClassTestModel(
-            title: _titleController.text.trim(),
-            subject: _subjectController.text.trim(),
-            description: _descriptionController.text.trim(),
-            testDate: testDateTime,
-            location: _locationController.text.trim().isEmpty 
-                ? null 
-                : _locationController.text.trim(),
-            instructions: _instructionsController.text.trim().isEmpty 
-                ? null 
-                : _instructionsController.text.trim(),
-          ),
-        );
+        final authService = AuthService();
+        final user = authService.currentUser;
+        final userRole = await authService.getCurrentUserRole();
+        
+        await classTestsRef.add(ClassTestModel(
+          title: _titleController.text.trim(),
+          subject: _subjectController.text.trim(),
+          description: _descriptionController.text.trim(),
+          testDate: testDateTime,
+          createdById: user?.uid ?? '',
+          createdByName: user?.displayName ?? user?.email ?? '',
+          createdByRole: userRole == 'CR' ? UserRole.cr : UserRole.student,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          location: _locationController.text.trim().isEmpty 
+              ? null 
+              : _locationController.text.trim(),
+          instructions: _instructionsController.text.trim().isEmpty 
+              ? null 
+              : _instructionsController.text.trim(),
+        ));
+        
+        // Track successful creation
+        AnalyticsService.logCustomEvent('class_test_created', {
+          'subject': _subjectController.text.trim(),
+          'title': _titleController.text.trim(),
+          'test_date': testDateTime.toIso8601String(),
+        });
       }
 
       if (mounted) {

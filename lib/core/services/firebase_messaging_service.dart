@@ -5,6 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import '../storage/storage_service.dart';
 import '../cubits/reload_cubit.dart';
+import 'analytics_service.dart';
 import 'notification_navigation_service.dart';
 import '../../firebase_options.dart';
 
@@ -354,6 +355,13 @@ class FirebaseMessagingService {
   /// Handle foreground messages
   Future<void> _handleForegroundMessage(RemoteMessage message) async {
     log('📱 Foreground message received');
+
+    // Track notification received
+    final messageType = message.data['type'] as String?;
+    final messageId = message.data['id'] as String?;
+    AnalyticsService.logNotificationReceived(
+        messageType ?? 'unknown', messageId);
+
     await _showNotification(message,
         localNotificationsInstance: _localNotifications);
 
@@ -390,6 +398,12 @@ class FirebaseMessagingService {
   /// Handle notification tap
   Future<void> _handleNotificationTap(RemoteMessage message) async {
     log('📱 Notification tapped');
+
+    // Track notification opened
+    final messageType = message.data['type'] as String?;
+    final messageId = message.data['id'] as String?;
+    AnalyticsService.logNotificationOpened(messageType ?? 'unknown', messageId);
+
     _navigateFromNotification(message.data);
   }
 
@@ -400,6 +414,8 @@ class FirebaseMessagingService {
     if (response.payload != null) {
       final data = response.payload!.split('|');
       if (data.length >= 2) {
+        // Track local notification opened
+        AnalyticsService.logNotificationOpened(data[0], data[1]);
         _navigateFromNotification({'type': data[0], 'id': data[1]});
       }
     }

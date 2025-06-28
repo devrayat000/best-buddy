@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/auth/auth_service.dart';
 import '../../../../core/models/user_model.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../forms/register_form.dart';
 import '../widgets/auth_form_field.dart';
 import '../widgets/auth_button.dart';
@@ -25,6 +26,9 @@ class _RegisterPageState extends State<RegisterPage> {
   void initState() {
     super.initState();
     _registerForm = RegisterForm();
+    
+    // Log screen visit
+    AnalyticsService.logScreenView('register_screen');
     
     // Listen to auth state changes
     _authService.authStateChanges.listen((user) {
@@ -55,8 +59,18 @@ class _RegisterPageState extends State<RegisterPage> {
         name: _registerForm.name!,
         role: _registerForm.role == 'cr' ? UserRole.cr : UserRole.student,
       );
+      
+      // Log successful registration
+      AnalyticsService.logSignUp('email');
+      AnalyticsService.logCustomEvent('user_registered', {
+        'role': _registerForm.role ?? 'unknown',
+      });
+      
       // Navigation will be handled by the auth state listener
     } catch (e) {
+      // Log registration failure
+      AnalyticsService.logError('registration_failed', e.toString());
+      
       if (mounted) {
         setState(() {
           _errorMessage = e.toString();

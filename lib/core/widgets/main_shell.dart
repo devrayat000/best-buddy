@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
 
+import '../auth/auth_service.dart';
 import '../services/firebase_messaging_service.dart';
 import '../services/notification_navigation_service.dart';
-import '../services/user_service.dart';
 import 'network_status_banner.dart';
 
 class MainShell extends StatefulWidget {
@@ -22,7 +22,6 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell> {
   int _selectedIndex = 0;
   bool _isUserCR = false;
-  final UserService _userService = UserService();
 
   @override
   void initState() {
@@ -37,7 +36,7 @@ class _MainShellState extends State<MainShell> {
 
   void _checkUserRole() async {
     try {
-      final isCR = await _userService.isCurrentUserCR();
+      final isCR = await AuthService().isCurrentUserCR();
       if (mounted) {
         setState(() {
           _isUserCR = isCR;

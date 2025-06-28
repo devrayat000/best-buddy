@@ -10,6 +10,7 @@ import 'package:get_it/get_it.dart';
 
 import '../auth/auth_service.dart';
 import '../settings/settings_cubit.dart';
+import '../services/analytics_service.dart';
 import '../models/notice_model.dart';
 import '../models/class_test_model.dart';
 import '../../features/auth/presentation/pages/get_started_page.dart';
@@ -107,6 +108,9 @@ class AppRouter {
     _router = GoRouter(
       initialLocation: '/splash',
       redirect: _redirect,
+      observers: [
+        AnalyticsService.observer,
+      ],
       routes: [
         // Splash screen route
         GoRoute(
