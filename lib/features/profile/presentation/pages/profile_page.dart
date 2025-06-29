@@ -1,3 +1,6 @@
+import 'package:best_buddy_flutter/core/models/user_model.dart';
+import 'package:cloud_firestore_odm/cloud_firestore_odm.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -33,7 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return LoadingView.page();
           }
-          
+
           final user = snapshot.data;
           if (user == null) {
             return const ErrorView(
@@ -41,7 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
               title: 'Authentication Error',
             );
           }
-          
+
           return _buildProfileContent(context, user);
         },
       ),
@@ -60,7 +63,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildProfileContent(
     BuildContext context,
-    dynamic user, // Firebase User
+    User user, // Firebase User
   ) {
     return CustomScrollView(
       slivers: [
@@ -78,10 +81,15 @@ class _ProfilePageState extends State<ProfilePage> {
 
         // Stats Card
         SliverToBoxAdapter(
-          child: ProfileStatsCard(
-            role: 'Student', // Default role, can be enhanced later
-            memberSince: user.metadata?.creationTime,
-          ),
+          child: FirestoreBuilder(
+              ref: usersRef.doc(user.uid),
+              builder: (context, snapshot, child) {
+                return ProfileStatsCard(
+                  role: snapshot.data?.data?.role.name ??
+                      'student', // Default role, can be enhanced later
+                  memberSince: user.metadata.creationTime,
+                );
+              }),
         ),
 
         const SliverToBoxAdapter(

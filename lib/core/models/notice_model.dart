@@ -6,37 +6,24 @@ import 'user_model.dart';
 part 'notice_model.freezed.dart';
 part 'notice_model.g.dart';
 
-// Custom converter for Firestore Timestamps
-class TimestampConverter implements JsonConverter<DateTime?, Timestamp?> {
-  const TimestampConverter();
-
-  @override
-  DateTime? fromJson(Timestamp? timestamp) {
-    return timestamp?.toDate();
-  }
-
-  @override
-  Timestamp? toJson(DateTime? dateTime) {
-    return dateTime != null ? Timestamp.fromDate(dateTime) : null;
-  }
-}
-
 class UserModelDocumentReferenceConverter
-    implements JsonConverter<UserModelDocumentReference, String> {
+    implements
+        JsonConverter<UserModelDocumentReference,
+            DocumentReference<Map<String, dynamic>>> {
   const UserModelDocumentReferenceConverter();
 
   @override
-  UserModelDocumentReference fromJson(String json) {
-    print("fromJson");
-    print(json);
-    return usersRef.doc(json);
+  UserModelDocumentReference fromJson(
+      DocumentReference<Map<String, dynamic>> ref) {
+    return usersRef.doc(ref.id);
   }
 
   @override
-  String toJson(UserModelDocumentReference reference) {
-    print('toJson');
-    print(reference);
-    return reference.path;
+  DocumentReference<Map<String, dynamic>> toJson(
+      UserModelDocumentReference reference) {
+    return FirebaseFirestore.instance
+        .collection(usersRef.path)
+        .doc(reference.id);
   }
 }
 

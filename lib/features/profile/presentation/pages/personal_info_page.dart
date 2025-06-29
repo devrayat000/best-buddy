@@ -1,3 +1,6 @@
+import 'package:best_buddy_flutter/core/models/user_model.dart';
+import 'package:cloud_firestore_odm/cloud_firestore_odm.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/auth/auth_service.dart';
@@ -21,7 +24,7 @@ class PersonalInfoPage extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return LoadingView.page();
           }
-          
+
           final user = snapshot.data;
           if (user == null) {
             return const ErrorView(
@@ -38,7 +41,7 @@ class PersonalInfoPage extends StatelessWidget {
 
   Widget _buildPersonalInfoContent(
     BuildContext context,
-    dynamic user, // Firebase User
+    User user, // Firebase User
   ) {
     final studentId = user.email?.split('@').first ?? 'N/A';
 
@@ -73,7 +76,9 @@ class PersonalInfoPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          user.displayName ?? user.email?.split('@')[0] ?? 'User',
+                          user.displayName ??
+                              user.email?.split('@')[0] ??
+                              'User',
                           style: Theme.of(context)
                               .textTheme
                               .headlineSmall
@@ -82,16 +87,22 @@ class PersonalInfoPage extends StatelessWidget {
                               ),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          'Student', // Default role for Firebase users
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontWeight: FontWeight.w500,
-                              ),
-                        ),
+                        FirestoreBuilder(
+                            ref: usersRef.doc(user.uid),
+                            builder: (context, snapshot, child) {
+                              return Text(
+                                snapshot.data?.data?.role.name ??
+                                    'student', // Default role for Firebase users
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                              );
+                            }),
                       ],
                     ),
                   ),

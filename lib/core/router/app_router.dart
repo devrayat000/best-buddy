@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:best_buddy_flutter/core/cubits/reload_cubit.dart';
+import 'package:best_buddy_flutter/features/notices/presentation/pages/delete_notice_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -215,19 +216,6 @@ class AppRouter {
                         );
                       },
                     ),
-                    // Edit notice page
-                    GoRoute(
-                      path: 'edit/:noticeId',
-                      name: 'edit-notice',
-                      pageBuilder: (context, state) {
-                        final notice = state.extra as NoticeModel?;
-                        return DialogPage(
-                          key: state.pageKey,
-                          barrierDismissible: false,
-                          builder: (_) => AddEditNoticePage(existingNotice: notice),
-                        );
-                      },
-                    ),
                     // Notice detail modal
                     GoRoute(
                       path: ':id',
@@ -240,6 +228,35 @@ class AppRouter {
                               NoticeDetailsModal(noticeId: noticeId),
                         );
                       },
+                      routes: [
+                        // Edit notice page
+                        GoRoute(
+                          path: 'edit',
+                          name: 'edit-notice',
+                          pageBuilder: (context, state) {
+                            final notice = state.extra as NoticeModel?;
+                            return DialogPage(
+                              key: state.pageKey,
+                              barrierDismissible: false,
+                              builder: (_) =>
+                                  AddEditNoticePage(existingNotice: notice),
+                            );
+                          },
+                        ),
+                        GoRoute(
+                          path: 'delete',
+                          name: 'delete-notice',
+                          pageBuilder: (context, state) {
+                            final noticeId = state.pathParameters['id']!;
+                            return DialogPage(
+                              key: state.pageKey,
+                              name: state.name,
+                              barrierDismissible: false,
+                              builder: (_) => DeleteNoticeDialog(id: noticeId),
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -303,7 +320,8 @@ class AppRouter {
                         return DialogPage(
                           key: state.pageKey,
                           barrierDismissible: false,
-                          builder: (_) => AddEditClassTestPage(classTest: classTest),
+                          builder: (_) =>
+                              AddEditClassTestPage(classTest: classTest),
                         );
                       },
                     ),
@@ -437,7 +455,7 @@ class AppRouter {
     try {
       final authService = AuthService();
       final isAuthenticated = authService.isAuthenticated;
-      
+
       final isOnGetStartedPage = state.matchedLocation == '/';
       final isOnAuthPage = ['/login', '/register', '/grant-access']
           .contains(state.matchedLocation);

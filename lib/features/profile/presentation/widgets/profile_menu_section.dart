@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/auth/auth_service.dart';
 
 class ProfileAccountSection extends StatelessWidget {
   const ProfileAccountSection({super.key});

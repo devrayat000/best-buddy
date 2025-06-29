@@ -1551,8 +1551,8 @@ _$NoticeModelImpl _$$NoticeModelImplFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       title: json['title'] as String,
       content: json['content'] as String,
-      createdBy: const UserModelDocumentReferenceConverter()
-          .fromJson(json['createdBy'] as String),
+      createdBy: const UserModelDocumentReferenceConverter().fromJson(
+          json['createdBy'] as DocumentReference<Map<String, dynamic>>),
       createdAt: _$JsonConverterFromJson<Timestamp, DateTime>(
           json['createdAt'], const FirestoreDateTimeConverter().fromJson),
       updatedAt: _$JsonConverterFromJson<Timestamp, DateTime>(
